@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alumifyx - Chapters</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #1a1a1a, #2a1a3a);
+      color: #ffffff;
+      overflow-x: hidden;
+      transition: background 0.3s ease, color 0.3s ease;
+      position: relative;
+    }
+
+    body.light-mode {
+      background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
+      color: #0a0a0a;
+    }
+
+    .background-animations {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .ring {
+      position: absolute;
+      border: 2px solid rgba(138, 43, 226, 0.3);
+      border-radius: 50%;
+      animation: pulseRing 8s infinite ease-in-out;
+      opacity: 0.5;
+    }
+
+    .ring:nth-child(1) { width: 100px; height: 100px; top: 10%; left: 15%; animation-delay: 0s; }
+    .ring:nth-child(2) { width: 150px; height: 150px; top: 60%; left: 80%; animation-delay: 2s; }
+
+    .particle {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: #bb86fc;
+      border-radius: 50%;
+      animation: floatParticle 10s infinite linear;
+      opacity: 0.4;
+    }
+
+    .particle:nth-child(3) { top: 20%; left: 10%; animation-delay: 1s; }
+    .particle:nth-child(4) { top: 70%; left: 50%; animation-delay: 3s; }
+
+    @keyframes pulseRing {
+      0% { transform: scale(1); opacity: 0.5; }
+      50% { transform: scale(1.3); opacity: 0.2; }
+      100% { transform: scale(1); opacity: 0.5; }
+    }
+
+    @keyframes floatParticle {
+      0% { transform: translateY(0); opacity: 0.4; }
+      50% { transform: translateY(-50px); opacity: 0.7; }
+      100% { transform: translateY(0); opacity: 0.4; }
+    }
+
+    .nav-bar {
+      background-color: #2a1a3a;
+      padding: 15px;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    }
+
+    body.light-mode .nav-bar {
+      background-color: #e0e0e0;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .nav-bar a {
+      color: #ffffff;
+      text-decoration: none;
+      margin: 0 15px;
+      font-size: 18px;
+      transition: color 0.3s;
+    }
+
+    body.light-mode .nav-bar a {
+      color: #0a0a0a;
+    }
+
+    .nav-bar a.active, .nav-bar a:hover {
+      color: #bb86fc;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    h2 {
+      color: #bb86fc;
+      text-align: center;
+      margin: 30px 0;
+      animation: fadeIn 2s ease-in-out;
+    }
+
+    .error-message {
+      text-align: center;
+      margin: 20px 0;
+      color: #ff4444;
+      font-size: 18px;
+    }
+
+    .back-link {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .error-message a,
+    .back-link a {
+      color: #bb86fc;
+      text-decoration: none;
+    }
+
+    .error-message a:hover,
+    .back-link a:hover {
+      text-decoration: underline;
+    }
+
+    .chapter-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+      justify-content: center;
+    }
+
+    .chapter {
+      text-align: center;
+      background: #0a0a0a;
+      padding: 20px;
+      border-radius: 12px;
+      width: 200px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      animation: slideIn 1s ease-in-out forwards;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    body.light-mode .chapter {
+      background: #ffffff;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .chapter:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 10px 20px rgba(138, 43, 226, 0.3);
+    }
+
+    .chapter h3 {
+      color: #bb86fc;
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .chapter p {
+      color: #cccccc;
+      font-size: 14px;
+    }
+
+    body.light-mode .chapter p {
+      color: #333333;
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateY(-20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideIn {
+      0% { opacity: 0; transform: translateX(-50px); }
+      100% { opacity: 1; transform: translateX(0); }
+    }
+
+    body.font-small { font-size: 14px; }
+    body.font-medium { font-size: 16px; }
+    body.font-large { font-size: 18px; }
+
+    @media (max-width: 768px) {
+      .nav-bar { padding: 10px; }
+      .nav-bar a { font-size: 14px; margin: 0 10px; }
+      .chapter { width: 150px; }
+      .ring:nth-child(1) { width: 60px; height: 60px; }
+      .ring:nth-child(2) { width: 80px; height: 80px; }
+      .particle { width: 4px; height: 4px; }
+    }
+  </style>
+</head>
+<body class="font-medium">
+  <div class="background-animations">
+    <div class="ring"></div>
+    <div class="ring"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+  </div>
+
+  <div class="nav-bar">
+    <a href="homepage.html">Home</a>
+    <a href="acadmic.html" class="active">Academic</a>
+    <a href="library.html">Library</a>
+    <a href="growth.html">Growth</a>
+    <a href="jobs.html">Jobs</a>
+    <a href="mentorship.html">Mentorship</a>
+  </div>
+
+  <div class="container">
+    <h2 id="chapterTitle">Select a Chapter</h2>
+    <div id="errorMessage" class="error-message" style="display: none;">
+      <p>Invalid course or subject. <a href="acadmic.html">Go Back</a></p>
+    </div>
+    <div class="back-link">
+      <a id="backLink" href="#">← Back to Subjects</a>
+    </div>
+    <div class="chapter-list" id="chapterList"></div>
+  </div>
+
+  <script>
+    try {
+      const theme = localStorage.getItem('theme');
+      if (theme === 'light') {
+        document.body.classList.add('light-mode');
+      }
+      const settings = JSON.parse(localStorage.getItem('settings')) || {};
+      if (settings.fontSize) {
+        document.body.classList.add(`font-${settings.fontSize}`);
+      }
+    } catch (e) {
+      console.error('Error loading theme/font settings:', e);
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const course = urlParams.get('course');
+    const subject = urlParams.get('subject');
+    const chapterList = document.getElementById('chapterList');
+    const chapterTitle = document.getElementById('chapterTitle');
+    const errorMessage = document.getElementById('errorMessage');
+    const backLink = document.getElementById('backLink');
+
+    const chapters = {
+      'Programming in C': ['Basics', 'Loops', 'Functions', 'Pointers'],
+      'Mathematics I': ['Algebra', 'Calculus', 'Geometry'],
+      'Financial Accounting': ['Introduction', 'Ledger', 'Balance Sheet'],
+      'Data Structures': ['Arrays', 'Linked Lists', 'Stacks and Queues'],
+      'Principles of Management': ['Introduction', 'Planning', 'Organizing']
+      // Add more subjects and chapters as needed
+    };
+
+    if (!course || !subject || !chapters[subject]) {
+      chapterTitle.style.display = 'none';
+      chapterList.style.display = 'none';
+      errorMessage.style.display = 'block';
+      backLink.href = `subjects.html?course=${encodeURIComponent(course || '')}`;
+      setTimeout(() => {
+        window.location.href = `subjects.html?course=${encodeURIComponent(course || '')}`;
+      }, 5000);
+    } else {
+      errorMessage.style.display = 'none';
+      chapterTitle.textContent = `${subject} Chapters`;
+      backLink.href = `subjects.html?course=${encodeURIComponent(course)}`;
+      chapters[subject].forEach(chapter => {
+        const chapterDiv = document.createElement('a');
+        chapterDiv.className = 'chapter';
+        chapterDiv.href = `resources.html?course=${encodeURIComponent(course)}&subject=${encodeURIComponent(subject)}&chapter=${encodeURIComponent(chapter)}`;
+        chapterDiv.innerHTML = `
+          <h3>${chapter}</h3>
+          <p>Explore ${chapter}</p>
+        `;
+        chapterDiv.setAttribute('aria-label', `View resources for ${chapter} in ${subject}`);
+        chapterList.appendChild(chapterDiv);
+      });
+    }
+
+    // Add more particles
+    for (let i = 0; i < 5; i++) {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      particle.style.top = `${Math.random() * 100}%`;
+      particle.style.left = `${Math.random() * 100}%`;
+      particle.style.animationDelay = `${Math.random() * 5}s`;
+      document.querySelector('.background-animations').appendChild(particle);
+    }
+  </script>
+</body>
+</html>

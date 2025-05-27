@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alumifyx - Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #0a0a0a;
+            color: #ffffff;
+            transition: background 0.3s ease, color 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        body.light-mode {
+            background: #f5f5f5;
+            color: #0a0a0a;
+        }
+
+        .container {
+            display: flex;
+            width: 90%;
+            max-width: 1200px;
+            background: #1a1a1a;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            animation: fadeIn 1s ease-out;
+        }
+
+        body.light-mode .container {
+            background: #ffffff;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-section {
+            width: 40%;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: #0a0a0a;
+        }
+
+        body.light-mode .form-section {
+            background: #f5f5f5;
+        }
+
+        .website-brand {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            animation: slideInLeft 0.8s ease-out;
+        }
+
+        .website-brand img {
+            width: 40px;
+            height: 40px;
+            margin-right: 12px;
+            filter: brightness(1.2);
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        .website-brand img:hover {
+            transform: scale(1.1);
+        }
+
+        .website-brand span {
+            font-size: 28px;
+            font-weight: 700;
+            color: #8a2be2;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .form-section h2 {
+            font-size: 30px;
+            margin-bottom: 25px;
+            color: #8a2be2;
+            text-align: center;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .form-section form {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .form-section input {
+            padding: 14px;
+            border: 1px solid #8a2be2;
+            border-radius: 6px;
+            background: #1a1a1a;
+            color: #ffffff;
+            font-size: 16px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        body.light-mode .form-section input {
+            background: #ffffff;
+            color: #0a0a0a;
+        }
+
+        .form-section input:focus {
+            outline: none;
+            border-color: #6a1bb2;
+            box-shadow: 0 0 8px rgba(138, 43, 226, 0.3);
+        }
+
+        .form-section input.error {
+            border-color: #ff4444;
+        }
+
+        .error-message {
+            color: #ff4444;
+            font-size: 12px;
+            margin-top: -10px;
+            margin-bottom: 10px;
+            display: none;
+        }
+
+        .form-section button.submit-btn {
+            padding: 14px;
+            background: #8a2be2;
+            border: none;
+            border-radius: 6px;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-section button.submit-btn:hover {
+            background: #6a1bb2;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(138, 43, 226, 0.4);
+        }
+
+        .form-section button.submit-btn.loading::after {
+            content: '';
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 0.8s linear infinite;
+            margin-left: 10px;
+        }
+
+        .social-login {
+            display: flex;
+            gap: 12px;
+            margin: 25px 0;
+        }
+
+        .social-login button {
+            flex: 1;
+            padding: 12px;
+            background: #1a1a1a;
+            border: 1px solid #8a2be2;
+            border-radius: 6px;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        body.light-mode .social-login button {
+            background: #ffffff;
+            color: #0a0a0a;
+        }
+
+        .social-login button:hover {
+            background: #8a2be2;
+            transform: translateY(-3px);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(138, 43, 226, 0.4);
+        }
+
+        .social-login button img {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+        }
+
+        .form-section p {
+            text-align: center;
+            font-size: 14px;
+            color: #cccccc;
+            margin: 8px 0;
+        }
+
+        body.light-mode .form-section p {
+            color: #333333;
+        }
+
+        .form-section a {
+            color: #8a2be2;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .form-section a:hover {
+            color: #6a1bb2;
+            text-decoration: underline;
+        }
+
+        .image-section {
+            width: 60%;
+            position: relative;
+            background: linear-gradient(45deg, rgba(138, 43, 226, 0.2), transparent);
+        }
+
+        .image-section img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.9;
+            transition: opacity 0.3s ease;
+        }
+
+        .image-section img:hover {
+            opacity: 1;
+        }
+
+        .notification {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #1a1a1a;
+            padding: 12px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            animation: slideInRight 0.8s ease-out;
+            transition: transform 0.3s ease;
+        }
+
+        .notification:hover {
+            transform: translateY(-5px);
+        }
+
+        body.light-mode .notification {
+            background: #ffffff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .notification img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 12px;
+            border: 2px solid #8a2be2;
+        }
+
+        .notification-text {
+            font-size: 14px;
+            color: #cccccc;
+        }
+
+        body.light-mode .notification-text {
+            color: #333333;
+        }
+
+        .notification-text strong {
+            color: #8a2be2;
+        }
+
+        .login-page, .signup-page, .forgot-page {
+            display: none;
+        }
+
+        .login-page.active, .signup-page.active, .forgot-page.active {
+            display: flex;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .theme-toggle input {
+            width: 20px;
+            height: 20px;
+            accent-color: #8a2be2;
+            cursor: pointer;
+        }
+
+        .theme-toggle label {
+            font-size: 14px;
+            color: #cccccc;
+            cursor: pointer;
+        }
+
+        body.light-mode .theme-toggle label {
+            color: #333333;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                width: 95%;
+            }
+
+            .form-section {
+                width: 100%;
+                padding: 20px;
+            }
+
+            .image-section {
+                width: 100%;
+                height: 300px;
+            }
+
+            .website-brand img {
+                width: 32px;
+                height: 32px;
+            }
+
+            .website-brand span {
+                font-size: 22px;
+            }
+
+            .form-section h2 {
+                font-size: 26px;
+            }
+
+            .form-section input, .form-section button {
+                font-size: 14px;
+            }
+
+            .social-login {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .social-login button {
+                font-size: 12px;
+            }
+
+            .notification {
+                top: 10px;
+                right: 10px;
+                padding: 8px;
+            }
+
+            .notification img {
+                width: 32px;
+                height: 32px;
+            }
+
+            .notification-text {
+                font-size: 12px;
+            }
+
+            .theme-toggle {
+                top: 10px;
+                left: 10px;
+            }
+        }
+    </style>
+</head>
+<body class="font-medium">
+    <div class="theme-toggle">
+        <input type="checkbox" id="themeToggle">
+        <label for="themeToggle">Light Mode</label>
+    </div>
+
+    <div class="container login-page active">
+        <div class="form-section">
+            <div class="website-brand">
+                <img src="https://placehold.co/40x40/8a2be2/ffffff?text=A" alt="Placeholder">
+                <span>Alumifyx</span>
+            </div>
+            <h2>Login to Your Account</h2>
+            <form id="loginForm">
+                <input type="email" id="loginEmail" placeholder="Email" required>
+                <div class="error-message" id="loginEmailError">Please enter a valid email</div>
+                <input type="password" id="loginPassword" placeholder="Password" required>
+                <div class="error-message" id="loginPasswordError">Password must be at least 6 characters</div>
+                <button type="submit" class="submit-btn">Login</button>
+            </form>
+            <div class="social-login">
+                <button onclick="openPopup('github')">
+                    <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub Logo">
+                    GitHub
+                </button>
+                <button onclick="openPopup('google')">
+                    <img src="https://www.vectorlogo.zone/logos/google/google-icon.svg" alt="Google Logo">
+                    Google
+                </button>
+            </div>
+            <p>Forgot Password? <a href="#" onclick="showForgot()">Reset Password</a></p>
+            <p>Don't have an account? <a href="#" onclick="showSignup()">Create an account</a></p>
+            <p>Visit our <a href="homepage.html">Homepage</a></p>
+        </div>
+        <div class="image-section">
+            <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop" alt="Collaboration">
+            <div class="notification">
+                <img src="https://via.placeholder.com/40/8a2be2/ffffff?text=A" alt="Alumifyx">
+                <div class="notification-text">
+                    <strong>Alumifyx</strong><br>
+                    Empowering learners worldwide
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container signup-page">
+        <div class="form-section">
+            <div class="website-brand">
+                <img src="https://via.placeholder.com/40/8a2be2/ffffff?text=A" alt="Alumifyx Logo">
+                <span>Alumifyx</span>
+            </div>
+            <h2>Create an Account</h2>
+            <form id="signupForm">
+                <input type="text" id="signupName" placeholder="Full Name" required>
+                <div class="error-message" id="signupNameError">Name is required</div>
+                <input type="email" id="signupEmail" placeholder="Email" required>
+                <div class="error-message" id="signupEmailError">Please enter a valid email</div>
+                <input type="password" id="signupPassword" placeholder="Password" required>
+                <div class="error-message" id="signupPasswordError">Password must be at least 6 characters</div>
+                <button type="submit" class="submit-btn">Sign Up</button>
+            </form>
+            <div class="social-login">
+                <button onclick="openPopup('github')">
+                    <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub Logo">
+                    GitHub
+                </button>
+                <button onclick="openPopup('google')">
+                    <img src="https://www.vectorlogo.zone/logos/google/google-icon.svg" alt="Google Logo">
+                    Google
+                </button>
+            </div>
+            <p>Already have an account? <a href="#" onclick="showLogin()">Login</a></p>
+            <p>Visit our <a href="homepage.html">Homepage</a></p>
+        </div>
+        <div class="image-section">
+            <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop" alt="Collaboration">
+            <div class="notification">
+                <img src="https://via.placeholder.com/40/8a2be2/ffffff?text=A" alt="Alumifyx">
+                <div class="notification-text">
+                    <strong>Alumifyx</strong><br>
+                    Empowering learners worldwide
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container forgot-page">
+        <div class="form-section">
+            <div class="website-brand">
+                <img src="https://via.placeholder.com/40/8a2be2/ffffff?text=A" alt="Alumifyx Logo">
+                <span>Alumifyx</span>
+            </div>
+            <h2>Reset Your Password</h2>
+            <form id="forgotForm">
+                <input type="email" id="forgotEmail" placeholder="Enter your email" required>
+                <div class="error-message" id="forgotEmailError">Please enter a valid email</div>
+                <button type="submit" class="submit-btn">Send Reset Link</button>
+            </form>
+            <p>Remembered your password? <a href="#" onclick="showLogin()">Login</a></p>
+            <p>Don't have an account? <a href="#" onclick="showSignup()">Create an account</a></p>
+            <p>Visit our <a href="homepage.html">Homepage</a></p>
+        </div>
+        <div class="image-section">
+            <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop" alt="Collaboration">
+            <div class="notification">
+                <img src="https://via.placeholder.com/40/8a2be2/ffffff?text=A" alt="Alumifyx">
+                <div class="notification-text">
+                    <strong>Alumifyx</strong><br>
+                    Empowering learners worldwide
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        try {
+            const theme = localStorage.getItem('theme');
+            if (theme === 'light') {
+                document.body.classList.add('light-mode');
+                themeToggle.checked = true;
+            }
+        } catch (e) {
+            console.error('Error loading theme:', e.message);
+            alert('Error loading theme. Please try again.');
+        }
+
+        themeToggle.addEventListener('change', () => {
+            document.body.classList.toggle('light-mode');
+            try {
+                localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+            } catch (e) {
+                console.error('Error saving theme:', e.message);
+                alert('Error saving theme. Please try again.');
+            }
+        });
+
+        // Page Toggle
+        function showLogin() {
+            document.querySelector('.signup-page').classList.remove('active');
+            document.querySelector('.forgot-page').classList.remove('active');
+            document.querySelector('.login-page').classList.add('active');
+        }
+
+        function showSignup() {
+            document.querySelector('.login-page').classList.remove('active');
+            document.querySelector('.forgot-page').classList.remove('active');
+            document.querySelector('.signup-page').classList.add('active');
+        }
+
+        function showForgot() {
+            document.querySelector('.login-page').classList.remove('active');
+            document.querySelector('.signup-page').classList.remove('active');
+            document.querySelector('.forgot-page').classList.add('active');
+        }
+
+        // Social Login (Placeholder)
+        function openPopup(provider) {
+            let url;
+            if (provider === 'google') {
+                url = 'https://accounts.google.com/signin';
+            } else if (provider === 'github') {
+                url = 'https://github.com/login';
+            }
+            window.open(url, 'authPopup', 'width=500,height=600,scrollbars=yes,resizable=yes');
+            alert(`Social login with ${provider} is not fully implemented. Please use email/password for now.`);
+        }
+
+        // Form Validation and Submission
+        function validateEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
+        function showError(input, errorElement, message) {
+            input.classList.add('error');
+            errorElement.style.display = 'block';
+            errorElement.textContent = message;
+            return false;
+        }
+
+        function clearError(input, errorElement) {
+            input.classList.remove('error');
+            errorElement.style.display = 'none';
+        }
+
+        // Login Form
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail');
+            const password = document.getElementById('loginPassword');
+            const emailError = document.getElementById('loginEmailError');
+            const passwordError = document.getElementById('loginPasswordError');
+            const submitBtn = loginForm.querySelector('.submit-btn');
+
+            let isValid = true;
+
+            clearError(email, emailError);
+            clearError(password, passwordError);
+
+            if (!validateEmail(email.value)) {
+                isValid = showError(email, emailError, 'Please enter a valid email');
+            }
+
+            if (password.value.length < 6) {
+                isValid = showError(password, passwordError, 'Password must be at least 6 characters');
+            }
+
+            if (isValid) {
+                submitBtn.classList.add('loading');
+                submitBtn.disabled = true;
+
+                try {
+                    const response = await fetch('http://localhost:3000/api/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email: email.value, password: password.value }),
+                        credentials: 'include',
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        window.location.href = 'homepage.html';
+                    } else {
+                        if (result.error.includes('email')) {
+                            showError(email, emailError, result.error);
+                        } else if (result.error.includes('password')) {
+                            showError(password, passwordError, result.error);
+                        } else {
+                            showError(email, emailError, result.error);
+                            showError(password, passwordError, result.error);
+                        }
+                    }
+                } catch (error) {
+                    console.error('Login error:', error);
+                    showError(email, emailError, 'Error connecting to the server');
+                    showError(password, passwordError, 'Error connecting to the server');
+                } finally {
+                    submitBtn.classList.remove('loading');
+                    submitBtn.disabled = false;
+                }
+            }
+        });
+
+        // Signup Form
+        document.getElementById('signupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('signupName');
+            const email = document.getElementById('signupEmail');
+            const password = document.getElementById('signupPassword');
+            const nameError = document.getElementById('signupNameError');
+            const emailError = document.getElementById('signupEmailError');
+            const passwordError = document.getElementById('signupPasswordError');
+            const submitBtn = signupForm.querySelector('.submit-btn');
+
+            let isValid = true;
+
+            clearError(name, nameError);
+            clearError(email, emailError);
+            clearError(password, passwordError);
+
+            if (name.value.trim() === '') {
+                isValid = showError(name, nameError, 'Name is required');
+            }
+
+            if (!validateEmail(email.value)) {
+                isValid = showError(email, emailError, 'Please enter a valid email');
+            }
+
+            if (password.value.length < 6) {
+                isValid = showError(password, passwordError, 'Password must be at least 6 characters');
+            }
+
+            if (isValid) {
+                submitBtn.classList.add('loading');
+                submitBtn.disabled = true;
+
+                try {
+                    const response = await fetch('http://localhost:3000/api/register', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ name: name.value, email: email.value, password: password.value }),
+                        credentials: 'include',
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        alert('Signup successful! Please log in.');
+                        showLogin();
+                        signupForm.reset();
+                    } else {
+                        if (result.error.includes('email')) {
+                            showError(email, emailError, result.error);
+                        } else {
+                            showError(name, nameError, result.error);
+                            showError(email, emailError, result.error);
+                            showError(password, passwordError, result.error);
+                        }
+                    }
+                } catch (error) {
+                    console.error('Signup error:', error);
+                    showError(email, emailError, 'Error connecting to the server');
+                } finally {
+                    submitBtn.classList.remove('loading');
+                    submitBtn.disabled = false;
+                }
+            }
+        });
+
+        // Forgot Password Form
+        document.getElementById('forgotForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('forgotEmail');
+            const emailError = document.getElementById('forgotEmailError');
+            const submitBtn = forgotForm.querySelector('.submit-btn');
+
+            let isValid = true;
+
+            clearError(email, emailError);
+
+            if (!validateEmail(email.value)) {
+                isValid = showError(email, emailError, 'Please enter a valid email');
+            }
+
+            if (isValid) {
+                submitBtn.classList.add('loading');
+                submitBtn.disabled = true;
+
+                try {
+                    const response = await fetch('http://localhost:3000/api/forgot-password', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email: email.value }),
+                        credentials: 'include',
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        alert('Password reset link sent to your email.');
+                        showLogin();
+                        forgotForm.reset();
+                    } else {
+                        showError(email, emailError, result.error || 'Error sending reset link');
+                    }
+                } catch (error) {
+                    console.error('Forgot password error:', error);
+                    showError(email, emailError, 'Error connecting to the server');
+                } finally {
+                    submitBtn.classList.remove('loading');
+                    submitBtn.disabled = false;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

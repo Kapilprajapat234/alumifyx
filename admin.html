@@ -1,0 +1,1647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alumifyx Admin Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background: #0a0a0a;
+      color: #ffffff;
+      overflow-x: hidden;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    body.light-mode {
+      background: #f5f5f5;
+      color: #0a0a0a;
+    }
+
+    .container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 250px;
+      background: #1a1a1a;
+      padding: 20px;
+      position: fixed;
+      height: 100%;
+      overflow-y: auto;
+      transition: transform 0.3s ease;
+    }
+
+    body.light-mode .sidebar {
+      background: #ffffff;
+      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .sidebar.hidden {
+      transform: translateX(-250px);
+    }
+
+    .sidebar h2 {
+      font-size: 24px;
+      color: #8a2be2;
+      margin-bottom: 30px;
+    }
+
+    .sidebar ul {
+      list-style: none;
+    }
+
+    .sidebar ul li {
+      margin-bottom: 15px;
+    }
+
+    .sidebar ul li a {
+      color: #cccccc;
+      text-decoration: none;
+      font-size: 16px;
+      display: block;
+      padding: 10px;
+      border-radius: 6px;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    body.light-mode .sidebar ul li a {
+      color: #333333;
+    }
+
+    .sidebar ul li a:hover, .sidebar ul li a.active {
+      background: #8a2be2;
+      color: #ffffff;
+    }
+
+    .hamburger {
+      display: none;
+      font-size: 24px;
+      background: none;
+      border: none;
+      color: #ffffff;
+      cursor: pointer;
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 1001;
+    }
+
+    body.light-mode .hamburger {
+      color: #0a0a0a;
+    }
+
+    .main-content {
+      margin-left: 250px;
+      padding: 40px;
+      width: calc(100% - 250px);
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    .main-content.full {
+      margin-left: 0;
+      width: 100%;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+
+    .header h1 {
+      font-size: 32px;
+      color: #8a2be2;
+    }
+
+    .admin-profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .admin-profile img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 2px solid #8a2be2;
+    }
+
+    .section {
+      background: #1a1a1a;
+      padding: 30px;
+      border-radius: 12px;
+      margin-bottom: 30px;
+      animation: slideIn 0.5s ease-out;
+    }
+
+    body.light-mode .section {
+      background: #ffffff;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    @keyframes slideIn {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .section h2 {
+      font-size: 24px;
+      color: #8a2be2;
+      margin-bottom: 20px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    .stat-card {
+      background: #0a0a0a;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+      border: 1px solid #8a2be2;
+    }
+
+    body.light-mode .stat-card {
+      background: #f5f5f5;
+    }
+
+    .stat-card h3 {
+      font-size: 18px;
+      color: #cccccc;
+      margin-bottom: 10px;
+    }
+
+    body.light-mode .stat-card h3 {
+      color: #333333;
+    }
+
+    .stat-card p {
+      font-size: 24px;
+      color: #8a2be2;
+    }
+
+    form {
+      display: grid;
+      gap: 15px;
+      max-width: 600px;
+    }
+
+    form label {
+      font-size: 16px;
+      color: #cccccc;
+    }
+
+    body.light-mode form label {
+      color: #333333;
+    }
+
+    form input, form textarea, form select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #8a2be2;
+      border-radius: 6px;
+      background: #0a0a0a;
+      color: #ffffff;
+      font-size: 16px;
+    }
+
+    body.light-mode form input,
+    body.light-mode form textarea,
+    body.light-mode form select {
+      background: #f5f5f5;
+      color: #0a0a0a;
+    }
+
+    form input[type="file"] {
+      padding: 5px;
+    }
+
+    form textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    form button {
+      padding: 10px 20px;
+      background: #8a2be2;
+      color: #ffffff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.3s ease;
+    }
+
+    form button:hover {
+      background: #6a1bb2;
+    }
+
+    .content-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    .content-table th, .content-table td {
+      padding: 12px;
+      border: 1px solid #8a2be2;
+      text-align: left;
+    }
+
+    .content-table th {
+      background: #8a2be2;
+      color: #ffffff;
+      cursor: pointer;
+    }
+
+    .content-table th:hover {
+      background: #6a1bb2;
+    }
+
+    .content-table td {
+      background: #0a0a0a;
+    }
+
+    body.light-mode .content-table td {
+      background: #f5f5f5;
+    }
+
+    .content-table img {
+      width: 50px;
+      height: 50px;
+      object-fit: cover;
+      border-radius: 4px;
+    }
+
+    .content-table button {
+      padding: 8px 12px;
+      margin-right: 5px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .content-table button.edit {
+      background: #8a2be2;
+      color: #ffffff;
+    }
+
+    .content-table button.edit:hover {
+      background: #6a1bb2;
+    }
+
+    .content-table button.delete {
+      background: #ff4444;
+      color: #ffffff;
+    }
+
+    .content-table button.delete:hover {
+      background: #cc3333;
+    }
+
+    .loading-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 1002;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .loading-overlay.active {
+      display: flex;
+    }
+
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid #8a2be2;
+      border-top: 5px solid transparent;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .resource-type-toggle {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 15px;
+    }
+
+    .resource-type-toggle label {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-250px);
+      }
+
+      .sidebar.active {
+        transform: translateX(0);
+      }
+
+      .hamburger {
+        display: block;
+      }
+
+      .main-content {
+        margin-left: 0;
+        width: 100%;
+        padding: 20px;
+      }
+
+      .main-content.full {
+        margin-left: 0;
+      }
+
+      .header h1 {
+        font-size: 24px;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body class="font-medium">
+  <button class="hamburger" aria-label="Toggle Sidebar">☰</button>
+  <div class="container">
+    <nav class="sidebar" role="navigation">
+      <h2>Alumifyx Admin</h2>
+      <ul>
+        <li><a href="#" class="active" data-section="dashboard">Dashboard</a></li>
+        <li><a href="acadmic.html">Academic</a></li>
+        <li><a href="#" data-section="library">Library</a></li>
+        <li><a href="#" data-section="jobs">Jobs</a></li>
+        <li><a href="#" data-section="growth">Growth</a></li>
+        <li><a href="#" data-section="mentorship">Mentorship</a></li>
+        <li><a href="#" data-section="resources">Resources</a></li>
+        <li><a href="#" data-section="skills">Skills</a></li>
+        <li><a href="#" data-section="custom">Custom Content</a></li>
+        <li><a href="#" data-section="settings">Settings</a></li>
+        <li><a href="#" onclick="logout()">Logout</a></li>
+      </ul>
+    </nav>
+    <main class="main-content">
+      <div class="header">
+        <h1>Admin Dashboard</h1>
+        <div class="admin-profile">
+          <img src="https://via.placeholder.com/40" alt="Admin Profile">
+          <span>Admin</span>
+        </div>
+      </div>
+
+      <section id="dashboard" class="section">
+        <h2>Overview</h2>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <h3>Total Courses</h3>
+            <p id="totalCourses">0</p>
+          </div>
+          <div class="stat-card">
+            <h3>Total Books</h3>
+            <p id="totalBooks">0</p>
+          </div>
+          <div class="stat-card">
+            <h3>Total Jobs</h3>
+            <p id="totalJobs">0</p>
+          </div>
+          <div class="stat-card">
+            <h3>Total Mentors</h3>
+            <p id="totalMentors">0</p>
+          </div>
+          <div class="stat-card">
+            <h3>Total Resources</h3>
+            <p id="totalResources">0</p>
+          </div>
+          <div class="stat-card">
+            <h3>Total Skills</h3>
+            <p id="totalSkills">0</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="academic" class="section" style="display: none;">
+        <h2>Manage Academic Content</h2>
+        <h3>Add Course</h3>
+        <form id="courseForm">
+          <label for="courseTitle">Course Title</label>
+          <input type="text" id="courseTitle" placeholder="Enter course title" required>
+          <label for="courseDescription">Description</label>
+          <textarea id="courseDescription" placeholder="Enter course description" required></textarea>
+          <label for="courseImage">Course Image (max 2MB, optional)</label>
+          <input type="file" id="courseImage" accept="image/*">
+          <label for="courseCategory">Category</label>
+          <select id="courseCategory" required>
+            <option value="">Select Category</option>
+            <option value="BCA">BCA</option>
+            <option value="MCA">MCA</option>
+            <option value="BBA">BBA</option>
+            <option value="MBA">MBA</option>
+            <option value="B.Com">B.Com</option>
+            <option value="M.Com">M.Com</option>
+            <option value="B.Tech">B.Tech</option>
+            <option value="Other">Other</option>
+          </select>
+          <button type="submit">Add Course</button>
+        </form>
+        <h3>Add Subject</h3>
+        <form id="subjectForm">
+          <label for="subjectTitle">Subject Title</label>
+          <input type="text" id="subjectTitle" placeholder="Enter subject title" required>
+          <label for="subjectCourse">Course</label>
+          <select id="subjectCourse" required>
+            <option value="">Select Course</option>
+          </select>
+          <label for="subjectDescription">Description</label>
+          <textarea id="subjectDescription" placeholder="Enter subject description" required></textarea>
+          <label for="subjectFile">Supplementary File (PDF/Video, max 2MB, optional)</label>
+          <input type="file" id="subjectFile" accept=".pdf,video/*">
+          <button type="submit">Add Subject</button>
+        </form>
+        <h3>Add Chapter</h3>
+        <form id="chapterForm">
+          <label for="chapterTitle">Chapter Title</label>
+          <input type="text" id="chapterTitle" placeholder="Enter chapter title" required>
+          <label for="chapterCourse">Course</label>
+          <select id="chapterCourse" required>
+            <option value="">Select Course</option>
+          </select>
+          <label for="chapterContent">Content</label>
+          <textarea id="chapterContent" placeholder="Enter chapter content" required></textarea>
+          <div class="resource-type-toggle">
+            <label><input type="radio" name="chapterSource" value="file" checked> Upload File</label>
+            <label><input type="radio" name="chapterSource" value="link"> Provide Link</label>
+          </div>
+          <label for="chapterFile">File (PDF/Video, max 2MB, optional)</label>
+          <input type="file" id="chapterFile" accept=".pdf,video/*">
+          <label for="chapterLink">Link (optional)</label>
+          <input type="url" id="chapterLink" placeholder="Enter resource link">
+          <button type="submit">Add Chapter</button>
+        </form>
+        <h3>Add Resource</h3>
+        <form id="resourceForm">
+          <label for="resourceTitle">Resource Title</label>
+          <input type="text" id="resourceTitle" placeholder="Enter resource title" required>
+          <label for="resourceCourse">Course</label>
+          <select id="resourceCourse" required>
+            <option value="">Select Course</option>
+          </select>
+          <label for="resourceType">Type</label>
+          <select id="resourceType" required>
+            <option value="PDF">PDF</option>
+            <option value="Video">Video</option>
+            <option value="Link">Link</option>
+            <option value="Other">Other</option>
+          </select>
+          <div class="resource-type-toggle">
+            <label><input type="radio" name="resourceSource" value="file" checked> Upload File</label>
+            <label><input type="radio" name="resourceSource" value="link"> Provide Link</label>
+          </div>
+          <label for="resourceFile">File (PDF/Video, max 2MB, optional)</label>
+          <input type="file" id="resourceFile" accept=".pdf,video/*">
+          <label for="resourceLink">Link (optional)</label>
+          <input type="url" id="resourceLink" placeholder="Enter resource link">
+          <button type="submit">Add Resource</button>
+        </form>
+        <h3>Existing Academic Content</h3>
+        <table class="content-table">
+          <thead>
+            <tr>
+              <th onclick="sortTable('type')">Type</th>
+              <th onclick="sortTable('title')">Title</th>
+              <th onclick="sortTable('course')">Course</th>
+              <th>Details</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="academicTableBody"></tbody>
+        </table>
+      </section>
+
+      <section id="library" class="section" style="display: none;">
+        <h2>Manage Library</h2>
+        <form id="bookForm">
+          <label for="bookTitle">Book Title</label>
+          <input type="text" id="bookTitle" placeholder="Enter book title" required>
+          <label for="bookCategory">Category</label>
+          <select id="bookCategory" required>
+            <option value="">Select Category</option>
+            <option value="Study">Study</option>
+            <option value="Story">Story/Motivational</option>
+          </select>
+          <label for="bookLink">Book PDF Link</label>
+          <input type="url" id="bookLink" placeholder="Enter book PDF link" required>
+          <button type="submit">Add Book</button>
+        </form>
+        <h3>Existing Books</h3>
+        <table class="content-table">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Category</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="bookTableBody"></tbody>
+        </table>
+      </section>
+
+      <section id="jobs" class="section" style="display: none;">
+        <h2>Manage Jobs</h2>
+        <form id="jobForm">
+          <label for="jobTitle">Job Title</label>
+          <input type="text" id="jobTitle" placeholder="Enter job title" required>
+          <label for="jobCompany">Company</label>
+          <input type="text" id="jobCompany" placeholder="Enter company name" required>
+          <label for="jobDescription">Description</label>
+          <textarea id="jobDescription" placeholder="Enter job description" required></textarea>
+          <label for="jobLink">Application Link</label>
+          <input type="url" id="jobLink" placeholder="Enter application link" required>
+          <button type="submit">Add Job</button>
+        </form>
+        <h3>Existing Jobs</h3>
+        <table class="content-table">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Company</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="jobTableBody"></tbody>
+        </table>
+      </section>
+
+      <section id="growth" class="section" style="display: none;">
+        <h2>Manage Growth Content</h2>
+        <form id="growthForm">
+          <label for="growthTitle">Title</label>
+          <input type="text" id="growthTitle" placeholder="Enter article title" required>
+          <label for="growthContent">Content</label>
+          <textarea id="growthContent" placeholder="Enter article content" required></textarea>
+          <label for="growthImage">Image (max 2MB)</label>
+          <input type="file" id="growthImage" accept="image/*">
+          <button type="submit">Add Article</button>
+        </form>
+        <h3>Existing Articles</h3>
+        <table class="content-table">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Image</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="growthTableBody"></tbody>
+        </table>
+      </section>
+
+      <section id="mentorship" class="section" style="display: none;">
+        <h2>Manage Mentors</h2>
+        <form id="mentorForm">
+          <label for="mentorName">Mentor Name</label>
+          <input type="text" id="mentorName" placeholder="Enter mentor name" required>
+          <label for="mentorBio">Bio</label>
+          <textarea id="mentorBio" placeholder="Enter mentor bio" required></textarea>
+          <label for="mentorImage">Image (max 2MB)</label>
+          <input type="file" id="mentorImage" accept="image/*" required>
+          <label for="mentorLink">Contact Link</label>
+          <input type="url" id="mentorLink" placeholder="Enter contact link" required>
+          <button type="submit">Add Mentor</button>
+        </form>
+        <h3>Existing Mentors</h3>
+        <table class="content-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Image</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="mentorTableBody"></tbody>
+        </table>
+      </section>
+
+      <section id="resources" class="section" style="display: none;">
+        <h2>Manage Resources</h2>
+        <form id="resourceForm">
+          <label for="resourceTitle">Resource Title</label>
+          <input type="text" id="resourceTitle" placeholder="Enter resource title" required>
+          <label for="resourceType">Type</label>
+          <select id="resourceType" required>
+            <option value="">Select Type</option>
+            <option value="PDF">PDF</option>
+            <option value="Video">Video</option>
+            <option value="Link">Link</option>
+            <option value="Other">Other</option>
+          </select>
+          <label for="resourceCategory">Category</label>
+          <select id="resourceCategory" required>
+            <option value="">Select Category</option>
+            <option value="Study">Study</option>
+            <option value="Career">Career</option>
+            <option value="Other">Other</option>
+          </select>
+          <div class="resource-type-toggle">
+            <label><input type="radio" name="resourceSource" value="file" checked> Upload File</label>
+            <label><input type="radio" name="resourceSource" value="link"> Provide Link</label>
+          </div>
+          <label for="resourceFile">File (PDF/Video, max 2MB, optional)</label>
+          <input type="file" id="resourceFile" accept=".pdf,video/*">
+          <label for="resourceLink">Link (optional)</label>
+          <input type="url" id="resourceLink" placeholder="Enter resource link">
+          <button type="submit">Add Resource</button>
+        </form>
+        <h3>Existing Resources</h3>
+        <table class="content-table">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Type</th>
+              <th>Category</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="resourceTableBody"></tbody>
+        </table>
+      </section>
+
+      <section id="skills" class="section" style="display: none;">
+        <h2>Manage Skills</h2>
+        <form id="skillForm">
+          <label for="skillTitle">Skill Title</label>
+          <input type="text" id="skillTitle" placeholder="Enter skill title" required>
+          <label for="skillDescription">Description</label>
+          <textarea id="skillDescription" placeholder="Enter skill description" required></textarea>
+          <label for="skillImage">Image (max 2MB)</label>
+          <input type="file" id="skillImage" accept="image/*" required>
+          <label for="skillCategory">Category</label>
+          <select id="skillCategory" required>
+            <option value="">Select Category</option>
+            <option value="Technical">Technical</option>
+            <option value="Soft Skills">Soft Skills</option>
+            <option value="Other">Other</option>
+          </select>
+          <button type="submit">Add Skill</button>
+        </form>
+        <h3>Existing Skills</h3>
+        <table class="content-table">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Category</th>
+              <th>Image</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="skillTableBody"></tbody>
+        </table>
+      </section>
+
+      <section id="custom" class="section" style="display: none;">
+        <h2>Manage Custom Content</h2>
+        <form id="customForm">
+          <label for="customType">Content Type</label>
+          <input type="text" id="customType" placeholder="Enter content type (e.g., Workshops)" required>
+          <label for="customFields">Fields (comma-separated, e.g., title, date, location)</label>
+          <input type="text" id="customFields" placeholder="Enter field names" required>
+          <button type="submit">Create Content Type</button>
+        </form>
+        <h3>Add Custom Content</h3>
+        <form id="customContentForm">
+          <label for="customContentType">Content Type</label>
+          <select id="customContentType" required>
+            <option value="">Select Content Type</option>
+          </select>
+          <div id="customContentFields"></div>
+          <button type="submit">Add Content</button>
+        </form>
+        <h3>Existing Custom Content</h3>
+        <table class="content-table">
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>Details</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="customTableBody"></tbody>
+        </table>
+      </section>
+
+      <section id="settings" class="section" style="display: none;">
+        <h2>Settings</h2>
+        <div class="setting-group">
+          <label>Theme</label>
+          <label>
+            <input type="checkbox" id="themeToggle">
+            Light Mode
+          </label>
+        </div>
+        <div class="setting-group">
+          <label for="fontSize">Font Size</label>
+          <select id="fontSize">
+            <option value="small">Small</option>
+            <option value="medium">Medium</option>
+            <option value="large">Large</option>
+          </select>
+        </div>
+        <button onclick="saveSettings()">Save Settings</button>
+      </section>
+    </main>
+  </div>
+
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner"></div>
+  </div>
+
+  <script>
+    // Initialize default courses
+    if (!localStorage.getItem('courses')) {
+      const defaultCourses = [
+        { title: 'BCA', description: 'Bachelor of Computer Applications', image: 'https://via.placeholder.com/300x150', category: 'BCA' },
+        { title: 'BBA', description: 'Bachelor of Business Administration', image: 'https://via.placeholder.com/300x150', category: 'BBA' },
+        { title: 'B.Com', description: 'Bachelor of Commerce', image: 'https://via.placeholder.com/300x150', category: 'B.Com' },
+        { title: 'MBA', description: 'Master of Business Administration', image: 'https://via.placeholder.com/300x150', category: 'MBA' },
+        { title: 'MCA', description: 'Master of Computer Applications', image: 'https://via.placeholder.com/300x150', category: 'MCA' },
+        { title: 'M.Com', description: 'Master of Commerce', image: 'https://via.placeholder.com/300x150', category: 'M.Com' },
+        { title: 'B.Tech', description: 'Bachelor of Technology', image: 'https://via.placeholder.com/300x150', category: 'B.Tech' }
+      ];
+      localStorage.setItem('courses', JSON.stringify(defaultCourses));
+    }
+
+    // Initialize theme and font size
+    try {
+      const theme = localStorage.getItem('theme');
+      if (theme === 'light') {
+        document.body.classList.add('light-mode');
+        document.getElementById('themeToggle').checked = true;
+      }
+
+      const settings = JSON.parse(localStorage.getItem('settings')) || { fontSize: 'medium' };
+      document.body.classList.add(`font-${settings.fontSize}`);
+      document.getElementById('fontSize').value = settings.fontSize;
+    } catch (e) {
+      console.error('Error loading settings:', e);
+      alert('Error loading settings. Please try again.');
+    }
+
+    // Sidebar navigation
+    const navLinks = document.querySelectorAll('.sidebar a');
+    const sections = document.querySelectorAll('.section');
+    const hamburger = document.querySelector('.hamburger');
+    const sidebar = document.querySelector('.sidebar');
+    const mainContent = document.querySelector('.main-content');
+
+    navLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        if (link.getAttribute('data-section')) {
+          e.preventDefault();
+          navLinks.forEach(l => l.classList.remove('active'));
+          link.classList.add('active');
+          sections.forEach(s => s.style.display = 'none');
+          document.getElementById(link.getAttribute('data-section')).style.display = 'block';
+          if (window.innerWidth <= 768) {
+            sidebar.classList.remove('active');
+            mainContent.classList.add('full');
+          }
+        }
+      });
+    });
+
+    hamburger.addEventListener('click', () => {
+      sidebar.classList.toggle('active');
+      mainContent.classList.toggle('full');
+    });
+
+    // Data storage
+    let courses = JSON.parse(localStorage.getItem('courses')) || [];
+    let chapters = JSON.parse(localStorage.getItem('chapters')) || [];
+    let subjects = JSON.parse(localStorage.getItem('subjects')) || [];
+    let resources = JSON.parse(localStorage.getItem('resources')) || [];
+    let books = JSON.parse(localStorage.getItem('books')) || [];
+    let jobs = JSON.parse(localStorage.getItem('jobs')) || [];
+    let growth = JSON.parse(localStorage.getItem('growth')) || [];
+    let mentors = JSON.parse(localStorage.getItem('mentors')) || [];
+    let skills = JSON.parse(localStorage.getItem('skills')) || [];
+    let customContent = JSON.parse(localStorage.getItem('customContent')) || [];
+    let customTypes = JSON.parse(localStorage.getItem('customTypes')) || [];
+
+    function updateStats() {
+      document.getElementById('totalCourses').textContent = courses.length;
+      document.getElementById('totalBooks').textContent = books.length;
+      document.getElementById('totalJobs').textContent = jobs.length;
+      document.getElementById('totalMentors').textContent = mentors.length;
+      document.getElementById('totalResources').textContent = resources.length;
+      document.getElementById('totalSkills').textContent = skills.length;
+    }
+
+    // Academic content management
+    const courseForm = document.getElementById('courseForm');
+    const chapterForm = document.getElementById('chapterForm');
+    const subjectForm = document.getElementById('subjectForm');
+    const resourceForm = document.getElementById('resourceForm');
+    const academicTableBody = document.getElementById('academicTableBody');
+
+    function updateCourseDropdowns() {
+      const courseOptions = courses.map(c => `<option value="${c.title}">${c.title}</option>`).join('');
+      document.getElementById('chapterCourse').innerHTML = `<option value="">Select Course</option>${courseOptions}`;
+      document.getElementById('subjectCourse').innerHTML = `<option value="">Select Course</option>${courseOptions}`;
+      document.getElementById('resourceCourse').innerHTML = `<option value="">Select Course</option>${courseOptions}`;
+    }
+
+    function renderAcademicContent() {
+      academicTableBody.innerHTML = '';
+      courses.forEach((item, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>Course</td>
+          <td>${item.title}</td>
+          <td>-</td>
+          <td><img src="${item.image || 'https://via.placeholder.com/50'}" alt="${item.title}"><br>${item.description}</td>
+          <td>
+            <button class="edit" onclick="editContent('course', ${index})">Edit</button>
+            <button class="delete" onclick="deleteContent('course', ${index})">Delete</button>
+          </td>
+        `;
+        academicTableBody.appendChild(row);
+      });
+      subjects.forEach((item, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>Subject</td>
+          <td>${item.title}</td>
+          <td>${item.course}</td>
+          <td>${item.description}${item.file ? '<br>File uploaded' : ''}</td>
+          <td>
+            <button class="edit" onclick="editContent('subject', ${index})">Edit</button>
+            <button class="delete" onclick="deleteContent('subject', ${index})">Delete</button>
+          </td>
+        `;
+        academicTableBody.appendChild(row);
+      });
+      chapters.forEach((item, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>Chapter</td>
+          <td>${item.title}</td>
+          <td>${item.course}</td>
+          <td>${item.content}${item.file ? '<br>File uploaded' : item.link ? '<br>Link: <a href="${item.link}" target="_blank">View</a>' : ''}</td>
+          <td>
+            <button class="edit" onclick="editContent('chapter', ${index})">Edit</button>
+            <button class="delete" onclick="deleteContent('chapter', ${index})">Delete</button>
+          </td>
+        `;
+        academicTableBody.appendChild(row);
+      });
+      resources.forEach((item, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>Resource</td>
+          <td>${item.title}</td>
+          <td>${item.course}</td>
+          <td>Type: ${item.type}${item.file ? '<br>File uploaded' : item.link ? '<br>Link: <a href="${item.link}" target="_blank">View</a>' : ''}</td>
+          <td>
+            <button class="edit" onclick="editContent('resource', ${index})">Edit</button>
+            <button class="delete" onclick="deleteContent('resource', ${index})">Delete</button>
+          </td>
+        `;
+        academicTableBody.appendChild(row);
+      });
+      updateStats();
+      updateCourseDropdowns();
+    }
+
+    // Table sorting
+    let sortDirection = {};
+    function sortTable(column) {
+      const data = [
+        ...courses.map(c => ({ type: 'Course', title: c.title, course: '-', details: c.description, index: courses.indexOf(c), originalType: 'course' })),
+        ...subjects.map(s => ({ type: 'Subject', title: s.title, course: s.course, details: s.description, index: subjects.indexOf(s), originalType: 'subject' })),
+        ...chapters.map(c => ({ type: 'Chapter', title: c.title, course: c.course, details: c.content, index: chapters.indexOf(c), originalType: 'chapter' })),
+        ...resources.map(r => ({ type: 'Resource', title: r.title, course: r.course, details: `Type: ${r.type}`, index: resources.indexOf(r), originalType: 'resource' }))
+      ];
+      sortDirection[column] = !sortDirection[column];
+      data.sort((a, b) => {
+        const valA = a[column] || '';
+        const valB = b[column] || '';
+        return sortDirection[column] ? valA.localeCompare(valB) : valB.localeCompare(valA);
+      });
+      academicTableBody.innerHTML = '';
+      data.forEach(item => {
+        const originalItem = window[item.originalType + 's'][item.index];
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${item.type}</td>
+          <td>${item.title}</td>
+          <td>${item.course}</td>
+          <td>${item.details}${
+            originalItem.file ? '<br>File uploaded' :
+            originalItem.link ? `<br>Link: <a href="${originalItem.link}" target="_blank">View</a>` :
+            originalItem.image ? `<br><img src="${originalItem.image}" alt="${item.title}">` : ''
+          }</td>
+          <td>
+            <button class="edit" onclick="editContent('${item.originalType}', ${item.index})">Edit</button>
+            <button class="delete" onclick="deleteContent('${item.originalType}', ${item.index})">Delete</button>
+          </td>
+        `;
+        academicTableBody.appendChild(row);
+      });
+    }
+
+    courseForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const overlay = document.getElementById('loadingOverlay');
+      overlay.classList.add('active');
+      const file = document.getElementById('courseImage').files[0];
+      if (file && file.size > 2 * 1024 * 1024) {
+        alert('Image must be less than 2MB.');
+        overlay.classList.remove('active');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        const item = {
+          title: document.getElementById('courseTitle').value,
+          description: document.getElementById('courseDescription').value,
+          image: file ? reader.result : 'https://via.placeholder.com/300x150',
+          category: document.getElementById('courseCategory').value
+        };
+        saveContent('course', item, courseForm);
+      };
+      if (file) reader.readAsDataURL(file);
+      else reader.onload();
+    });
+
+    subjectForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const overlay = document.getElementById('loadingOverlay');
+      overlay.classList.add('active');
+      const file = document.getElementById('subjectFile').files[0];
+      if (file && file.size > 2 * 1024 * 1024) {
+        alert('File must be less than 2MB.');
+        overlay.classList.remove('active');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        const item = {
+          title: document.getElementById('subjectTitle').value,
+          course: document.getElementById('subjectCourse').value,
+          description: document.getElementById('subjectDescription').value,
+          file: file ? reader.result : ''
+        };
+        saveContent('subject', item, subjectForm);
+      };
+      if (file) reader.readAsDataURL(file);
+      else reader.onload();
+    });
+
+    chapterForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const overlay = document.getElementById('loadingOverlay');
+      overlay.classList.add('active');
+      const sourceType = document.querySelector('input[name="chapterSource"]:checked').value;
+      const file = document.getElementById('chapterFile').files[0];
+      const link = document.getElementById('chapterLink').value;
+      if (file && file.size > 2 * 1024 * 1024) {
+        alert('File must be less than 2MB.');
+        overlay.classList.remove('active');
+        return;
+      }
+      if (sourceType === 'file' && file) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const item = {
+            title: document.getElementById('chapterTitle').value,
+            course: document.getElementById('chapterCourse').value,
+            content: document.getElementById('chapterContent').value,
+            file: reader.result,
+            link: ''
+          };
+          saveContent('chapter', item, chapterForm);
+        };
+        reader.readAsDataURL(file);
+      } else if (sourceType === 'link' && link) {
+        const item = {
+          title: document.getElementById('chapterTitle').value,
+          course: document.getElementById('chapterCourse').value,
+          content: document.getElementById('chapterContent').value,
+          file: '',
+          link: link
+        };
+        saveContent('chapter', item, chapterForm);
+      } else {
+        const item = {
+          title: document.getElementById('chapterTitle').value,
+          course: document.getElementById('chapterCourse').value,
+          content: document.getElementById('chapterContent').value,
+          file: '',
+          link: ''
+        };
+        saveContent('chapter', item, chapterForm);
+      }
+    });
+
+    resourceForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const overlay = document.getElementById('loadingOverlay');
+      overlay.classList.add('active');
+      const sourceType = document.querySelector('input[name="resourceSource"]:checked').value;
+      const file = document.getElementById('resourceFile').files[0];
+      const link = document.getElementById('resourceLink').value;
+      if (file && file.size > 2 * 1024 * 1024) {
+        alert('File must be less than 2MB.');
+        overlay.classList.remove('active');
+        return;
+      }
+      if (sourceType === 'file' && file) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const item = {
+            title: document.getElementById('resourceTitle').value,
+            course: document.getElementById('resourceCourse').value,
+            type: document.getElementById('resourceType').value,
+            file: reader.result,
+            link: ''
+          };
+          saveContent('resource', item, resourceForm);
+        };
+        reader.readAsDataURL(file);
+      } else if (sourceType === 'link' && link) {
+        const item = {
+          title: document.getElementById('resourceTitle').value,
+          course: document.getElementById('resourceCourse').value,
+          type: document.getElementById('resourceType').value,
+          file: '',
+          link: link
+        };
+        saveContent('resource', item, resourceForm);
+      } else {
+        const item = {
+          title: document.getElementById('resourceTitle').value,
+          course: document.getElementById('resourceCourse').value,
+          type: document.getElementById('resourceType').value,
+          file: '',
+          link: ''
+        };
+        saveContent('resource', item, resourceForm);
+      }
+    });
+
+    // Library content management
+    const bookForm = document.getElementById('bookForm');
+    const bookTableBody = document.getElementById('bookTableBody');
+
+    function renderBooks() {
+      bookTableBody.innerHTML = '';
+      books.forEach((item, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${item.title}</td>
+          <td>${item.category}</td>
+          <td>
+            <button class="edit" onclick="editContent('book', ${index})">Edit</button>
+            <button class="delete" onclick="deleteContent('book', ${index})">Delete</button>
+          </td>
+        `;
+        bookTableBody.appendChild(row);
+      });
+      updateStats();
+    }
+
+    bookForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const overlay = document.getElementById('loadingOverlay');
+      overlay.classList.add('active');
+      const item = {
+        title: document.getElementById('bookTitle').value,
+        category: document.getElementById('bookCategory').value,
+        link: document.getElementById('bookLink').value
+      };
+      saveContent('book', item, bookForm);
+    });
+
+    // Jobs content management
+    const jobForm = document.getElementById('jobForm');
+    const jobTableBody = document.getElementById('jobTableBody');
+
+    function renderJobs() {
+      jobTableBody.innerHTML = '';
+      jobs.forEach((item, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${item.title}</td>
+          <td>${item.company}</td>
+          <td>
+            <button class="edit" onclick="editContent('job', ${index})">Edit</button>
+            <button class="delete" onclick="deleteContent('job', ${index})">Delete</button>
+          </td>
+        `;
+        jobTableBody.appendChild(row);
+      });
+      updateStats();
+    }
+
+    jobForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const overlay = document.getElementById('loadingOverlay');
+      overlay.classList.add('active');
+      const item = {
+        title: document.getElementById('jobTitle').value,
+        company: document.getElementById('jobCompany').value,
+        description: document.getElementById('jobDescription').value,
+        link: document.getElementById('jobLink').value
+      };
+      saveContent('job', item, jobForm);
+    });
+
+    // Growth content management
+    const growthForm = document.getElementById('growthForm');
+    const growthTableBody = document.getElementById('growthTableBody');
+
+    function renderGrowth() {
+      growthTableBody.innerHTML = '';
+      growth.forEach((item, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${item.title}</td>
+          <td><img src="${item.image || 'https://via.placeholder.com/50'}" alt="${item.title}"></td>
+          <td>
+            <button class="edit" onclick="editContent('growth', ${index})">Edit</button>
+            <button class="delete" onclick="deleteContent('growth', ${index})">Delete</button>
+          </td>
+        `;
+        growthTableBody.appendChild(row);
+      });
+      updateStats();
+    }
+
+    growthForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const overlay = document.getElementById('loadingOverlay');
+      overlay.classList.add('active');
+      const file = document.getElementById('growthImage').files[0];
+      if (file && file.size > 2 * 1024 * 1024) {
+        alert('Image must be less than 2MB.');
+        overlay.classList.remove('active');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        const item = {
+          title: document.getElementById('growthTitle').value,
+          content: document.getElementById('growthContent').value,
+          image: file ? reader.result : ''
+        };
+        saveContent('growth', item, growthForm);
+      };
+      if (file) reader.readAsDataURL(file);
+      else reader.onload();
+    });
+
+    // Mentorship content management
+    const mentorForm = document.getElementById('mentorForm');
+    const mentorTableBody = document.getElementById('mentorTableBody');
+
+    function renderMentors() {
+      mentorTableBody.innerHTML = '';
+      mentors.forEach((item, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${item.name}</td>
+          <td><img src="${item.image}" alt="${item.name}"></td>
+          <td>
+            <button class="edit" onclick="editContent('mentor', ${index})">Edit</button>
+            <button class="delete" onclick="deleteContent('mentor', ${index})">Delete</button>
+          </td>
+        `;
+        mentorTableBody.appendChild(row);
+      });
+      updateStats();
+    }
+
+    mentorForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const overlay = document.getElementById('loadingOverlay');
+      overlay.classList.add('active');
+      const file = document.getElementById('mentorImage').files[0];
+      if (file && file.size > 2 * 1024 * 1024) {
+        alert('Image must be less than 2MB.');
+        overlay.classList.remove('active');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        const item = {
+          name: document.getElementById('mentorName').value,
+          bio: document.getElementById('mentorBio').value,
+          image: reader.result,
+          link: document.getElementById('mentorLink').value
+        };
+        saveContent('mentor', item, mentorForm);
+      };
+      if (file) reader.readAsDataURL(file);
+      else {
+        alert('Please upload an image.');
+        overlay.classList.remove('active');
+      }
+    });
+
+    // Resources content management
+    const resourceFormExtra = document.getElementById('resourceForm');
+    const resourceTableBody = document.getElementById('resourceTableBody');
+
+    function renderResources() {
+      resourceTableBody.innerHTML = '';
+      resources.forEach((item, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${item.title}</td>
+          <td>${item.type}</td>
+          <td>${item.category}</td>
+          <td>
+            <button class="edit" onclick="editContent('resource', ${index})">Edit</button>
+            <button class="delete" onclick="deleteContent('resource', ${index})">Delete</button>
+          </td>
+        `;
+        resourceTableBody.appendChild(row);
+      });
+      updateStats();
+    }
+
+    resourceFormExtra.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const overlay = document.getElementById('loadingOverlay');
+      overlay.classList.add('active');
+      const sourceType = document.querySelector('input[name="resourceSource"]:checked').value;
+      const file = document.getElementById('resourceFile').files[0];
+      const link = document.getElementById('resourceLink').value;
+      if (file && file.size > 2 * 1024 * 1024) {
+        alert('File must be less than 2MB.');
+        overlay.classList.remove('active');
+        return;
+      }
+      if (sourceType === 'file' && file) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const item = {
+            title: document.getElementById('resourceTitle').value,
+            type: document.getElementById('resourceType').value,
+            category: document.getElementById('resourceCategory').value,
+            file: reader.result,
+            link: ''
+          };
+          saveContent('resource', item, resourceFormExtra);
+        };
+        reader.readAsDataURL(file);
+      } else if (sourceType === 'link' && link) {
+        const item = {
+          title: document.getElementById('resourceTitle').value,
+          type: document.getElementById('resourceType').value,
+          category: document.getElementById('resourceCategory').value,
+          file: '',
+          link: link
+        };
+        saveContent('resource', item, resourceFormExtra);
+      } else {
+        const item = {
+          title: document.getElementById('resourceTitle').value,
+          type: document.getElementById('resourceType').value,
+          category: document.getElementById('resourceCategory').value,
+          file: '',
+          link: ''
+        };
+        saveContent('resource', item, resourceFormExtra);
+      }
+    });
+
+    // Skills content management
+    const skillForm = document.getElementById('skillForm');
+    const skillTableBody = document.getElementById('skillTableBody');
+
+    function renderSkills() {
+      skillTableBody.innerHTML = '';
+      skills.forEach((item, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${item.title}</td>
+          <td>${item.category}</td>
+          <td><img src="${item.image}" alt="${item.title}"></td>
+          <td>
+            <button class="edit" onclick="editContent('skill', ${index})">Edit</button>
+            <button class="delete" onclick="deleteContent('skill', ${index})">Delete</button>
+          </td>
+        `;
+        skillTableBody.appendChild(row);
+      });
+      updateStats();
+    }
+
+    skillForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const overlay = document.getElementById('loadingOverlay');
+      overlay.classList.add('active');
+      const file = document.getElementById('skillImage').files[0];
+      if (file && file.size > 2 * 1024 * 1024) {
+        alert('Image must be less than 2MB.');
+        overlay.classList.remove('active');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        const item = {
+          title: document.getElementById('skillTitle').value,
+          description: document.getElementById('skillDescription').value,
+          image: reader.result,
+          category: document.getElementById('skillCategory').value
+        };
+        saveContent('skill', item, skillForm);
+      };
+      if (file) reader.readAsDataURL(file);
+      else {
+        alert('Please upload an image.');
+        overlay.classList.remove('active');
+      }
+    });
+
+    // Custom content management
+    const customForm = document.getElementById('customForm');
+    const customContentForm = document.getElementById('customContentForm');
+    const customTableBody = document.getElementById('customTableBody');
+    const customContentType = document.getElementById('customContentType');
+    const customContentFields = document.getElementById('customContentFields');
+
+    function renderCustomTypes() {
+      customContentType.innerHTML = '<option value="">Select Content Type</option>' + 
+        customTypes.map(t => `<option value="${t.type}">${t.type}</option>`).join('');
+    }
+
+    function renderCustomContent() {
+      customTableBody.innerHTML = '';
+      customContent.forEach((item, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${item.type}</td>
+          <td>${Object.values(item.data).join(', ')}</td>
+          <td>
+            <button class="edit" onclick="editContent('custom', ${index})">Edit</button>
+            <button class="delete" onclick="deleteContent('custom', ${index})">Delete</button>
+          </td>
+        `;
+        customTableBody.appendChild(row);
+      });
+    }
+
+    customForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const overlay = document.getElementById('loadingOverlay');
+      overlay.classList.add('active');
+      const type = document.getElementById('customType').value;
+      const fields = document.getElementById('customFields').value.split(',').map(f => f.trim());
+      const customType = { type, fields };
+      try {
+        customTypes.push(customType);
+        localStorage.setItem('customTypes', JSON.stringify(customTypes));
+        renderCustomTypes();
+        customForm.reset();
+        alert('Content type created successfully!');
+        overlay.classList.remove('active');
+      } catch (e) {
+        console.error('Error creating content type:', e);
+        alert('Error creating content type. Please try again.');
+        overlay.classList.remove('active');
+      }
+    });
+
+    customContentType.addEventListener('change', () => {
+      const type = customContentType.value;
+      const typeData = customTypes.find(t => t.type === type);
+      customContentFields.innerHTML = '';
+      if (typeData) {
+        typeData.fields.forEach(field => {
+          const div = document.createElement('div');
+          div.innerHTML = `
+            <label for="customField_${field}">${field}</label>
+            <input type="text" id="customField_${field}" placeholder="Enter ${field}" required>
+          `;
+          customContentFields.appendChild(div);
+        });
+      }
+    });
+
+    customContentForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const overlay = document.getElementById('loadingOverlay');
+      overlay.classList.add('active');
+      const type = document.getElementById('customContentType').value;
+      const typeData = customTypes.find(t => t.type === type);
+      const data = {};
+      typeData.fields.forEach(field => {
+        data[field] = document.getElementById(`customField_${field}`).value;
+      });
+      const item = { type, data };
+      saveContent('custom', item, customContentForm);
+    });
+
+    // Generic content management functions
+    let editingType = null;
+    let editingIndex = null;
+
+    function saveContent(type, item, form) {
+      const overlay = document.getElementById('loadingOverlay');
+      try {
+        const array = window[type + 's'];
+        if (editingIndex !== null && editingType === type) {
+          array[editingIndex] = item;
+          editingIndex = null;
+          editingType = null;
+          form.querySelector('button').textContent = `Add ${type.charAt(0).toUpperCase() + type.slice(1)}`;
+        } else {
+          array.push(item);
+        }
+        localStorage.setItem(type + 's', JSON.stringify(array));
+        window[`render${type.charAt(0).toUpperCase() + type.slice(1)}s`]();
+        form.reset();
+        form.querySelectorAll('input[type="radio"]').forEach(r => r.checked = r.value === 'file');
+        alert(`${type.charAt(0).toUpperCase() + type.slice(1)} saved successfully!`);
+        overlay.classList.remove('active');
+      } catch (e) {
+        console.error(`Error saving ${type}:`, e);
+        alert(`Error saving ${type}. Please try again.`);
+        overlay.classList.remove('active');
+      }
+    }
+
+    window.editContent = function(type, index) {
+      editingType = type;
+      editingIndex = index;
+      const item = window[type + 's'][index];
+      const form = document.getElementById(type + 'Form');
+      if (type === 'course') {
+        document.getElementById('courseTitle').value = item.title;
+        document.getElementById('courseDescription').value = item.description;
+        document.getElementById('courseCategory').value = item.category;
+      } else if (type === 'subject') {
+        document.getElementById('subjectTitle').value = item.title;
+        document.getElementById('subjectCourse').value = item.course;
+        document.getElementById('subjectDescription').value = item.description;
+      } else if (type === 'chapter') {
+        document.getElementById('chapterTitle').value = item.title;
+        document.getElementById('chapterCourse').value = item.course;
+        document.getElementById('chapterContent').value = item.content;
+        document.querySelector('input[name="chapterSource"][value="file"]').checked = !!item.file;
+        document.querySelector('input[name="chapterSource"][value="link"]').checked = !!item.link;
+        document.getElementById('chapterLink').value = item.link || '';
+      } else if (type === 'resource') {
+        document.getElementById('resourceTitle').value = item.title;
+        document.getElementById('resourceCourse').value = item.course;
+        document.getElementById('resourceType').value = item.type;
+        document.querySelector('input[name="resourceSource"][value="file"]').checked = !!item.file;
+        document.querySelector('input[name="resourceSource"][value="link"]').checked = !!item.link;
+        document.getElementById('resourceLink').value = item.link || '';
+      } else if (type === 'book') {
+        document.getElementById('bookTitle').value = item.title;
+        document.getElementById('bookCategory').value = item.category;
+        document.getElementById('bookLink').value = item.link;
+      } else if (type === 'job') {
+        document.getElementById('jobTitle').value = item.title;
+        document.getElementById('jobCompany').value = item.company;
+        document.getElementById('jobDescription').value = item.description;
+        document.getElementById('jobLink').value = item.link;
+      } else if (type === 'growth') {
+        document.getElementById('growthTitle').value = item.title;
+        document.getElementById('growthContent').value = item.content;
+      } else if (type === 'mentor') {
+        document.getElementById('mentorName').value = item.name;
+        document.getElementById('mentorBio').value = item.bio;
+        document.getElementById('mentorLink').value = item.link;
+      } else if (type === 'skill') {
+        document.getElementById('skillTitle').value = item.title;
+        document.getElementById('skillDescription').value = item.description;
+        document.getElementById('skillCategory').value = item.category;
+      } else if (type === 'custom') {
+        document.getElementById('customContentType').value = item.type;
+        const typeData = customTypes.find(t => t.type === item.type);
+        customContentFields.innerHTML = '';
+        typeData.fields.forEach(field => {
+          const div = document.createElement('div');
+          div.innerHTML = `
+            <label for="customField_${field}">${field}</label>
+            <input type="text" id="customField_${field}" value="${item.data[field]}" required>
+          `;
+          customContentFields.appendChild(div);
+        });
+      }
+      form.querySelector('button').textContent = `Update ${type.charAt(0).toUpperCase() + type.slice(1)}`;
+    };
+
+    window.deleteContent = function(type, index) {
+      if (confirm(`Are you sure you want to delete this ${type}?`)) {
+        const overlay = document.getElementById('loadingOverlay');
+        overlay.classList.add('active');
+        try {
+          window[type + 's'].splice(index, 1);
+          localStorage.setItem(type + 's', JSON.stringify(window[type + 's']));
+          window[`render${type.charAt(0).toUpperCase() + type.slice(1)}s`]();
+          alert(`${type.charAt(0).toUpperCase() + type.slice(1)} deleted successfully!`);
+          overlay.classList.remove('active');
+        } catch (e) {
+          console.error(`Error deleting ${type}:`, e);
+          alert(`Error deleting ${type}. Please try again.`);
+          overlay.classList.remove('active');
+        }
+      }
+    };
+
+    // Settings
+    const themeToggle = document.getElementById('themeToggle');
+    const fontSizeSelect = document.getElementById('fontSize');
+
+    themeToggle.addEventListener('change', () => {
+      document.body.classList.toggle('light-mode');
+      try {
+        localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+      } catch (e) {
+        console.error('Error saving theme:', e);
+        alert('Error saving theme. Please try again.');
+      }
+    });
+
+    window.saveSettings = function() {
+      const settings = {
+        fontSize: fontSizeSelect.value
+      };
+      try {
+        localStorage.setItem('settings', JSON.stringify(settings));
+        document.body.classList.remove('font-small', 'font-medium', 'font-large');
+        document.body.classList.add(`font-${fontSizeSelect.value}`);
+        alert('Settings saved successfully!');
+      } catch (e) {
+        console.error('Error saving settings:', e);
+        alert('Error saving settings. Please try again.');
+      }
+    };
+
+    // Logout
+    window.logout = function() {
+      const overlay = document.getElementById('loadingOverlay');
+      overlay.classList.add('active');
+      setTimeout(() => {
+        try {
+          localStorage.removeItem('adminData');
+          alert('Logged out successfully!');
+          window.location.href = 'index.html';
+        } catch (e) {
+          console.error('Error during logout:', e);
+          alert('Error logging out. Please try again.');
+          overlay.classList.remove('active');
+        }
+      }, 1000);
+    };
+
+    // Initial render
+    renderAcademicContent();
+    renderBooks();
+    renderJobs();
+    renderGrowth();
+    renderMentors();
+    renderResources();
+    renderSkills();
+    renderCustomTypes();
+    renderCustomContent();
+    updateStats();
+  </script>
+</body>
+</html>

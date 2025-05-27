@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alumifyx - Library</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background: #0a0a0a;
+      color: #ffffff;
+      overflow-x: hidden;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    body.light-mode {
+      background: #f5f5f5;
+      color: #0a0a0a;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 50px;
+      background: transparent;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+    }
+
+    body.light-mode .navbar {
+      background: transparent;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 700;
+      color: #8a2be2;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 30px;
+    }
+
+    .nav-links a {
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 16px;
+      position: relative;
+      transition: color 0.3s ease;
+    }
+
+    body.light-mode .nav-links a {
+      color: #0a0a0a;
+    }
+
+    .nav-links a.active {
+      color: #8a2be2;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      background: #8a2be2;
+      bottom: -5px;
+      left: 0;
+      transition: width 0.3s ease;
+    }
+
+    .nav-links a:hover::after, .nav-links a.active::after {
+      width: 100%;
+    }
+
+    .nav-links a:hover {
+      color: #8a2be2;
+    }
+
+    .profile {
+      position: relative;
+    }
+
+    .profile-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #8a2be2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .profile-icon:hover {
+      transform: scale(1.1);
+    }
+
+    .profile-icon svg {
+      fill: #ffffff;
+      width: 24px;
+      height: 24px;
+    }
+
+    .profile-dropdown {
+      position: absolute;
+      top: 50px;
+      right: 0;
+      background: #1a1a1a;
+      border-radius: 8px;
+      padding: 10px;
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+      z-index: 1001;
+    }
+
+    body.light-mode .profile-dropdown {
+      background: #ffffff;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .profile-dropdown a, .profile-dropdown button {
+      color: #ffffff;
+      text-decoration: none;
+      padding: 8px 16px;
+      background: none;
+      border: none;
+      text-align: left;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    body.light-mode .profile-dropdown a, body.light-mode .profile-dropdown button {
+      color: #0a0a0a;
+    }
+
+    .profile-dropdown a:hover, .profile-dropdown button:hover {
+      background: #8a2be2;
+      border-radius: 4px;
+      color: #ffffff;
+    }
+
+    .profile.active .profile-dropdown {
+      display: flex;
+    }
+
+    .profile-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 1002;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .profile-modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: #1a1a1a;
+      padding: 30px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 600px;
+      max-height: 80vh;
+      overflow-y: auto;
+      position: relative;
+      animation: slideIn 0.3s ease-out;
+    }
+
+    body.light-mode .modal-content {
+      background: #ffffff;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateY(-50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-content h2 {
+      color: #8a2be2;
+      margin-bottom: 20px;
+    }
+
+    .modal-content form {
+      display: grid;
+      gap: 15px;
+    }
+
+    .modal-content label {
+      color: #cccccc;
+      font-size: 14px;
+    }
+
+    body.light-mode .modal-content label {
+      color: #333333;
+    }
+
+    .modal-content input, .modal-content textarea, .modal-content select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #8a2be2;
+      border-radius: 6px;
+      background: #0a0a0a;
+      color: #ffffff;
+      font-size: 16px;
+    }
+
+    body.light-mode .modal-content input,
+    body.light-mode .modal-content textarea,
+    body.light-mode .modal-content select {
+      background: #f5f5f5;
+      color: #0a0a0a;
+    }
+
+    .modal-content input[type="file"] {
+      padding: 5px;
+    }
+
+    .modal-content textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .profile-pic-preview {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 15px;
+      border: 2px solid #8a2be2;
+    }
+
+    .modal-content .form-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .modal-content button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.3s ease;
+    }
+
+    .modal-content button[type="submit"] {
+      background: #8a2be2;
+      color: #ffffff;
+    }
+
+    .modal-content button[type="submit"]:hover {
+      background: #6a1bb2;
+    }
+
+    .modal-content button[type="button"] {
+      background: #cccccc;
+      color: #0a0a0a;
+    }
+
+    body.light-mode .modal-content button[type="button"] {
+      background: #666666;
+      color: #ffffff;
+    }
+
+    .modal-content button[type="button"]:hover {
+      background: #999999;
+    }
+
+    .settings-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 1002;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .settings-modal.active {
+      display: flex;
+    }
+
+    .settings-content {
+      background: #1a1a1a;
+      padding: 30px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 500px;
+      max-height: 80vh;
+      overflow-y: auto;
+      animation: slideIn 0.3s ease-out;
+    }
+
+    body.light-mode .settings-content {
+      background: #ffffff;
+    }
+
+    .settings-content h2 {
+      color: #8a2be2;
+      margin-bottom: 20px;
+    }
+
+    .settings-content .setting-group {
+      margin-bottom: 20px;
+    }
+
+    .settings-content label {
+      color: #cccccc;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    body.light-mode .settings-content label {
+      color: #333333;
+    }
+
+    .settings-content input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      accent-color: #8a2be2;
+    }
+
+    .settings-content select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #8a2be2;
+      border-radius: 6px;
+      background: #0a0a0a;
+      color: #ffffff;
+      font-size: 16px;
+    }
+
+    body.light-mode .settings-content select {
+      background: #f5f5f5;
+      color: #0a0a0a;
+    }
+
+    .settings-content button {
+      padding: 10px 20px;
+      background: #8a2be2;
+      color: #ffffff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.3s ease;
+      margin-top: 10px;
+    }
+
+    .settings-content button:hover {
+      background: #6a1bb2;
+    }
+
+    .settings-content button.delete-account {
+      background: #ff4444;
+    }
+
+    .settings-content button.delete-account:hover {
+      background: #cc3333;
+    }
+
+    .hero {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 0 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    body.light-mode .hero {
+      background: linear-gradient(45deg, #f5f5f5, #e0e0e0);
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, rgba(138, 43, 226, 0.2), transparent);
+      top: 0;
+      left: 0;
+      animation: pulse 10s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+    .hero h1 {
+      font-size: 60px;
+      margin-bottom: 20px;
+      background: linear-gradient(45deg, #8a2be2, #ffffff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: #8a2be2;
+      animation: fadeInUp 1s ease-out;
+    }
+
+    body.light-mode .hero h1 {
+      background: linear-gradient(45deg, #8a2be2, #0a0a0a);
+      -webkit-background-clip: text;
+      background-clip: text;
+    }
+
+    .hero p {
+      font-size: 20px;
+      max-width: 600px;
+      margin-bottom: 30px;
+      color: #cccccc;
+      animation: fadeInUp 1.2s ease-out 0.2s;
+      animation-fill-mode: both;
+    }
+
+    body.light-mode .hero p {
+      color: #333333;
+    }
+
+    .cta-button {
+      display: inline-block;
+      padding: 15px 30px;
+      background: #8a2be2;
+      color: #ffffff;
+      text-decoration: none;
+      border-radius: 50px;
+      font-size: 18px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      animation: fadeInUp 1.4s ease-out 0.4s;
+      animation-fill-mode: both;
+      border: 1px solid #8a2be2;
+    }
+
+    body.light-mode .cta-button {
+      background: #8a2be2;
+      color: #ffffff;
+      border: 1px solid #6a1bb2;
+    }
+
+    .cta-button:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(138, 43, 226, 0.5);
+      background: #6a1bb2;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .intro {
+      padding: 100px 50px;
+      background: #1a1a1a;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    body.light-mode .intro {
+      background: #e0e0e0;
+    }
+
+    .intro-card {
+      background: #0a0a0a;
+      padding: 30px;
+      border-radius: 12px;
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    body.light-mode .intro-card {
+      background: #ffffff;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .intro-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: #8a2be2;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+
+    .intro-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .intro-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 10px 20px rgba(138, 43, 226, 0.3);
+    }
+
+    .intro-card h3 {
+      font-size: 24px;
+      margin-bottom: 15px;
+      color: #8a2be2;
+    }
+
+    .intro-card p {
+      color: #cccccc;
+      font-size: 16px;
+      margin-bottom: 15px;
+    }
+
+    body.light-mode .intro-card p {
+      color: #333333;
+    }
+
+    .intro-card img {
+      width: 150px;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      transition: transform 0.3s ease;
+    }
+
+    .intro-card:hover img {
+      transform: scale(1.05);
+    }
+
+    .search-bar {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+    }
+
+    .search-bar input {
+      padding: 10px;
+      width: 350px;
+      border: 1px solid #8a2be2;
+      border-radius: 6px 0 0 6px;
+      background: #0a0a0a;
+      color: #ffffff;
+      font-size: 16px;
+      outline: none;
+    }
+
+    body.light-mode .search-bar input {
+      background: #f5f5f5;
+      color: #0a0a0a;
+    }
+
+    .search-bar button {
+      padding: 10px 20px;
+      border: none;
+      background: #8a2be2;
+      color: #ffffff;
+      border-radius: 0 6px 6px 0;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.3s ease;
+    }
+
+    .search-bar button:hover {
+      background: #6a1bb2;
+    }
+
+    .category-section {
+      margin: 40px 0;
+    }
+
+    .category-section h2 {
+      color: #8a2be2;
+      text-align: center;
+      margin: 30px 0;
+      font-size: 36px;
+    }
+
+    .see-more-container {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    body.font-small { font-size: 14px; }
+    body.font-medium { font-size: 16px; }
+    body.font-large { font-size: 18px; }
+
+    @media (max-width: 768px) {
+      .navbar { padding: 15px 20px; }
+      .nav-links { gap: 15px; }
+      .nav-links a { font-size: 14px; }
+      .hero h1 { font-size: 40px; }
+      .hero p { font-size: 16px; }
+      .intro { padding: 50px 20px; }
+      .modal-content, .settings-content { width: 95%; padding: 20px; }
+      .search-bar input { width: 250px; }
+      .intro-card img { width: 120px; height: 160px; }
+    }
+  </style>
+</head>
+<body class="font-medium">
+  <nav class="navbar">
+    <div class="logo">Alumifyx</div>
+    <div class="nav-links">
+      <a href="homepage.html">Home</a>
+      <a href="acadmic.html">Academic</a>
+      <a href="library.html" class="active">Library</a>
+      <a href="growth.html">Growth</a>
+      <a href="jobs.html">Jobs</a>
+      <a href="mentorship.html">Mentorship</a>
+    </div>
+    <div class="profile" role="menu">
+      <div class="profile-icon" role="button" aria-expanded="false" aria-label="Profile menu" tabindex="0">
+        <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+      </div>
+      <div class="profile-dropdown" role="menu">
+        <button role="menuitem" onclick="openProfileModal()">My Profile</button>
+        <button role="menuitem" onclick="openSettingsModal()">Settings</button>
+        <a href="#" role="menuitem" onclick="logout()">Logout</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="profile-modal" id="profileModal">
+    <div class="modal-content">
+      <h2>My Profile</h2>
+      <form id="profileForm">
+        <label for="profilePic">Profile Picture</label>
+        <input type="file" id="profilePic" accept="image/*">
+        <img id="profilePicPreview" src="" alt="Profile Picture" style="display: none;">
+        <label for="name">Name</label>
+        <input type="text" id="name" placeholder="Your Name" required>
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="Your Email" required>
+        <label for="phone">Phone Number</label>
+        <input type="tel" id="phone" placeholder="Your Phone Number">
+        <label for="education">Education</label>
+        <textarea id="education" placeholder="Your Education (e.g., B.Tech, Computer Science)"></textarea>
+        <label for="skills">Skills</label>
+        <input type="text" id="skills" placeholder="Your Skills (comma-separated)">
+        <label for="certifications">Certifications</label>
+        <textarea id="certifications" placeholder="Your Certifications"></textarea>
+        <label for="address">Address</label>
+        <textarea id="address" placeholder="Your Address"></textarea>
+        <label for="gender">Gender</label>
+        <select id="gender">
+          <option value="">Select Gender</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+          <option value="other">Other</option>
+        </select>
+        <label for="dob">Date of Birth</label>
+        <input type="date" id="dob">
+        <label for="bio">Bio</label>
+        <textarea id="bio" placeholder="Tell us about yourself"></textarea>
+        <div class="form-buttons">
+          <button type="submit">Save</button>
+          <button type="button" onclick="closeProfileModal()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="settings-modal" id="settingsModal">
+    <div class="settings-content">
+      <h2>Settings</h2>
+      <div class="setting-group">
+        <label>Theme</label>
+        <label>
+          <input type="checkbox" id="themeToggle">
+          Light Mode
+        </label>
+      </div>
+      <div class="setting-group">
+        <label for="language">Language</label>
+        <select id="language">
+          <option value="en">English</option>
+          <option value="hi">Hindi</option>
+          <option value="es">Spanish</option>
+        </select>
+      </div>
+      <div class="setting-group">
+        <label>Notifications</label>
+        <label>
+          <input type="checkbox" id="emailNotifications">
+          Email Notifications
+        </label>
+        <label>
+          <input type="checkbox" id="pushNotifications">
+          Push Notifications
+        </label>
+      </div>
+      <div class="setting-group">
+        <label for="profileVisibility">Profile Visibility</label>
+        <select id="profileVisibility">
+          <option value="public">Public</option>
+          <option value="private">Private</option>
+          <option value="connections">Connections Only</option>
+        </select>
+      </div>
+      <div class="setting-group">
+        <label for="fontSize">Font Size</label>
+        <select id="fontSize">
+          <option value="small">Small</option>
+          <option value="medium">Medium</option>
+          <option value="large">Large</option>
+        </select>
+      </div>
+      <div class="setting-group">
+        <label>
+          <input type="checkbox" id="twoFactorAuth">
+          Two-Factor Authentication
+        </label>
+      </div>
+      <div class="setting-group">
+        <button onclick="requestDataExport()">Request Data Export</button>
+      </div>
+      <div class="setting-group">
+        <button class="delete-account" onclick="deleteAccount()">Delete Account</button>
+      </div>
+      <button onclick="saveSettings()">Save</button>
+      <button onclick="closeSettingsModal()">Close</button>
+    </div>
+  </div>
+
+  <section class="hero">
+    <h1>Library Hub</h1>
+    <p>Discover books to learn and inspire! 📖</p>
+  </section>
+
+  <div class="search-bar">
+    <input type="text" id="search-input" placeholder="Search for a book...">
+    <button onclick="searchBooks()">Search</button>
+  </div>
+
+  <div class="category-section" id="study-books">
+    <h2>Study-Related Books 📚</h2>
+    <section class="intro" id="study-book-list">
+      <div class="intro-card">
+        <img src="https://via.placeholder.com/150x200.png?text=Programming+in+Python" alt="Programming in Python">
+        <h3>Programming in Python</h3>
+        <p>A comprehensive guide to Python programming.</p>
+        <a href="#" class="cta-button">Read PDF</a>
+      </div>
+      <div class="intro-card">
+        <img src="https://via.placeholder.com/150x200.png?text=Data+Structures" alt="Data Structures">
+        <h3>Data Structures</h3>
+        <p>Learn the fundamentals of data structures.</p>
+        <a href="#" class="cta-button">Read PDF</a>
+      </div>
+    </section>
+    <div class="see-more-container">
+      <a href="all-books.html?category=study" class="cta-button">See More Study Books</a>
+    </div>
+  </div>
+
+  <div class="category-section" id="story-books">
+    <h2>Story & Motivational Books 🌟</h2>
+    <section class="intro" id="story-book-list">
+      <div class="intro-card">
+        <img src="https://via.placeholder.com/150x200.png?text=The+Alchemist" alt="The Alchemist">
+        <h3>The Alchemist</h3>
+        <p>A journey of self-discovery and dreams.</p>
+        <a href="#" class="cta-button">Read PDF</a>
+      </div>
+      <div class="intro-card">
+        <img src="https://via.placeholder.com/150x200.png?text=Atomic+Habits" alt="Atomic Habits">
+        <h3>Atomic Habits</h3>
+        <p>Small changes, remarkable results.</p>
+        <a href="#" class="cta-button">Read PDF</a>
+      </div>
+    </section>
+    <div class="see-more-container">
+      <a href="all-books.html?category=story" class="cta-button">See More Story Books</a>
+    </div>
+  </div>
+
+  <script>
+    const profile = document.querySelector('.profile');
+    const profileIcon = document.querySelector('.profile-icon');
+
+    function toggleProfileDropdown() {
+      profile.classList.toggle('active');
+      const isExpanded = profile.classList.contains('active');
+      profileIcon.setAttribute('aria-expanded', isExpanded);
+    }
+
+    profileIcon.addEventListener('click', toggleProfileDropdown);
+    profileIcon.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggleProfileDropdown();
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!profile.contains(e.target)) {
+        profile.classList.remove('active');
+        profileIcon.setAttribute('aria-expanded', false);
+      }
+    });
+
+    const profileModal = document.getElementById('profileModal');
+    const profileForm = document.getElementById('profileForm');
+    const profilePicInput = document.getElementById('profilePic');
+    const profilePicPreview = document.getElementById('profilePicPreview');
+
+    function openProfileModal() {
+      profileModal.classList.add('active');
+      profile.classList.remove('active');
+      profileIcon.setAttribute('aria-expanded', false);
+      loadProfileData();
+    }
+
+    function closeProfileModal() {
+      profileModal.classList.remove('active');
+    }
+
+    function loadProfileData() {
+      const profileData = JSON.parse(localStorage.getItem('profileData')) || {};
+      document.getElementById('name').value = profileData.name || '';
+      document.getElementById('email').value = profileData.email || '';
+      document.getElementById('phone').value = profileData.phone || '';
+      document.getElementById('education').value = profileData.education || '';
+      document.getElementById('skills').value = profileData.skills || '';
+      document.getElementById('certifications').value = profileData.certifications || '';
+      document.getElementById('address').value = profileData.address || '';
+      document.getElementById('gender').value = profileData.gender || '';
+      document.getElementById('dob').value = profileData.dob || '';
+      document.getElementById('bio').value = profileData.bio || '';
+      if (profileData.profilePic) {
+        profilePicPreview.src = profileData.profilePic;
+        profilePicPreview.style.display = 'block';
+      }
+    }
+
+    profilePicInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        if (file.size > 2 * 1024 * 1024) {
+          alert('Profile picture must be less than 2MB.');
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = () => {
+          profilePicPreview.src = reader.result;
+          profilePicPreview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    profileForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const phone = document.getElementById('phone').value;
+      if (phone && !/^\+?\d{10,15}$/.test(phone)) {
+        alert('Please enter a valid phone number (10-15 digits).');
+        return;
+      }
+      const profileData = {
+        name: document.getElementById('name').value,
+        email: document.getElementById('email').value,
+        phone: document.getElementById('phone').value,
+        education: document.getElementById('education').value,
+        skills: document.getElementById('skills').value,
+        certifications: document.getElementById('certifications').value,
+        address: document.getElementById('address').value,
+        gender: document.getElementById('gender').value,
+        dob: document.getElementById('dob').value,
+        bio: document.getElementById('bio').value,
+        profilePic: profilePicPreview.src
+      };
+      localStorage.setItem('profileData', JSON.stringify(profileData));
+      alert('Profile saved successfully!');
+      closeProfileModal();
+    });
+
+    const settingsModal = document.getElementById('settingsModal');
+    const themeToggle = document.getElementById('themeToggle');
+    const languageSelect = document.getElementById('language');
+    const emailNotifications = document.getElementById('emailNotifications');
+    const pushNotifications = document.getElementById('pushNotifications');
+    const profileVisibility = document.getElementById('profileVisibility');
+    const fontSizeSelect = document.getElementById('fontSize');
+    const twoFactorAuth = document.getElementById('twoFactorAuth');
+
+    function openSettingsModal() {
+      settingsModal.classList.add('active');
+      profile.classList.remove('active');
+      profileIcon.setAttribute('aria-expanded', false);
+      loadSettings();
+    }
+
+    function closeSettingsModal() {
+      settingsModal.classList.remove('active');
+    }
+
+    function loadSettings() {
+      const settings = JSON.parse(localStorage.getItem('settings')) || {};
+      themeToggle.checked = localStorage.getItem('theme') === 'light';
+      languageSelect.value = settings.language || 'en';
+      emailNotifications.checked = settings.emailNotifications || false;
+      pushNotifications.checked = settings.pushNotifications || false;
+      profileVisibility.value = settings.profileVisibility || 'public';
+      fontSizeSelect.value = settings.fontSize || 'medium';
+      twoFactorAuth.checked = settings.twoFactorAuth || false;
+    }
+
+    function saveSettings() {
+      const settings = {
+        language: languageSelect.value,
+        emailNotifications: emailNotifications.checked,
+        pushNotifications: pushNotifications.checked,
+        profileVisibility: profileVisibility.value,
+        fontSize: fontSizeSelect.value,
+        twoFactorAuth: twoFactorAuth.checked
+      };
+      localStorage.setItem('settings', JSON.stringify(settings));
+      document.body.classList.remove('font-small', 'font-medium', 'font-large');
+      document.body.classList.add(`font-${fontSizeSelect.value}`);
+      alert('Settings saved successfully!');
+      closeSettingsModal();
+    }
+
+    themeToggle.addEventListener('change', () => {
+      document.body.classList.toggle('light-mode');
+      localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+    });
+
+    function requestDataExport() {
+      alert('Data export request submitted. You will receive an email with your data soon.');
+    }
+
+    function deleteAccount() {
+      if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+        localStorage.removeItem('profileData');
+        localStorage.removeItem('settings');
+        localStorage.removeItem('theme');
+        alert('Account deleted successfully.');
+        closeSettingsModal();
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem('profileData');
+      localStorage.removeItem('settings');
+      localStorage.removeItem('theme');
+      alert('Logged out successfully.');
+      window.location.reload();
+    }
+
+    if (localStorage.getItem('theme') === 'light') {
+      document.body.classList.add('light-mode');
+      themeToggle.checked = true;
+    }
+
+    const settings = JSON.parse(localStorage.getItem('settings')) || {};
+    if (settings.fontSize) {
+      document.body.classList.add(`font-${settings.fontSize}`);
+      fontSizeSelect.value = settings.fontSize;
+    }
+
+    const books = {
+      study: [
+        { title: 'Programming in Python', description: 'A comprehensive guide to Python programming.' },
+        { title: 'Data Structures', description: 'Learn the fundamentals of data structures.' },
+        { title: 'Engineering Mechanics', description: 'Core concepts for engineering students.' },
+        { title: 'Business Strategy', description: 'Strategies for business success.' }
+      ],
+      story: [
+        { title: 'The Alchemist', description: 'A journey of self-discovery and dreams.' },
+        { title: 'Atomic Habits', description: 'Small changes, remarkable results.' },
+        { title: 'Ikigai', description: 'The Japanese secret to a long and happy life.' },
+        { title: 'The Monk Who Sold His Ferrari', description: 'A tale of wisdom and fulfillment.' }
+      ]
+    };
+
+    function searchBooks() {
+      const query = document.getElementById('search-input').value.toLowerCase();
+      const studyBookList = document.getElementById('study-book-list');
+      const storyBookList = document.getElementById('story-book-list');
+
+      studyBookList.innerHTML = '';
+      storyBookList.innerHTML = '';
+
+      const studyResults = books.study.filter(book => book.title.toLowerCase().includes(query));
+      if (studyResults.length > 0) {
+        studyResults.forEach(book => {
+          const card = document.createElement('div');
+          card.className = 'intro-card';
+          card.innerHTML = `
+            <img src="https://via.placeholder.com/150x200.png?text=${book.title.replace(/ /g, '+')}" alt="${book.title}">
+            <h3>${book.title}</h3>
+            <p>${book.description}</p>
+            <a href="#" class="cta-button">Read PDF</a>
+          `;
+          studyBookList.appendChild(card);
+        });
+      } else {
+        studyBookList.innerHTML = '<p>No study books found.</p>';
+      }
+
+      const storyResults = books.story.filter(book => book.title.toLowerCase().includes(query));
+      if (storyResults.length > 0) {
+        storyResults.forEach(book => {
+          const card = document.createElement('div');
+          card.className = 'intro-card';
+          card.innerHTML = `
+            <img src="https://via.placeholder.com/150x200.png?text=${book.title.replace(/ /g, '+')}" alt="${book.title}">
+            <h3>${book.title}</h3>
+            <p>${book.description}</p>
+            <a href="#" class="cta-button">Read PDF</a>
+          `;
+          storyBookList.appendChild(card);
+        });
+      } else {
+        storyBookList.innerHTML = '<p>No story/motivational books found.</p>';
+      }
+
+      document.querySelectorAll('.see-more-container').forEach(container => {
+        container.style.display = query ? 'none' : 'block';
+      });
+    }
+  </script>
+</body>
+</html>

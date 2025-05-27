@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alumifyx - Growth</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background: #0a0a0a;
+      color: #ffffff;
+      overflow-x: hidden;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    body.light-mode {
+      background: #f5f5f5;
+      color: #0a0a0a;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 50px;
+      background: transparent;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    body.light-mode .navbar {
+      background: transparent;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 700;
+      color: #8a2be2;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 30px;
+    }
+
+    .nav-links a {
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 16px;
+      position: relative;
+      transition: color 0.3s ease;
+    }
+
+    body.light-mode .nav-links a {
+      color: #0a0a0a;
+    }
+
+    .nav-links a.active {
+      color: #8a2be2;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      background: #8a2be2;
+      bottom: -5px;
+      left: 0;
+      transition: width 0.3s ease;
+    }
+
+    .nav-links a:hover::after, .nav-links a.active::after {
+      width: 100%;
+    }
+
+    .nav-links a:hover {
+      color: #8a2be2;
+    }
+
+    .profile {
+      position: relative;
+    }
+
+    .profile-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #8a2be2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .profile-icon:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 10px rgba(138, 43, 226, 0.5);
+    }
+
+    .profile-icon svg {
+      fill: #ffffff;
+      width: 24px;
+      height: 24px;
+    }
+
+    .profile-dropdown {
+      position: absolute;
+      top: 50px;
+      right: 0;
+      background: #1a1a1a;
+      border-radius: 8px;
+      padding: 10px;
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+      z-index: 1001;
+    }
+
+    body.light-mode .profile-dropdown {
+      background: #ffffff;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .profile-dropdown a, .profile-dropdown button {
+      color: #ffffff;
+      text-decoration: none;
+      padding: 8px 16px;
+      background: none;
+      border: none;
+      text-align: left;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    body.light-mode .profile-dropdown a, body.light-mode .profile-dropdown button {
+      color: #0a0a0a;
+    }
+
+    .profile-dropdown a:hover, .profile-dropdown button:hover {
+      background: #8a2be2;
+      border-radius: 4px;
+      color: #ffffff;
+    }
+
+    .profile.active .profile-dropdown {
+      display: flex;
+    }
+
+    .profile-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 1002;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .profile-modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: #1a1a1a;
+      padding: 30px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 600px;
+      max-height: 80vh;
+      overflow-y: auto;
+      position: relative;
+      animation: slideIn 0.3s ease-out;
+      border: 1px solid #8a2be2;
+    }
+
+    body.light-mode .modal-content {
+      background: #ffffff;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateY(-50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-content h2 {
+      color: #8a2be2;
+      margin-bottom: 20px;
+      font-size: 28px;
+      text-align: center;
+    }
+
+    .modal-content form {
+      display: grid;
+      gap: 15px;
+    }
+
+    .modal-content label {
+      color: #cccccc;
+      font-size: 14px;
+    }
+
+    body.light-mode .modal-content label {
+      color: #333333;
+    }
+
+    .modal-content input, .modal-content textarea, .modal-content select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #8a2be2;
+      border-radius: 6px;
+      background: #0a0a0a;
+      color: #ffffff;
+      font-size: 16px;
+      transition: border-color 0.3s ease;
+    }
+
+    body.light-mode .modal-content input,
+    body.light-mode .modal-content textarea,
+    body.light-mode .modal-content select {
+      background: #f5f5f5;
+      color: #0a0a0a;
+    }
+
+    .modal-content input:focus,
+    .modal-content textarea:focus,
+    .modal-content select:focus {
+      outline: none;
+      border-color: #6a1bb2;
+    }
+
+    .modal-content input[type="file"] {
+      padding: 5px;
+    }
+
+    .modal-content textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .profile-pic-preview {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin: 0 auto 15px;
+      display: block;
+      border: 2px solid #8a2be2;
+    }
+
+    .modal-content .form-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      justify-content: center;
+    }
+
+    .modal-content button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+
+    .modal-content button[type="submit"] {
+      background: #8a2be2;
+      color: #ffffff;
+    }
+
+    .modal-content button[type="submit"]:hover {
+      background: #6a1bb2;
+      transform: scale(1.05);
+    }
+
+    .modal-content button[type="button"] {
+      background: #cccccc;
+      color: #0a0a0a;
+    }
+
+    body.light-mode .modal-content button[type="button"] {
+      background: #666666;
+      color: #ffffff;
+    }
+
+    .modal-content button[type="button"]:hover {
+      background: #999999;
+      transform: scale(1.05);
+    }
+
+    .settings-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 1002;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .settings-modal.active {
+      display: flex;
+    }
+
+    .settings-content {
+      background: #1a1a1a;
+      padding: 30px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 500px;
+      max-height: 80vh;
+      overflow-y: auto;
+      animation: slideIn 0.3s ease-out;
+      border: 1px solid #8a2be2;
+    }
+
+    body.light-mode .settings-content {
+      background: #ffffff;
+    }
+
+    .settings-content h2 {
+      color: #8a2be2;
+      margin-bottom: 20px;
+      font-size: 28px;
+      text-align: center;
+    }
+
+    .settings-content .setting-group {
+      margin-bottom: 20px;
+    }
+
+    .settings-content label {
+      color: #cccccc;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    body.light-mode .settings-content label {
+      color: #333333;
+    }
+
+    .settings-content input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      accent-color: #8a2be2;
+    }
+
+    .settings-content select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #8a2be2;
+      border-radius: 6px;
+      background: #0a0a0a;
+      color: #ffffff;
+      font-size: 16px;
+    }
+
+    body.light-mode .settings-content select {
+      background: #f5f5f5;
+      color: #0a0a0a;
+    }
+
+    .settings-content button {
+      padding: 10px 20px;
+      background: #8a2be2;
+      color: #ffffff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.3s ease, transform 0.3s ease;
+      margin-top: 10px;
+      width: 100%;
+    }
+
+    .settings-content button:hover {
+      background: #6a1bb2;
+      transform: scale(1.05);
+    }
+
+    .settings-content button.delete-account {
+      background: #ff4444;
+    }
+
+    .settings-content button.delete-account:hover {
+      background: #cc3333;
+      transform: scale(1.05);
+    }
+
+    .skills-section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 100px 50px;
+      text-align: center;
+      animation: fadeInUp 1s ease-out;
+    }
+
+    .skills-section h1 {
+      font-size: 36px;
+      color: #8a2be2;
+      margin-bottom: 40px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .class-buttons {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin-bottom: 40px;
+    }
+
+    .class-buttons a {
+      padding: 10px 20px;
+      background: #8a2be2;
+      color: #ffffff;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 16px;
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+
+    .class-buttons a:hover {
+      background: #6a1bb2;
+      transform: scale(1.05);
+    }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    .skill-card {
+      background: #1a1a1a;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid #8a2be2;
+    }
+
+    body.light-mode .skill-card {
+      background: #ffffff;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      border: 1px solid #8a2be2;
+    }
+
+    .skill-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: #8a2be2;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+
+    .skill-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .skill-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 10px 20px rgba(138, 43, 226, 0.3);
+    }
+
+    .skill-card a {
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 18px;
+      display: block;
+      padding: 10px;
+      transition: color 0.3s ease;
+    }
+
+    body.light-mode .skill-card a {
+      color: #0a0a0a;
+    }
+
+    .skill-card a:hover {
+      color: #8a2be2;
+    }
+
+    body.font-small { font-size: 14px; }
+    body.font-medium { font-size: 16px; }
+    body.font-large { font-size: 18px; }
+
+    @media (max-width: 768px) {
+      .navbar { padding: 15px 20px; }
+      .nav-links { gap: 15px; }
+      .nav-links a { font-size: 14px; }
+      .skills-section { padding: 50px 20px; }
+      .skills-section h1 { font-size: 28px; }
+      .modal-content, .settings-content { width: 95%; padding: 20px; }
+      .class-buttons { flex-direction: column; gap: 10px; }
+    }
+  </style>
+</head>
+<body class="font-medium">
+  <nav class="navbar">
+    <div class="logo">Alumifyx</div>
+    <div class="nav-links">
+      <a href="homepage.html">Home</a>
+      <a href="acadmic.html">Academic</a>
+      <a href="library.html">Library</a>
+      <a href="growth.html" class="active">Growth</a>
+      <a href="jobs.html">Jobs</a>
+      <a href="mentorship.html">Mentorship</a>
+    </div>
+    <div class="profile" role="menu">
+      <div class="profile-icon" role="button" aria-expanded="false" aria-label="Profile menu" tabindex="0">
+        <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+      </div>
+      <div class="profile-dropdown" role="menu">
+        <button role="menuitem" onclick="openProfileModal()">My Profile</button>
+        <button role="menuitem" onclick="openSettingsModal()">Settings</button>
+        <a href="#" role="menuitem" onclick="logout()">Logout</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="profile-modal" id="profileModal">
+    <div class="modal-content">
+      <h2>My Profile</h2>
+      <form id="profileForm">
+        <label for="profilePic">Profile Picture</label>
+        <input type="file" id="profilePic" accept="image/*">
+        <img id="profilePicPreview" src="" alt="Profile Picture" style="display: none;">
+        <label for="name">Name</label>
+        <input type="text" id="name" placeholder="Your Name" required>
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="Your Email" required>
+        <label for="phone">Phone Number</label>
+        <input type="tel" id="phone" placeholder="Your Phone Number">
+        <label for="education">Education</label>
+        <textarea id="education" placeholder="Your Education (e.g., B.Tech, Computer Science)"></textarea>
+        <label for="skills">Skills</label>
+        <input type="text" id="skills" placeholder="Your Skills (comma-separated)">
+        <label for="certifications">Certifications</label>
+        <textarea id="certifications" placeholder="Your Certifications"></textarea>
+        <label for="address">Address</label>
+        <textarea id="address" placeholder="Your Address"></textarea>
+        <label for="gender">Gender</label>
+        <select id="gender">
+          <option value="">Select Gender</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+          <option value="other">Other</option>
+        </select>
+        <label for="dob">Date of Birth</label>
+        <input type="date" id="dob">
+        <label for="bio">Bio</label>
+        <textarea id="bio" placeholder="Tell us about yourself"></textarea>
+        <div class="form-buttons">
+          <button type="submit">Save</button>
+          <button type="button" onclick="closeProfileModal()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="settings-modal" id="settingsModal">
+    <div class="settings-content">
+      <h2>Settings</h2>
+      <div class="setting-group">
+        <label>Theme</label>
+        <label>
+          <input type="checkbox" id="themeToggle">
+          Light Mode
+        </label>
+      </div>
+      <div class="setting-group">
+        <label for="language">Language</label>
+        <select id="language">
+          <option value="en">English</option>
+          <option value="hi">Hindi</option>
+          <option value="es">Spanish</option>
+        </select>
+      </div>
+      <div class="setting-group">
+        <label>Notifications</label>
+        <label>
+          <input type="checkbox" id="emailNotifications">
+          Email Notifications
+        </label>
+        <label>
+          <input type="checkbox" id="pushNotifications">
+          Push Notifications
+        </label>
+      </div>
+      <div class="setting-group">
+        <label for="profileVisibility">Profile Visibility</label>
+        <select id="profileVisibility">
+          <option value="public">Public</option>
+          <option value="private">Private</option>
+          <option value="connections">Connections Only</option>
+        </select>
+      </div>
+      <div class="setting-group">
+        <label for="fontSize">Font Size</label>
+        <select id="fontSize">
+          <option value="small">Small</option>
+          <option value="medium">Medium</option>
+          <option value="large">Large</option>
+        </select>
+      </div>
+      <div class="setting-group">
+        <label>
+          <input type="checkbox" id="twoFactorAuth">
+          Two-Factor Authentication
+        </label>
+      </div>
+      <div class="setting-group">
+        <button onclick="requestDataExport()">Request Data Export</button>
+      </div>
+      <div class="setting-group">
+        <button class="delete-account" onclick="deleteAccount()">Delete Account</button>
+      </div>
+      <button onclick="saveSettings()">Save</button>
+      <button onclick="closeSettingsModal()">Close</button>
+    </div>
+  </div>
+
+  <section class="skills-section">
+    <h1>Choose a Skill to Learn</h1>
+    <div class="class-buttons">
+      <a href="live-classes.html">Live Classes</a>
+      <a href="recorded-classes.html">Recorded Classes</a>
+    </div>
+    <div class="skills-grid">
+      <div class="skill-card"><a href="skill.html?skill=personal_finance">Personal Finance</a></div>
+      <div class="skill-card"><a href="skill.html?skill=stock_market">Stock Market</a></div>
+      <div class="skill-card"><a href="skill.html?skill=tax_saving">Tax Saving</a></div>
+      <div class="skill-card"><a href="skill.html?skill=credit_card_course">Credit Card Course</a></div>
+      <div class="skill-card"><a href="skill.html?skill=tally">Tally</a></div>
+      <div class="skill-card"><a href="skill.html?skill=sales">Sales</a></div>
+      <div class="skill-card"><a href="skill.html?skill=marketing">Marketing</a></div>
+      <div class="skill-card"><a href="skill.html?skill=personal_development">Personal Development</a></div>
+      <div class="skill-card"><a href="skill.html?skill=video_editing">Video Editing</a></div>
+      <div class="skill-card"><a href="skill.html?skill=vibe_coding">Vibe Coding</a></div>
+      <div class="skill-card"><a href="skill.html?skill=graphic_design">Graphic Design</a></div>
+      <div class="skill-card"><a href="skill.html?skill=python">Python</a></div>
+      <div class="skill-card"><a href="skill.html?skill=web_development">Web Development</a></div>
+      <div class="skill-card"><a href="skill.html?skill=programming">Programming</a></div>
+      <div class="skill-card"><a href="skill.html?skill=ui_ux">UI/UX</a></div>
+    </div>
+  </section>
+
+  <script>
+    const profile = document.querySelector('.profile');
+    const profileIcon = document.querySelector('.profile-icon');
+
+    function toggleProfileDropdown() {
+      profile.classList.toggle('active');
+      const isExpanded = profile.classList.contains('active');
+      profileIcon.setAttribute('aria-expanded', isExpanded);
+    }
+
+    profileIcon.addEventListener('click', toggleProfileDropdown);
+    profileIcon.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggleProfileDropdown();
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!profile.contains(e.target)) {
+        profile.classList.remove('active');
+        profileIcon.setAttribute('aria-expanded', false);
+      }
+    });
+
+    const profileModal = document.getElementById('profileModal');
+    const profileForm = document.getElementById('profileForm');
+    const profilePicInput = document.getElementById('profilePic');
+    const profilePicPreview = document.getElementById('profilePicPreview');
+
+    function openProfileModal() {
+      profileModal.classList.add('active');
+      profile.classList.remove('active');
+      profileIcon.setAttribute('aria-expanded', false);
+      loadProfileData();
+    }
+
+    function closeProfileModal() {
+      profileModal.classList.remove('active');
+    }
+
+    function loadProfileData() {
+      const profileData = JSON.parse(localStorage.getItem('profileData')) || {};
+      document.getElementById('name').value = profileData.name || '';
+      document.getElementById('email').value = profileData.email || '';
+      document.getElementById('phone').value = profileData.phone || '';
+      document.getElementById('education').value = profileData.education || '';
+      document.getElementById('skills').value = profileData.skills || '';
+      document.getElementById('certifications').value = profileData.certifications || '';
+      document.getElementById('address').value = profileData.address || '';
+      document.getElementById('gender').value = profileData.gender || '';
+      document.getElementById('dob').value = profileData.dob || '';
+      document.getElementById('bio').value = profileData.bio || '';
+      if (profileData.profilePic) {
+        profilePicPreview.src = profileData.profilePic;
+        profilePicPreview.style.display = 'block';
+      }
+    }
+
+    profilePicInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        if (file.size > 2 * 1024 * 1024) {
+          alert('Profile picture must be less than 2MB.');
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = () => {
+          profilePicPreview.src = reader.result;
+          profilePicPreview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    profileForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const phone = document.getElementById('phone').value;
+      if (phone && !/^\+?\d{10,15}$/.test(phone)) {
+        alert('Please enter a valid phone number (10-15 digits).');
+        return;
+      }
+      const profileData = {
+        name: document.getElementById('name').value,
+        email: document.getElementById('email').value,
+        phone: document.getElementById('phone').value,
+        education: document.getElementById('education').value,
+        skills: document.getElementById('skills').value,
+        certifications: document.getElementById('certifications').value,
+        address: document.getElementById('address').value,
+        gender: document.getElementById('gender').value,
+        dob: document.getElementById('dob').value,
+        bio: document.getElementById('bio').value,
+        profilePic: profilePicPreview.src
+      };
+      localStorage.setItem('profileData', JSON.stringify(profileData));
+      alert('Profile saved successfully!');
+      closeProfileModal();
+    });
+
+    const settingsModal = document.getElementById('settingsModal');
+    const themeToggle = document.getElementById('themeToggle');
+    const languageSelect = document.getElementById('language');
+    const emailNotifications = document.getElementById('emailNotifications');
+    const pushNotifications = document.getElementById('pushNotifications');
+    const profileVisibility = document.getElementById('profileVisibility');
+    const fontSizeSelect = document.getElementById('fontSize');
+    const twoFactorAuth = document.getElementById('twoFactorAuth');
+
+    function openSettingsModal() {
+      settingsModal.classList.add('active');
+      profile.classList.remove('active');
+      profileIcon.setAttribute('aria-expanded', false);
+      loadSettings();
+    }
+
+    function closeSettingsModal() {
+      settingsModal.classList.remove('active');
+    }
+
+    function loadSettings() {
+      const settings = JSON.parse(localStorage.getItem('settings')) || {};
+      themeToggle.checked = localStorage.getItem('theme') === 'light';
+      languageSelect.value = settings.language || 'en';
+      emailNotifications.checked = settings.emailNotifications || false;
+      pushNotifications.checked = settings.pushNotifications || false;
+      profileVisibility.value = settings.profileVisibility || 'public';
+      fontSizeSelect.value = settings.fontSize || 'medium';
+      twoFactorAuth.checked = settings.twoFactorAuth || false;
+    }
+
+    function saveSettings() {
+      const settings = {
+        language: languageSelect.value,
+        emailNotifications: emailNotifications.checked,
+        pushNotifications: pushNotifications.checked,
+        profileVisibility: profileVisibility.value,
+        fontSize: fontSizeSelect.value,
+        twoFactorAuth: twoFactorAuth.checked
+      };
+      localStorage.setItem('settings', JSON.stringify(settings));
+      document.body.classList.remove('font-small', 'font-medium', 'font-large');
+      document.body.classList.add(`font-${fontSizeSelect.value}`);
+      alert('Settings saved successfully!');
+      closeSettingsModal();
+    }
+
+    themeToggle.addEventListener('change', () => {
+      document.body.classList.toggle('light-mode');
+      localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+    });
+
+    function requestDataExport() {
+      alert('Data export request submitted. You will receive an email with your data soon.');
+    }
+
+    function deleteAccount() {
+      if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+        localStorage.removeItem('profileData');
+        localStorage.removeItem('settings');
+        localStorage.removeItem('theme');
+        alert('Account deleted successfully.');
+        closeSettingsModal();
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem('profileData');
+      localStorage.removeItem('settings');
+      localStorage.removeItem('theme');
+      alert('Logged out successfully.');
+      window.location.reload();
+    }
+
+    if (localStorage.getItem('theme') === 'light') {
+      document.body.classList.add('light-mode');
+      themeToggle.checked = true;
+    }
+
+    const settings = JSON.parse(localStorage.getItem('settings')) || {};
+    if (settings.fontSize) {
+      document.body.classList.add(`font-${settings.fontSize}`);
+      fontSizeSelect.value = settings.fontSize;
+    }
+  </script>
+</body>
+</html>

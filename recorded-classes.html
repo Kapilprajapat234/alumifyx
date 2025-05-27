@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alumifyx - Recorded Classes</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background: #0a0a0a;
+      color: #ffffff;
+      overflow-x: hidden;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    body.light-mode {
+      background: #f5f5f5;
+      color: #0a0a0a;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 50px;
+      background: transparent;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    body.light-mode .navbar {
+      background: transparent;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 700;
+      color: #8a2be2;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 30px;
+    }
+
+    .nav-links a {
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 16px;
+      position: relative;
+      transition: color 0.3s ease;
+    }
+
+    body.light-mode .nav-links a {
+      color: #0a0a0a;
+    }
+
+    .nav-links a.active {
+      color: #8a2be2;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      background: #8a2be2;
+      bottom: -5px;
+      left: 0;
+      transition: width 0.3s ease;
+    }
+
+    .nav-links a:hover::after, .nav-links a.active::after {
+      width: 100%;
+    }
+
+    .nav-links a:hover {
+      color: #8a2be2;
+    }
+
+    .profile {
+      position: relative;
+    }
+
+    .profile-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #8a2be2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .profile-icon:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 10px rgba(138, 43, 226, 0.5);
+    }
+
+    .profile-icon svg {
+      fill: #ffffff;
+      width: 24px;
+      height: 24px;
+    }
+
+    .profile-dropdown {
+      position: absolute;
+      top: 50px;
+      right: 0;
+      background: #1a1a1a;
+      border-radius: 8px;
+      padding: 10px;
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+      z-index: 1001;
+    }
+
+    body.light-mode .profile-dropdown {
+      background: #ffffff;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .profile-dropdown a, .profile-dropdown button {
+      color: #ffffff;
+      text-decoration: none;
+      padding: 8px 16px;
+      background: none;
+      border: none;
+      text-align: left;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    body.light-mode .profile-dropdown a, body.light-mode .profile-dropdown button {
+      color: #0a0a0a;
+    }
+
+    .profile-dropdown a:hover, .profile-dropdown button:hover {
+      background: #8a2be2;
+      border-radius: 4px;
+      color: #ffffff;
+    }
+
+    .profile.active .profile-dropdown {
+      display: flex;
+    }
+
+    .recorded-classes-section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 100px 50px;
+      text-align: center;
+      animation: fadeInUp 1s ease-out;
+    }
+
+    .recorded-classes-section h1 {
+      font-size: 36px;
+      color: #8a2be2;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .recorded-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .recorded-item {
+      background: #1a1a1a;
+      padding: 20px;
+      border-radius: 8px;
+      transition: background 0.3s ease, transform 0.3s ease;
+      border-left: 4px solid #8a2be2;
+    }
+
+    body.light-mode .recorded-item {
+      background: #f0f0f0;
+    }
+
+    .recorded-item:hover {
+      background: #2a2a2a;
+      transform: translateY(-5px);
+    }
+
+    body.light-mode .recorded-item:hover {
+      background: #e0e0e0;
+    }
+
+    .recorded-item p {
+      margin: 5px 0;
+      font-size: 16px;
+    }
+
+    .recorded-item video {
+      width: 100%;
+      max-width: 600px;
+      margin: 10px auto;
+      display: block;
+      border-radius: 6px;
+    }
+
+    @media (max-width: 768px) {
+      .navbar { padding: 15px 20px; }
+      .nav-links { gap: 15px; }
+      .nav-links a { font-size: 14px; }
+      .recorded-classes-section { padding: 50px 20px; }
+      .recorded-classes-section h1 { font-size: 28px; }
+      .recorded-item video { max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="logo">Alumifyx</div>
+    <div class="nav-links">
+      <a href="homepage.html">Home</a>
+      <a href="acadmic.html">Academic</a>
+      <a href="library.html">Library</a>
+      <a href="growth.html" class="active">Growth</a>
+      <a href="jobs.html">Jobs</a>
+      <a href="mentorship.html">Mentorship</a>
+    </div>
+    <div class="profile" role="menu">
+      <div class="profile-icon" role="button" aria-expanded="false" aria-label="Profile menu" tabindex="0">
+        <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+      </div>
+      <div class="profile-dropdown" role="menu">
+        <a href="#" role="menuitem" onclick="logout()">Logout</a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="recorded-classes-section">
+    <h1>Recorded Classes</h1>
+    <div class="recorded-list" id="recordedList"></div>
+  </section>
+
+  <script>
+    const profile = document.querySelector('.profile');
+    const profileIcon = document.querySelector('.profile-icon');
+
+    function toggleProfileDropdown() {
+      profile.classList.toggle('active');
+      const isExpanded = profile.classList.contains('active');
+      profileIcon.setAttribute('aria-expanded', isExpanded);
+    }
+
+    profileIcon.addEventListener('click', toggleProfileDropdown);
+    profileIcon.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggleProfileDropdown();
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!profile.contains(e.target)) {
+        profile.classList.remove('active');
+        profileIcon.setAttribute('aria-expanded', false);
+      }
+    });
+
+    const recordedList = document.getElementById('recordedList');
+
+    function loadRecordedClasses() {
+      const recordedClasses = JSON.parse(localStorage.getItem('recordedClasses')) || [];
+      recordedList.innerHTML = '';
+      recordedClasses.forEach(recorded => {
+        const recordedItem = document.createElement('div');
+        recordedItem.className = 'recorded-item';
+        recordedItem.innerHTML = `
+          <p><strong>${recorded.title}</strong></p>
+          <p>Topic: ${recorded.description}</p>
+          ${recorded.video ? `<video src="${recorded.video}" controls></video>` : ''}
+        `;
+        recordedList.appendChild(recordedItem);
+      });
+    }
+
+    function logout() {
+      localStorage.removeItem('profileData');
+      localStorage.removeItem('settings');
+      localStorage.removeItem('theme');
+      alert('Logged out successfully.');
+      window.location.href = 'homepage.html';
+    }
+
+    window.addEventListener('load', () => {
+      loadRecordedClasses();
+    });
+
+    if (localStorage.getItem('theme') === 'light') {
+      document.body.classList.add('light-mode');
+    }
+  </script>
+</body>
+</html>
