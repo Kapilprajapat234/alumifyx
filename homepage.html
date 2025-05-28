@@ -1,1153 +1,1373 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Alumifyx - Empowering Learners</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Inter', sans-serif, Arial, Helvetica, sans-serif; /* Added fallback fonts */
-    }
-
-    body {
-      background: #0a0a0a;
-      color: #ffffff;
-      overflow-x: hidden;
-      transition: background 0.3s ease, color 0.3s ease;
-      margin: 0;
-    }
-
-    body.light-mode {
-      background: #f5f5f5;
-      color: #0a0a0a;
-    }
-
-    .navbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 20px 50px;
-      background: transparent;
-      position: fixed;
-      width: 100%;
-      top: 0;
-      z-index: 1000;
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid #8a2be2;
-    }
-
-    body.light-mode .navbar {
-      background: transparent;
-      border-bottom: 1px solid #8a2be2;
-    }
-
-    .logo {
-      font-size: 24px;
-      font-weight: 700;
-      color: #8a2be2;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 30px;
-      align-items: center;
-    }
-
-    .nav-links a {
-      color: #ffffff;
-      text-decoration: none;
-      font-size: 16px;
-      position: relative;
-      transition: color 0.3s ease;
-    }
-
-    body.light-mode .nav-links a {
-      color: #0a0a0a;
-    }
-
-    .nav-links a.active {
-      color: #8a2be2;
-    }
-
-    .nav-links a::after {
-      content: '';
-      position: absolute;
-      width: 0;
-      height: 3px;
-      background: #8a2be2;
-      bottom: -5px;
-      left: 0;
-      transition: width 0.3s ease;
-    }
-
-    .nav-links a:hover::after, .nav-links a.active::after {
-      width: 100%;
-    }
-
-    .nav-links a:hover {
-      color: #8a2be2;
-    }
-
-    .profile {
-      position: relative;
-    }
-
-    .profile-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: #8a2be2;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: transform 0.3s ease;
-    }
-
-    .profile-icon:hover {
-      transform: scale(1.1);
-    }
-
-    .profile-icon:focus {
-      outline: 2px solid #8a2be2;
-      outline-offset: 2px;
-    }
-
-    .profile-icon svg {
-      fill: #ffffff;
-      width: 24px;
-      height: 24px;
-    }
-
-    .profile-dropdown {
-      position: absolute;
-      top: 50px;
-      right: 0;
-      background: #1a1a1a;
-      border-radius: 8px;
-      padding: 10px;
-      display: none;
-      flex-direction: column;
-      gap: 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-      z-index: 1001;
-    }
-
-    body.light-mode .profile-dropdown {
-      background: #ffffff;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    }
-
-    .profile-dropdown a, .profile-dropdown button {
-      color: #ffffff;
-      text-decoration: none;
-      padding: 8px 16px;
-      background: none;
-      border: none;
-      text-align: left;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
-
-    body.light-mode .profile-dropdown a, body.light-mode .profile-dropdown button {
-      color: #0a0a0a;
-    }
-
-    .profile-dropdown a:hover, .profile-dropdown button:hover {
-      background: #8a2be2;
-      border-radius: 4px;
-      color: #ffffff;
-    }
-
-    .profile.active .profile-dropdown {
-      display: flex;
-    }
-
-    .profile-modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.8);
-      z-index: 1002;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .profile-modal.active {
-      display: flex;
-    }
-
-    .modal-content {
-      background: #1a1a1a;
-      padding: 30px;
-      border-radius: 12px;
-      width: 90%;
-      max-width: 600px;
-      max-height: 80vh;
-      overflow-y: auto;
-      position: relative;
-      animation: slideIn 0.3s ease-out;
-    }
-
-    body.light-mode .modal-content {
-      background: #ffffff;
-    }
-
-    @keyframes slideIn {
-      from { transform: translateY(-50px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-
-    .modal-content h2 {
-      color: #8a2be2;
-      margin-bottom: 20px;
-    }
-
-    .modal-content form {
-      display: grid;
-      gap: 15px;
-    }
-
-    .modal-content label {
-      color: #cccccc;
-      font-size: 14px;
-    }
-
-    body.light-mode .modal-content label {
-      color: #333333;
-    }
-
-    .modal-content input, .modal-content textarea, .modal-content select {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #8a2be2;
-      border-radius: 6px;
-      background: #0a0a0a;
-      color: #ffffff;
-      font-size: 16px;
-    }
-
-    body.light-mode .modal-content input,
-    body.light-mode .modal-content textarea,
-    body.light-mode .modal-content select {
-      background: #f5f5f5;
-      color: #0a0a0a;
-    }
-
-    .modal-content input[type="file"] {
-      padding: 5px;
-    }
-
-    .modal-content textarea {
-      resize: vertical;
-      min-height: 80px;
-    }
-
-    .profile-pic-preview {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      object-fit: cover;
-      margin-bottom: 15px;
-      border: 2px solid #8a2be2;
-    }
-
-    .modal-content .form-buttons {
-      display: flex;
-      gap: 10px;
-      margin-top: 20px;
-    }
-
-    .modal-content button {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 16px;
-      transition: background 0.3s ease;
-    }
-
-    .modal-content button[type="submit"] {
-      background: #8a2be2;
-      color: #ffffff;
-    }
-
-    .modal-content button[type="submit"]:hover {
-      background: #6a1bb2;
-    }
-
-    .modal-content button[type="button"] {
-      background: #cccccc;
-      color: #0a0a0a;
-    }
-
-    body.light-mode .modal-content button[type="button"] {
-      background: #666666;
-      color: #ffffff;
-    }
-
-    .modal-content button[type="button"]:hover {
-      background: #999999;
-    }
-
-    .settings-modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.8);
-      z-index: 1002;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .settings-modal.active {
-      display: flex;
-    }
-
-    .settings-content {
-      background: #1a1a1a;
-      padding: 30px;
-      border-radius: 12px;
-      width: 90%;
-      max-width: 500px;
-      max-height: 80vh;
-      overflow-y: auto;
-      animation: slideIn 0.3s ease-out;
-    }
-
-    body.light-mode .settings-content {
-      background: #ffffff;
-    }
-
-    .settings-content h2 {
-      color: #8a2be2;
-      margin-bottom: 20px;
-    }
-
-    .settings-content .setting-group {
-      margin-bottom: 20px;
-    }
-
-    .settings-content label {
-      color: #cccccc;
-      font-size: 16px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-
-    body.light-mode .settings-content label {
-      color: #333333;
-    }
-
-    .settings-content input[type="checkbox"] {
-      width: 20px;
-      height: 20px;
-      accent-color: #8a2be2;
-    }
-
-    .settings-content select {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #8a2be2;
-      border-radius: 6px;
-      background: #0a0a0a;
-      color: #ffffff;
-      font-size: 16px;
-    }
-
-    body.light-mode .settings-content select {
-      background: #f5f5f5;
-      color: #0a0a0a;
-    }
-
-    .settings-content button {
-      padding: 10px 20px;
-      background: #8a2be2;
-      color: #ffffff;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 16px;
-      transition: background 0.3s ease;
-      margin-top: 10px;
-    }
-
-    .settings-content button:hover {
-      background: #6a1bb2;
-    }
-
-    .settings-content button.delete-account {
-      background: #ff4444;
-    }
-
-    .settings-content button.delete-account:hover {
-      background: #cc3333;
-    }
-
-    .hero {
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 80px 20px 0;
-      position: relative;
-      overflow: hidden;
-    }
-
-    body.light-mode .hero {
-      background: linear-gradient(45deg, #f5f5f5, #e0e0e0);
-    }
-
-    .hero::before {
-      content: '';
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      background: radial-gradient(circle, rgba(138, 43, 226, 0.2), transparent);
-      top: 0;
-      left: 0;
-      animation: pulse 10s infinite ease-in-out;
-    }
-
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.2); }
-      100% { transform: scale(1); }
-    }
-
-    .hero h1 {
-      font-size: 60px;
-      margin-bottom: 20px;
-      background: linear-gradient(45deg, #8a2be2, #ffffff);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: #8a2be2;
-      animation: fadeInUp 1s ease-out;
-    }
-
-    body.light-mode .hero h1 {
-      background: linear-gradient(45deg, #8a2be2, #0a0a0a);
-      -webkit-background-clip: text;
-      background-clip: text;
-    }
-
-    .hero p {
-      font-size: 20px;
-      max-width: 600px;
-      margin-bottom: 30px;
-      color: #cccccc;
-      animation: fadeInUp 1.2s ease-out 0.2s;
-      animation-fill-mode: both;
-    }
-
-    body.light-mode .hero p {
-      color: #333333;
-    }
-
-    .cta-button {
-      padding: 15px 30px;
-      background: #8a2be2;
-      color: #ffffff;
-      text-decoration: none;
-      border-radius: 50px;
-      font-size: 18px;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      animation: fadeInUp 1.4s ease-out 0.4s;
-      animation-fill-mode: both;
-    }
-
-    .cta-button:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 5px 15px rgba(138, 43, 226, 0.5);
-    }
-
-    .intro {
-      padding: 100px 50px;
-      background: #1a1a1a;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 40px;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    body.light-mode .intro {
-      background: #e0e0e0;
-    }
-
-    .intro-card {
-      background: #0a0a0a;
-      padding: 30px;
-      border-radius: 12px;
-      text-align: center;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      position: relative;
-      overflow: hidden;
-    }
-
-    body.light-mode .intro-card {
-      background: #ffffff;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .intro-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 4px;
-      background: #8a2be2;
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform 0.3s ease;
-    }
-
-    .intro-card:hover::before {
-      transform: scaleX(1);
-    }
-
-    .intro-card:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 10px 20px rgba(138, 43, 226, 0.3);
-    }
-
-    .intro-card h3 {
-      font-size: 24px;
-      margin-bottom: 15px;
-      color: #8a2be2;
-    }
-
-    .intro-card p {
-      color: #cccccc;
-      font-size: 16px;
-    }
-
-    body.light-mode .intro-card p {
-      color: #333333;
-    }
-
-    .intro-card svg {
-      width: 50px;
-      height: 50px;
-      margin-bottom: 20px;
-      fill: #8a2be2;
-      transition: transform 0.3s ease;
-    }
-
-    .intro-card:hover svg {
-      transform: scale(1.2);
-    }
-
-    footer {
-      padding: 40px 20px;
-      background: #1a1a1a;
-      text-align: center;
-      animation: fadeInUp 1s ease-out 0.6s;
-      animation-fill-mode: both;
-    }
-
-    body.light-mode footer {
-      background: #e0e0e0;
-    }
-
-    .social-links {
-      display: flex;
-      justify-content: center;
-      gap: 30px;
-      flex-wrap: wrap;
-    }
-
-    .social-links a {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      border: 2px solid #8a2be2;
-      transition: transform 0.3s ease, background 0.3s ease, border-color 0.3s ease;
-    }
-
-    .social-links a:hover {
-      transform: scale(1.2);
-      background: #8a2be2;
-      border-color: #6a1bb2;
-    }
-
-    .social-links a:focus {
-      outline: 2px solid #8a2be2;
-      outline-offset: 2px;
-    }
-
-    .social-links svg {
-      width: 24px;
-      height: 24px;
-      fill: #ffffff;
-      transition: fill 0.3s ease;
-    }
-
-    body.light-mode .social-links svg {
-      fill: #0a0a0a;
-    }
-
-    .social-links a:hover svg {
-      fill: #ffffff;
-    }
-
-    .logout-overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.8);
-      z-index: 1003;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .logout-overlay.active {
-      display: flex;
-    }
-
-    .logout-spinner {
-      width: 50px;
-      height: 50px;
-      border: 5px solid #8a2be2;
-      border-top: 5px solid transparent;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    body.font-small { font-size: 14px; }
-    body.font-medium { font-size: 16px; }
-    body.font-large { font-size: 18px; }
-
-    @media (max-width: 768px) {
-      .navbar { padding: 15px 20px; }
-      .nav-links { gap: 15px; }
-      .nav-links a { font-size: 14px; }
-      .hero h1 { font-size: 40px; }
-      .hero p { font-size: 16px; }
-      .intro { padding: 50px 20px; }
-      .modal-content, .settings-content { width: 95%; padding: 20px; }
-      .social-links { gap: 20px; }
-      .social-links a { width: 40px; height: 40px; }
-      .social-links svg { width: 20px; height: 20px; }
-    }
-  </style>
-</head>
-<body class="font-medium">
-  <nav class="navbar">
-    <div class="logo">Alumifyx</div>
-    <div class="nav-links">
-      <a href="#" class="active">Home</a>
-      <a href="acadmic.html">Academic</a>
-      <a href="library.html">Library</a>
-      <a href="growth.html">Growth</a>
-      <a href="jobs.html">Jobs</a>
-      <a href="mentorship.html">Mentorship</a>
-    </div>
-    <div class="profile" role="menu">
-      <div class="profile-icon" role="button" aria-expanded="false" aria-label="Profile menu" tabindex="0">
-        <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Alumifyx - Empowering Learners</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Inter", sans-serif, Arial, Helvetica, sans-serif; /* Added fallback fonts */
+      }
+
+      body {
+        background: #0a0a0a;
+        color: #ffffff;
+        overflow-x: hidden;
+        transition: background 0.3s ease, color 0.3s ease;
+        margin: 0;
+      }
+
+      body.light-mode {
+        background: #f5f5f5;
+        color: #0a0a0a;
+      }
+
+      .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 50px;
+        background: transparent;
+        position: fixed;
+        width: 100%;
+        top: 0;
+        z-index: 1000;
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid #8a2be2;
+      }
+
+      body.light-mode .navbar {
+        background: transparent;
+        border-bottom: 1px solid #8a2be2;
+      }
+
+      .logo {
+        font-size: 24px;
+        font-weight: 700;
+        color: #8a2be2;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 30px;
+        align-items: center;
+      }
+
+      .nav-links a {
+        color: #ffffff;
+        text-decoration: none;
+        font-size: 16px;
+        position: relative;
+        transition: color 0.3s ease;
+      }
+
+      body.light-mode .nav-links a {
+        color: #0a0a0a;
+      }
+
+      .nav-links a.active {
+        color: #8a2be2;
+      }
+
+      .nav-links a::after {
+        content: "";
+        position: absolute;
+        width: 0;
+        height: 3px;
+        background: #8a2be2;
+        bottom: -5px;
+        left: 0;
+        transition: width 0.3s ease;
+      }
+
+      .nav-links a:hover::after,
+      .nav-links a.active::after {
+        width: 100%;
+      }
+
+      .nav-links a:hover {
+        color: #8a2be2;
+      }
+
+      .profile {
+        position: relative;
+      }
+
+      .profile-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #8a2be2;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+      }
+
+      .profile-icon:hover {
+        transform: scale(1.1);
+      }
+
+      .profile-icon:focus {
+        outline: 2px solid #8a2be2;
+        outline-offset: 2px;
+      }
+
+      .profile-icon svg {
+        fill: #ffffff;
+        width: 24px;
+        height: 24px;
+      }
+
+      .profile-dropdown {
+        position: absolute;
+        top: 50px;
+        right: 0;
+        background: #1a1a1a;
+        border-radius: 8px;
+        padding: 10px;
+        display: none;
+        flex-direction: column;
+        gap: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        z-index: 1001;
+      }
+
+      body.light-mode .profile-dropdown {
+        background: #ffffff;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      }
+
+      .profile-dropdown a,
+      .profile-dropdown button {
+        color: #ffffff;
+        text-decoration: none;
+        padding: 8px 16px;
+        background: none;
+        border: none;
+        text-align: left;
+        cursor: pointer;
+        transition: background 0.3s ease;
+      }
+
+      body.light-mode .profile-dropdown a,
+      body.light-mode .profile-dropdown button {
+        color: #0a0a0a;
+      }
+
+      .profile-dropdown a:hover,
+      .profile-dropdown button:hover {
+        background: #8a2be2;
+        border-radius: 4px;
+        color: #ffffff;
+      }
+
+      .profile.active .profile-dropdown {
+        display: flex;
+      }
+
+      .profile-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        z-index: 1002;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .profile-modal.active {
+        display: flex;
+      }
+
+      .modal-content {
+        background: #1a1a1a;
+        padding: 30px;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 600px;
+        max-height: 80vh;
+        overflow-y: auto;
+        position: relative;
+        animation: slideIn 0.3s ease-out;
+      }
+
+      body.light-mode .modal-content {
+        background: #ffffff;
+      }
+
+      @keyframes slideIn {
+        from {
+          transform: translateY(-50px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      .modal-content h2 {
+        color: #8a2be2;
+        margin-bottom: 20px;
+      }
+
+      .modal-content form {
+        display: grid;
+        gap: 15px;
+      }
+
+      .modal-content label {
+        color: #cccccc;
+        font-size: 14px;
+      }
+
+      body.light-mode .modal-content label {
+        color: #333333;
+      }
+
+      .modal-content input,
+      .modal-content textarea,
+      .modal-content select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #8a2be2;
+        border-radius: 6px;
+        background: #0a0a0a;
+        color: #ffffff;
+        font-size: 16px;
+      }
+
+      body.light-mode .modal-content input,
+      body.light-mode .modal-content textarea,
+      body.light-mode .modal-content select {
+        background: #f5f5f5;
+        color: #0a0a0a;
+      }
+
+      .modal-content input[type="file"] {
+        padding: 5px;
+      }
+
+      .modal-content textarea {
+        resize: vertical;
+        min-height: 80px;
+      }
+
+      .profile-pic-preview {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 15px;
+        border: 2px solid #8a2be2;
+      }
+
+      .modal-content .form-buttons {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+      }
+
+      .modal-content button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background 0.3s ease;
+      }
+
+      .modal-content button[type="submit"] {
+        background: #8a2be2;
+        color: #ffffff;
+      }
+
+      .modal-content button[type="submit"]:hover {
+        background: #6a1bb2;
+      }
+
+      .modal-content button[type="button"] {
+        background: #cccccc;
+        color: #0a0a0a;
+      }
+
+      body.light-mode .modal-content button[type="button"] {
+        background: #666666;
+        color: #ffffff;
+      }
+
+      .modal-content button[type="button"]:hover {
+        background: #999999;
+      }
+
+      .settings-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        z-index: 1002;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .settings-modal.active {
+        display: flex;
+      }
+
+      .settings-content {
+        background: #1a1a1a;
+        padding: 30px;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 500px;
+        max-height: 80vh;
+        overflow-y: auto;
+        animation: slideIn 0.3s ease-out;
+      }
+
+      body.light-mode .settings-content {
+        background: #ffffff;
+      }
+
+      .settings-content h2 {
+        color: #8a2be2;
+        margin-bottom: 20px;
+      }
+
+      .settings-content .setting-group {
+        margin-bottom: 20px;
+      }
+
+      .settings-content label {
+        color: #cccccc;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+
+      body.light-mode .settings-content label {
+        color: #333333;
+      }
+
+      .settings-content input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        accent-color: #8a2be2;
+      }
+
+      .settings-content select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #8a2be2;
+        border-radius: 6px;
+        background: #0a0a0a;
+        color: #ffffff;
+        font-size: 16px;
+      }
+
+      body.light-mode .settings-content select {
+        background: #f5f5f5;
+        color: #0a0a0a;
+      }
+
+      .settings-content button {
+        padding: 10px 20px;
+        background: #8a2be2;
+        color: #ffffff;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background 0.3s ease;
+        margin-top: 10px;
+      }
+
+      .settings-content button:hover {
+        background: #6a1bb2;
+      }
+
+      .settings-content button.delete-account {
+        background: #ff4444;
+      }
+
+      .settings-content button.delete-account:hover {
+        background: #cc3333;
+      }
+
+      .hero {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 80px 20px 0;
+        position: relative;
+        overflow: hidden;
+      }
+
+      body.light-mode .hero {
+        background: linear-gradient(45deg, #f5f5f5, #e0e0e0);
+      }
+
+      .hero::before {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+          circle,
+          rgba(138, 43, 226, 0.2),
+          transparent
+        );
+        top: 0;
+        left: 0;
+        animation: pulse 10s infinite ease-in-out;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.2);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      .hero h1 {
+        font-size: 60px;
+        margin-bottom: 20px;
+        background: linear-gradient(45deg, #8a2be2, #ffffff);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: #8a2be2;
+        animation: fadeInUp 1s ease-out;
+      }
+
+      body.light-mode .hero h1 {
+        background: linear-gradient(45deg, #8a2be2, #0a0a0a);
+        -webkit-background-clip: text;
+        background-clip: text;
+      }
+
+      .hero p {
+        font-size: 20px;
+        max-width: 600px;
+        margin-bottom: 30px;
+        color: #cccccc;
+        animation: fadeInUp 1.2s ease-out 0.2s;
+        animation-fill-mode: both;
+      }
+
+      body.light-mode .hero p {
+        color: #333333;
+      }
+
+      .cta-button {
+        padding: 15px 30px;
+        background: #8a2be2;
+        color: #ffffff;
+        text-decoration: none;
+        border-radius: 50px;
+        font-size: 18px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        animation: fadeInUp 1.4s ease-out 0.4s;
+        animation-fill-mode: both;
+      }
+
+      .cta-button:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(138, 43, 226, 0.5);
+      }
+
+      .intro {
+        padding: 100px 50px;
+        background: #1a1a1a;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 40px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      body.light-mode .intro {
+        background: #e0e0e0;
+      }
+
+      .intro-card {
+        background: #0a0a0a;
+        padding: 30px;
+        border-radius: 12px;
+        text-align: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      body.light-mode .intro-card {
+        background: #ffffff;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .intro-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: #8a2be2;
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.3s ease;
+      }
+
+      .intro-card:hover::before {
+        transform: scaleX(1);
+      }
+
+      .intro-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 10px 20px rgba(138, 43, 226, 0.3);
+      }
+
+      .intro-card h3 {
+        font-size: 24px;
+        margin-bottom: 15px;
+        color: #8a2be2;
+      }
+
+      .intro-card p {
+        color: #cccccc;
+        font-size: 16px;
+      }
+
+      body.light-mode .intro-card p {
+        color: #333333;
+      }
+
+      .intro-card svg {
+        width: 50px;
+        height: 50px;
+        margin-bottom: 20px;
+        fill: #8a2be2;
+        transition: transform 0.3s ease;
+      }
+
+      .intro-card:hover svg {
+        transform: scale(1.2);
+      }
+
+      footer {
+        padding: 40px 20px;
+        background: #1a1a1a;
+        text-align: center;
+        animation: fadeInUp 1s ease-out 0.6s;
+        animation-fill-mode: both;
+      }
+
+      body.light-mode footer {
+        background: #e0e0e0;
+      }
+
+      .social-links {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        flex-wrap: wrap;
+      }
+
+      .social-links a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        border: 2px solid #8a2be2;
+        transition: transform 0.3s ease, background 0.3s ease,
+          border-color 0.3s ease;
+      }
+
+      .social-links a:hover {
+        transform: scale(1.2);
+        background: #8a2be2;
+        border-color: #6a1bb2;
+      }
+
+      .social-links a:focus {
+        outline: 2px solid #8a2be2;
+        outline-offset: 2px;
+      }
+
+      .social-links svg {
+        width: 24px;
+        height: 24px;
+        fill: #ffffff;
+        transition: fill 0.3s ease;
+      }
+
+      body.light-mode .social-links svg {
+        fill: #0a0a0a;
+      }
+
+      .social-links a:hover svg {
+        fill: #ffffff;
+      }
+
+      .logout-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        z-index: 1003;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .logout-overlay.active {
+        display: flex;
+      }
+
+      .logout-spinner {
+        width: 50px;
+        height: 50px;
+        border: 5px solid #8a2be2;
+        border-top: 5px solid transparent;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      body.font-small {
+        font-size: 14px;
+      }
+      body.font-medium {
+        font-size: 16px;
+      }
+      body.font-large {
+        font-size: 18px;
+      }
+
+      @media (max-width: 768px) {
+        .navbar {
+          padding: 15px 20px;
+        }
+        .nav-links {
+          gap: 15px;
+        }
+        .nav-links a {
+          font-size: 14px;
+        }
+        .hero h1 {
+          font-size: 40px;
+        }
+        .hero p {
+          font-size: 16px;
+        }
+        .intro {
+          padding: 50px 20px;
+        }
+        .modal-content,
+        .settings-content {
+          width: 95%;
+          padding: 20px;
+        }
+        .social-links {
+          gap: 20px;
+        }
+        .social-links a {
+          width: 40px;
+          height: 40px;
+        }
+        .social-links svg {
+          width: 20px;
+          height: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body class="font-medium">
+    <nav class="navbar">
+      <div class="logo">Alumifyx</div>
+      <div class="nav-links">
+        <a href="#" class="active">Home</a>
+        <a href="acadmic.html">Academic</a>
+        <a href="library.html">Library</a>
+        <a href="growth.html">Growth</a>
+        <a href="jobs.html">Jobs</a>
+        <a href="mentorship.html">Mentorship</a>
       </div>
-      <div class="profile-dropdown" role="menu">
-        <button role="menuitem" onclick="openProfileModal()">My Profile</button>
-        <button role="menuitem" onclick="openSettingsModal()">Settings</button>
-        <a href="loginandsignuppage.html" role="menuitem" onclick="logout(event)">Logout</a>
-      </div>
-    </div>
-  </nav>
-
-  <div class="profile-modal" id="profileModal">
-    <div class="modal-content">
-      <h2>My Profile</h2>
-      <form id="profileForm">
-        <label for="profilePic">Profile Picture</label>
-        <input type="file" id="profilePic" accept="image/*">
-        <img id="profilePicPreview" src="" alt="Profile Picture" style="display: none;">
-        <label for="name">Name</label>
-        <input type="text" id="name" placeholder="Your Name" required>
-        <label for="email">Email</label>
-        <input type="email" id="email" placeholder="Your Email" required readonly>
-        <label for="phone">Phone Number</label>
-        <input type="tel" id="phone" placeholder="Your Phone Number">
-        <label for="education">Education</label>
-        <textarea id="education" placeholder="Your Education (e.g., B.Tech, Computer Science)"></textarea>
-        <label for="skills">Skills</label>
-        <input type="text" id="skills" placeholder="Your Skills (comma-separated)">
-        <label for="certifications">Certifications</label>
-        <textarea id="certifications" placeholder="Your Certifications"></textarea>
-        <label for="address">Address</label>
-        <textarea id="address" placeholder="Your Address"></textarea>
-        <label for="gender">Gender</label>
-        <select id="gender">
-          <option value="">Select Gender</option>
-          <option value="male">Male</option>
-          <option value="female">Female</option>
-          <option value="other">Other</option>
-        </select>
-        <label for="dob">Date of Birth</label>
-        <input type="date" id="dob">
-        <label for="bio">Bio</label>
-        <textarea id="bio" placeholder="Tell us about yourself"></textarea>
-        <div class="form-buttons">
-          <button type="submit">Save</button>
-          <button type="button" onclick="closeProfileModal()">Cancel</button>
+      <div class="profile" role="menu">
+        <div
+          class="profile-icon"
+          role="button"
+          aria-expanded="false"
+          aria-label="Profile menu"
+          tabindex="0"
+        >
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+            />
+          </svg>
         </div>
-      </form>
-    </div>
-  </div>
+        <div class="profile-dropdown" role="menu">
+          <button role="menuitem" onclick="openProfileModal()">
+            My Profile
+          </button>
+          <button role="menuitem" onclick="openSettingsModal()">
+            Settings
+          </button>
+          <a
+            href="loginandsignuppage.html"
+            role="menuitem"
+            onclick="logout(event)"
+            >Logout</a
+          >
+        </div>
+      </div>
+    </nav>
 
-  <div class="settings-modal" id="settingsModal">
-    <div class="settings-content">
-      <h2>Settings</h2>
-      <div class="setting-group">
-        <label>Theme</label>
-        <label>
-          <input type="checkbox" id="themeToggle">
-          Light Mode
-        </label>
+    <div class="profile-modal" id="profileModal">
+      <div class="modal-content">
+        <h2>My Profile</h2>
+        <form id="profileForm">
+          <label for="profilePic">Profile Picture</label>
+          <input type="file" id="profilePic" accept="image/*" />
+          <img
+            id="profilePicPreview"
+            src=""
+            alt="Profile Picture"
+            style="display: none"
+          />
+          <label for="name">Name</label>
+          <input type="text" id="name" placeholder="Your Name" required />
+          <label for="email">Email</label>
+          <input
+            type="email"
+            id="email"
+            placeholder="Your Email"
+            required
+            readonly
+          />
+          <label for="phone">Phone Number</label>
+          <input type="tel" id="phone" placeholder="Your Phone Number" />
+          <label for="education">Education</label>
+          <textarea
+            id="education"
+            placeholder="Your Education (e.g., B.Tech, Computer Science)"
+          ></textarea>
+          <label for="skills">Skills</label>
+          <input
+            type="text"
+            id="skills"
+            placeholder="Your Skills (comma-separated)"
+          />
+          <label for="certifications">Certifications</label>
+          <textarea
+            id="certifications"
+            placeholder="Your Certifications"
+          ></textarea>
+          <label for="address">Address</label>
+          <textarea id="address" placeholder="Your Address"></textarea>
+          <label for="gender">Gender</label>
+          <select id="gender">
+            <option value="">Select Gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+          </select>
+          <label for="dob">Date of Birth</label>
+          <input type="date" id="dob" />
+          <label for="bio">Bio</label>
+          <textarea id="bio" placeholder="Tell us about yourself"></textarea>
+          <div class="form-buttons">
+            <button type="submit">Save</button>
+            <button type="button" onclick="closeProfileModal()">Cancel</button>
+          </div>
+        </form>
       </div>
-      <div class="setting-group">
-        <label for="language">Language</label>
-        <select id="language">
-          <option value="en">English</option>
-          <option value="hi">Hindi</option>
-          <option value="es">Spanish</option>
-        </select>
-      </div>
-      <div class="setting-group">
-        <label>Notifications</label>
-        <label>
-          <input type="checkbox" id="emailNotifications">
-          Email Notifications
-        </label>
-        <label>
-          <input type="checkbox" id="pushNotifications">
-          Push Notifications
-        </label>
-      </div>
-      <div class="setting-group">
-        <label for="profileVisibility">Profile Visibility</label>
-        <select id="profileVisibility">
-          <option value="public">Public</option>
-          <option value="private">Private</option>
-          <option value="connections">Connections Only</option>
-        </select>
-      </div>
-      <div class="setting-group">
-        <label for="fontSize">Font Size</label>
-        <select id="fontSize">
-          <option value="small">Small</option>
-          <option value="medium">Medium</option>
-          <option value="large">Large</option>
-        </select>
-      </div>
-      <div class="setting-group">
-        <label>
-          <input type="checkbox" id="twoFactorAuth">
-          Two-Factor Authentication
-        </label>
-      </div>
-      <div class="setting-group">
-        <button onclick="requestDataExport()">Request Data Export</button>
-      </div>
-      <div class="setting-group">
-        <button class="delete-account" onclick="deleteAccount()">Delete Account</button>
-      </div>
-      <button onclick="saveSettings()">Save</button>
-      <button onclick="closeSettingsModal()">Close</button>
     </div>
-  </div>
 
-  <div class="logout-overlay" id="logoutOverlay">
-    <div class="logout-spinner"></div>
-  </div>
+    <div class="settings-modal" id="settingsModal">
+      <div class="settings-content">
+        <h2>Settings</h2>
+        <div class="setting-group">
+          <label>Theme</label>
+          <label>
+            <input type="checkbox" id="themeToggle" />
+            Light Mode
+          </label>
+        </div>
+        <div class="setting-group">
+          <label for="language">Language</label>
+          <select id="language">
+            <option value="en">English</option>
+            <option value="hi">Hindi</option>
+            <option value="es">Spanish</option>
+          </select>
+        </div>
+        <div class="setting-group">
+          <label>Notifications</label>
+          <label>
+            <input type="checkbox" id="emailNotifications" />
+            Email Notifications
+          </label>
+          <label>
+            <input type="checkbox" id="pushNotifications" />
+            Push Notifications
+          </label>
+        </div>
+        <div class="setting-group">
+          <label for="profileVisibility">Profile Visibility</label>
+          <select id="profileVisibility">
+            <option value="public">Public</option>
+            <option value="private">Private</option>
+            <option value="connections">Connections Only</option>
+          </select>
+        </div>
+        <div class="setting-group">
+          <label for="fontSize">Font Size</label>
+          <select id="fontSize">
+            <option value="small">Small</option>
+            <option value="medium">Medium</option>
+            <option value="large">Large</option>
+          </select>
+        </div>
+        <div class="setting-group">
+          <label>
+            <input type="checkbox" id="twoFactorAuth" />
+            Two-Factor Authentication
+          </label>
+        </div>
+        <div class="setting-group">
+          <button onclick="requestDataExport()">Request Data Export</button>
+        </div>
+        <div class="setting-group">
+          <button class="delete-account" onclick="deleteAccount()">
+            Delete Account
+          </button>
+        </div>
+        <button onclick="saveSettings()">Save</button>
+        <button onclick="closeSettingsModal()">Close</button>
+      </div>
+    </div>
 
-  <section class="hero">
-    <h1>Welcome to Alumifyx</h1>
-    <p>Your ultimate platform for academic excellence, personal growth, and career success.</p>
-    <a href="acadmic.html" class="cta-button">Get Started</a>
-  </section>
+    <div class="logout-overlay" id="logoutOverlay">
+      <div class="logout-spinner"></div>
+    </div>
 
-  <section class="intro">
-    <div class="intro-card">
-      <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zm0 7.59L4.41 7 12 4.41 19.59 7 12 9.59zM2 9l10 5 10-5v10H2V9zm2 8h16v-6.59L12 14 4 10.41V17z"/></svg>
-      <h3>About Alumifyx</h3>
-      <p>Alumifyx is a cutting-edge platform connecting students, alumni, and professionals to foster academic success, personal growth, and career opportunities.</p>
-    </div>
-    <div class="intro-card">
-      <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-      <h3>Why Trust Us</h3>
-      <p>Built by educators and industry experts, Alumifyx offers verified resources, trusted mentorship, and a secure community for learners worldwide.</p>
-    </div>
-    <div class="intro-card">
-      <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-      <h3>What You Can Do</h3>
-      <p>Explore academic resources, connect with mentors, apply for jobs, access exclusive libraries, and track your personal growth journey.</p>
-    </div>
-    <div class="intro-card">
-      <svg viewBox="0 0 24 24"><path d="M12 2l10 9H2l10-9zm0 2.618L4.737 11h14.526L12 4.618zM2 13h20v7H2v-7zm2 2v3h16v-3H4z"/></svg>
-      <h3>Why We're Different</h3>
-      <p>Alumifyx combines AI-driven insights, a vibrant community, and exclusive opportunities to empower students and learners like never before.</p>
-    </div>
-  </section>
+    <section class="hero">
+      <h1>Welcome to Alumifyx</h1>
+      <p>
+        Your ultimate platform for academic excellence, personal growth, and
+        career success.
+      </p>
+      <a href="acadmic.html" class="cta-button">Get Started</a>
+    </section>
 
-  <footer>
-    <div class="social-links">
-      <a href="https://www.instagram.com/alumifyx/?next=%2F&hl=en" target="_blank" aria-label="Follow us on Instagram">
+    <section class="intro">
+      <div class="intro-card">
         <svg viewBox="0 0 24 24">
-          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 1.366.062 2.633.326 3.608 1.301.975.975 1.24 2.242 1.301 3.608.058 1.266.07 1.646.07 4.85s-.012 3.584-.07 4.85c-.062 1.366-.326 2.633-1.301 3.608-.975.975-2.242 1.24-3.608 1.301-1.266.058-1.646.07-4.85.07s-3.584-.012-4.85-.07c-1.366-.062-2.633-.326-3.608-1.301-.975-.975-1.24-2.242-1.301-3.608-.058-1.266-.07-1.646-.07-4.85s.012-3.584.07-4.85c.062-1.366.326-2.633 1.301-3.608.975.975 2.242 1.24 3.608 1.301 1.266-.058 1.646-.07 4.85-.07zm0-2.163c-3.259 0-3.667.014-4.947.072-1.453.066-2.908.44-4.014 1.546-1.106 1.106-1.48 2.561-1.546 4.014-.058 1.28-.072 1.688-.072 4.947s.014 3.667.072 4.947c.066 1.453.44 2.908 1.546 4.014 1.106 1.106 2.561 1.48 4.014 1.546 1.28.058 1.688.072 4.947.072s3.667-.014 4.947-.072c1.453-.066 2.908-.44 4.014-1.546 1.106-1.106 1.48-2.561 1.546-4.014.058-1.28.072-1.688.072-4.947s-.014-3.667-.072-4.947c-.066-1.453-.44-2.908-1.546-4.014-1.106-1.106-2.561-1.48-4.014-1.546-1.28-.058-1.688-.072-4.947-.072zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.791-4-4s1.791-4 4-4 4 1.791 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.441s.645 1.441 1.441 1.441 1.441-.645 1.441-1.441-.645-1.441-1.441-1.441z"/>
+          <path
+            d="M12 2L2 7l10 5 10-5-10-5zm0 7.59L4.41 7 12 4.41 19.59 7 12 9.59zM2 9l10 5 10-5v10H2V9zm2 8h16v-6.59L12 14 4 10.41V17z"
+          />
         </svg>
-      </a>
-      <a href="https://t.me/alumifyx" target="_blank" aria-label="Join our Telegram channel">
+        <h3>About Alumifyx</h3>
+        <p>
+          Alumifyx is a cutting-edge platform connecting students, alumni, and
+          professionals to foster academic success, personal growth, and career
+          opportunities.
+        </p>
+      </div>
+      <div class="intro-card">
         <svg viewBox="0 0 24 24">
-          <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm4.685 17.03a.81.81 0 0 1-1.147.085l-3.01-2.216-2.054 1.986a.564.564 0 0 1-.943-.165l-.33-1.872-3.055-9.384c-.285-.877.604-1.614 1.39-1.173l12.54 4.834c.847.326.847 1.533 0 1.86l-3.39 1.31z"/>
+          <path
+            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+          />
         </svg>
-      </a>
-      <a href="mailto:support@alumifyx.com" target="_blank" aria-label="Email us">
+        <h3>Why Trust Us</h3>
+        <p>
+          Built by educators and industry experts, Alumifyx offers verified
+          resources, trusted mentorship, and a secure community for learners
+          worldwide.
+        </p>
+      </div>
+      <div class="intro-card">
         <svg viewBox="0 0 24 24">
-          <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+          <path
+            d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+          />
         </svg>
-      </a>
-    </div>
-  </footer>
+        <h3>What You Can Do</h3>
+        <p>
+          Explore academic resources, connect with mentors, apply for jobs,
+          access exclusive libraries, and track your personal growth journey.
+        </p>
+      </div>
+      <div class="intro-card">
+        <svg viewBox="0 0 24 24">
+          <path
+            d="M12 2l10 9H2l10-9zm0 2.618L4.737 11h14.526L12 4.618zM2 13h20v7H2v-7zm2 2v3h16v-3H4z"
+          />
+        </svg>
+        <h3>Why We're Different</h3>
+        <p>
+          Alumifyx combines AI-driven insights, a vibrant community, and
+          exclusive opportunities to empower students and learners like never
+          before.
+        </p>
+      </div>
+    </section>
 
-  <script>
-    const BASE_URL = 'http://127.0.0.1:3000'; // Changed to 127.0.0.1 to avoid localhost resolution issues
+    <footer>
+      <div class="social-links">
+        <a
+          href="https://www.instagram.com/alumifyx/?next=%2F&hl=en"
+          target="_blank"
+          aria-label="Follow us on Instagram"
+        >
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M12 2.163c3.204 0 3.584.012 4.85.07 1.366.062 2.633.326 3.608 1.301.975.975 1.24 2.242 1.301 3.608.058 1.266.07 1.646.07 4.85s-.012 3.584-.07 4.85c-.062 1.366-.326 2.633-1.301 3.608-.975.975-2.242 1.24-3.608 1.301-1.266.058-1.646.07-4.85.07s-3.584-.012-4.85-.07c-1.366-.062-2.633-.326-3.608-1.301-.975-.975-1.24-2.242-1.301-3.608-.058-1.266-.07-1.646-.07-4.85s.012-3.584.07-4.85c.062-1.366.326-2.633 1.301-3.608.975.975 2.242 1.24 3.608 1.301 1.266-.058 1.646-.07 4.85-.07zm0-2.163c-3.259 0-3.667.014-4.947.072-1.453.066-2.908.44-4.014 1.546-1.106 1.106-1.48 2.561-1.546 4.014-.058 1.28-.072 1.688-.072 4.947s.014 3.667.072 4.947c.066 1.453.44 2.908 1.546 4.014 1.106 1.106 2.561 1.48 4.014 1.546 1.28.058 1.688.072 4.947.072s3.667-.014 4.947-.072c1.453-.066 2.908-.44 4.014-1.546 1.106-1.106 1.48-2.561 1.546-4.014.058-1.28.072-1.688.072-4.947s-.014-3.667-.072-4.947c-.066-1.453-.44-2.908-1.546-4.014-1.106-1.106-2.561-1.48-4.014-1.546-1.28-.058-1.688-.072-4.947-.072zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.791-4-4s1.791-4 4-4 4 1.791 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.441s.645 1.441 1.441 1.441 1.441-.645 1.441-1.441-.645-1.441-1.441-1.441z"
+            />
+          </svg>
+        </a>
+        <a
+          href="https://t.me/alumifyx"
+          target="_blank"
+          aria-label="Join our Telegram channel"
+        >
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm4.685 17.03a.81.81 0 0 1-1.147.085l-3.01-2.216-2.054 1.986a.564.564 0 0 1-.943-.165l-.33-1.872-3.055-9.384c-.285-.877.604-1.614 1.39-1.173l12.54 4.834c.847.326.847 1.533 0 1.86l-3.39 1.31z"
+            />
+          </svg>
+        </a>
+        <a
+          href="mailto:support@alumifyx.com"
+          target="_blank"
+          aria-label="Email us"
+        >
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"
+            />
+          </svg>
+        </a>
+      </div>
+    </footer>
 
-    // Check if user is logged in when the page loads
-    window.onload = async () => {
+    <script>
+      const BASE_URL = "http://127.0.0.1:3001"; // Changed to 127.0.0.1 to avoid localhost resolution issues
+
+      // Check if user is logged in when the page loads
+      window.onload = async () => {
+        try {
+          const response = await fetch(`${BASE_URL}/api/user`, {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+          });
+          if (!response.ok) {
+            let errorMessage =
+              "Session expired or invalid. Please log in again.";
+            try {
+              const errorData = await response.json();
+              errorMessage = errorData.error || errorMessage;
+            } catch (jsonErr) {
+              console.warn("Non-JSON error response from server");
+            }
+            throw new Error(errorMessage);
+          }
+          const user = await response.json();
+          const heroTitle = document.querySelector(".hero h1");
+          if (heroTitle) {
+            heroTitle.textContent = `Welcome to Alumifyx, ${
+              user.name || "User"
+            }!`;
+          }
+        } catch (error) {
+          console.error("Session verification failed:", error.message);
+          alert(
+            "Unable to verify session: " +
+              error.message +
+              ". Redirecting to login page."
+          );
+          window.location.href = "loginandsignuppage.html";
+        }
+      };
+
+      // Load theme and font settings
       try {
-        const response = await fetch(`${BASE_URL}/api/user`, {
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include'
-        });
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || 'Session expired or invalid. Please log in again.');
+        const theme = localStorage.getItem("theme");
+        if (theme === "light") {
+          document.body.classList.add("light-mode");
+          document.getElementById("themeToggle").checked = true;
         }
-        const user = await response.json();
-        const heroTitle = document.querySelector('.hero h1');
-        if (heroTitle) {
-          heroTitle.textContent = `Welcome to Alumifyx, ${user.name || 'User'}!`;
+
+        const settings = JSON.parse(localStorage.getItem("settings")) || {
+          fontSize: "medium",
+        };
+        if (settings.fontSize) {
+          document.body.classList.add(`font-${settings.fontSize}`);
+          document.getElementById("fontSize").value = settings.fontSize;
         }
-      } catch (error) {
-        console.error('Session verification failed:', error.message);
-        alert('Unable to verify session: ' + error.message + '. Redirecting to login page.');
-        window.location.href = 'loginandsignuppage.html';
-      }
-    };
-
-    // Load theme and font settings
-    try {
-      const theme = localStorage.getItem('theme');
-      if (theme === 'light') {
-        document.body.classList.add('light-mode');
-        document.getElementById('themeToggle').checked = true;
+      } catch (e) {
+        console.error("Error loading theme/font settings:", e.message);
+        alert(
+          "Error loading theme/font settings: " +
+            e.message +
+            ". Using default settings."
+        );
       }
 
-      const settings = JSON.parse(localStorage.getItem('settings')) || { fontSize: 'medium' };
-      if (settings.fontSize) {
-        document.body.classList.add(`font-${settings.fontSize}`);
-        document.getElementById('fontSize').value = settings.fontSize;
+      const profile = document.querySelector(".profile");
+      const profileIcon = document.querySelector(".profile-icon");
+
+      function toggleProfileDropdown() {
+        profile.classList.toggle("active");
+        const isExpanded = profile.classList.contains("active");
+        profileIcon.setAttribute("aria-expanded", isExpanded);
       }
-    } catch (e) {
-      console.error('Error loading theme/font settings:', e.message);
-      alert('Error loading theme/font settings: ' + e.message + '. Using default settings.');
-    }
 
-    const profile = document.querySelector('.profile');
-    const profileIcon = document.querySelector('.profile-icon');
+      profileIcon.addEventListener("click", toggleProfileDropdown);
+      profileIcon.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          toggleProfileDropdown();
+        }
+      });
 
-    function toggleProfileDropdown() {
-      profile.classList.toggle('active');
-      const isExpanded = profile.classList.contains('active');
-      profileIcon.setAttribute('aria-expanded', isExpanded);
-    }
+      document.addEventListener("click", (e) => {
+        if (!profile.contains(e.target)) {
+          profile.classList.remove("active");
+          profileIcon.setAttribute("aria-expanded", false);
+        }
+      });
 
-    profileIcon.addEventListener('click', toggleProfileDropdown);
-    profileIcon.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
+      const profileModal = document.getElementById("profileModal");
+      const profileForm = document.getElementById("profileForm");
+      const profilePicInput = document.getElementById("profilePic");
+      const profilePicPreview = document.getElementById("profilePicPreview");
+
+      async function openProfileModal() {
+        profileModal.classList.add("active");
+        profile.classList.remove("active");
+        profileIcon.setAttribute("aria-expanded", false);
+        await loadProfileData();
+      }
+
+      function closeProfileModal() {
+        profileModal.classList.remove("active");
+      }
+
+      async function loadProfileData() {
+        try {
+          const response = await fetch(`${BASE_URL}/api/user`, {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+          });
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(
+              errorData.error ||
+                "Session expired or invalid. Please log in again."
+            );
+          }
+          const user = await response.json();
+          document.getElementById("name").value = user.name || "";
+          document.getElementById("email").value = user.email || "";
+          document.getElementById("phone").value = user.phone || "";
+          document.getElementById("education").value = user.education || "";
+          document.getElementById("skills").value = user.skills || "";
+          document.getElementById("certifications").value =
+            user.certifications || "";
+          document.getElementById("address").value = user.address || "";
+          document.getElementById("gender").value = user.gender || "";
+          document.getElementById("dob").value = user.dob || "";
+          document.getElementById("bio").value = user.bio || "";
+          if (user.profilePic) {
+            profilePicPreview.src = user.profilePic;
+            profilePicPreview.style.display = "block";
+          }
+        } catch (error) {
+          console.error("Error loading profile data:", error.message);
+          alert(
+            "Unable to load profile data: " +
+              error.message +
+              ". Redirecting to login page."
+          );
+          closeProfileModal();
+          window.location.href = "loginandsignuppage.html";
+        }
+      }
+
+      profilePicInput.addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          if (file.size > 2 * 1024 * 1024) {
+            alert("Profile picture must be less than 2MB.");
+            e.target.value = "";
+            return;
+          }
+          const reader = new FileReader();
+          reader.onload = () => {
+            profilePicPreview.src = reader.result;
+            profilePicPreview.style.display = "block";
+          };
+          reader.onerror = () => {
+            alert("Error reading profile picture. Please try again.");
+            e.target.value = "";
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      profileForm.addEventListener("submit", async (e) => {
         e.preventDefault();
-        toggleProfileDropdown();
-      }
-    });
-
-    document.addEventListener('click', (e) => {
-      if (!profile.contains(e.target)) {
-        profile.classList.remove('active');
-        profileIcon.setAttribute('aria-expanded', false);
-      }
-    });
-
-    const profileModal = document.getElementById('profileModal');
-    const profileForm = document.getElementById('profileForm');
-    const profilePicInput = document.getElementById('profilePic');
-    const profilePicPreview = document.getElementById('profilePicPreview');
-
-    async function openProfileModal() {
-      profileModal.classList.add('active');
-      profile.classList.remove('active');
-      profileIcon.setAttribute('aria-expanded', false);
-      await loadProfileData();
-    }
-
-    function closeProfileModal() {
-      profileModal.classList.remove('active');
-    }
-
-    async function loadProfileData() {
-      try {
-        const response = await fetch(`${BASE_URL}/api/user`, {
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include'
-        });
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || 'Session expired or invalid. Please log in again.');
-        }
-        const user = await response.json();
-        document.getElementById('name').value = user.name || '';
-        document.getElementById('email').value = user.email || '';
-        document.getElementById('phone').value = user.phone || '';
-        document.getElementById('education').value = user.education || '';
-        document.getElementById('skills').value = user.skills || '';
-        document.getElementById('certifications').value = user.certifications || '';
-        document.getElementById('address').value = user.address || '';
-        document.getElementById('gender').value = user.gender || '';
-        document.getElementById('dob').value = user.dob || '';
-        document.getElementById('bio').value = user.bio || '';
-        if (user.profilePic) {
-          profilePicPreview.src = user.profilePic;
-          profilePicPreview.style.display = 'block';
-        }
-      } catch (error) {
-        console.error('Error loading profile data:', error.message);
-        alert('Unable to load profile data: ' + error.message + '. Redirecting to login page.');
-        closeProfileModal();
-        window.location.href = 'loginandsignuppage.html';
-      }
-    }
-
-    profilePicInput.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        if (file.size > 2 * 1024 * 1024) {
-          alert('Profile picture must be less than 2MB.');
-          e.target.value = '';
+        const phone = document.getElementById("phone").value;
+        if (phone && !/^\+?\d{10,15}$/.test(phone)) {
+          alert("Please enter a valid phone number (10-15 digits).");
           return;
         }
-        const reader = new FileReader();
-        reader.onload = () => {
-          profilePicPreview.src = reader.result;
-          profilePicPreview.style.display = 'block';
+
+        const formData = new FormData();
+        formData.append("name", document.getElementById("name").value);
+        formData.append("email", document.getElementById("email").value);
+        formData.append("phone", document.getElementById("phone").value);
+        formData.append(
+          "education",
+          document.getElementById("education").value
+        );
+        formData.append("skills", document.getElementById("skills").value);
+        formData.append(
+          "certifications",
+          document.getElementById("certifications").value
+        );
+        formData.append("address", document.getElementById("address").value);
+        formData.append("gender", document.getElementById("gender").value);
+        formData.append("dob", document.getElementById("dob").value);
+        formData.append("bio", document.getElementById("bio").value);
+        if (profilePicInput.files[0]) {
+          formData.append("profilePic", profilePicInput.files[0]);
+        }
+
+        try {
+          const response = await fetch(`${BASE_URL}/api/user`, {
+            method: "PUT",
+            body: formData,
+            credentials: "include",
+          });
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || "Failed to update profile");
+          }
+          const data = await response.json();
+          alert(data.message || "Profile saved successfully!");
+          closeProfileModal();
+        } catch (error) {
+          console.error("Error saving profile:", error.message);
+          alert(
+            "Error saving profile: " + error.message + ". Please try again."
+          );
+        }
+      });
+
+      const settingsModal = document.getElementById("settingsModal");
+      const themeToggle = document.getElementById("themeToggle");
+      const languageSelect = document.getElementById("language");
+      const emailNotifications = document.getElementById("emailNotifications");
+      const pushNotifications = document.getElementById("pushNotifications");
+      const profileVisibility = document.getElementById("profileVisibility");
+      const fontSizeSelect = document.getElementById("fontSize");
+      const twoFactorAuth = document.getElementById("twoFactorAuth");
+
+      function openSettingsModal() {
+        settingsModal.classList.add("active");
+        profile.classList.remove("active");
+        profileIcon.setAttribute("aria-expanded", false);
+        loadSettings();
+      }
+
+      function closeSettingsModal() {
+        settingsModal.classList.remove("active");
+      }
+
+      function loadSettings() {
+        try {
+          const settings = JSON.parse(localStorage.getItem("settings")) || {};
+          themeToggle.checked = localStorage.getItem("theme") === "light";
+          languageSelect.value = settings.language || "en";
+          emailNotifications.checked = settings.emailNotifications || false;
+          pushNotifications.checked = settings.pushNotifications || false;
+          profileVisibility.value = settings.profileVisibility || "public";
+          fontSizeSelect.value = settings.fontSize || "medium";
+          twoFactorAuth.checked = settings.twoFactorAuth || false;
+        } catch (error) {
+          console.error("Error loading settings:", error.message);
+          alert(
+            "Error loading settings: " +
+              error.message +
+              ". Using default settings."
+          );
+        }
+      }
+
+      function saveSettings() {
+        const settings = {
+          language: languageSelect.value,
+          emailNotifications: emailNotifications.checked,
+          pushNotifications: pushNotifications.checked,
+          profileVisibility: profileVisibility.value,
+          fontSize: fontSizeSelect.value,
+          twoFactorAuth: twoFactorAuth.checked,
         };
-        reader.onerror = () => {
-          alert('Error reading profile picture. Please try again.');
-          e.target.value = '';
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-
-    profileForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const phone = document.getElementById('phone').value;
-      if (phone && !/^\+?\d{10,15}$/.test(phone)) {
-        alert('Please enter a valid phone number (10-15 digits).');
-        return;
-      }
-
-      const formData = new FormData();
-      formData.append('name', document.getElementById('name').value);
-      formData.append('email', document.getElementById('email').value);
-      formData.append('phone', document.getElementById('phone').value);
-      formData.append('education', document.getElementById('education').value);
-      formData.append('skills', document.getElementById('skills').value);
-      formData.append('certifications', document.getElementById('certifications').value);
-      formData.append('address', document.getElementById('address').value);
-      formData.append('gender', document.getElementById('gender').value);
-      formData.append('dob', document.getElementById('dob').value);
-      formData.append('bio', document.getElementById('bio').value);
-      if (profilePicInput.files[0]) {
-        formData.append('profilePic', profilePicInput.files[0]);
-      }
-
-      try {
-        const response = await fetch(`${BASE_URL}/api/user`, {
-          method: 'PUT',
-          body: formData,
-          credentials: 'include'
-        });
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || 'Failed to update profile');
+        try {
+          localStorage.setItem("settings", JSON.stringify(settings));
+          document.body.classList.remove(
+            "font-small",
+            "font-medium",
+            "font-large"
+          );
+          document.body.classList.add(`font-${fontSizeSelect.value}`);
+          alert("Settings saved successfully!");
+          closeSettingsModal();
+        } catch (error) {
+          console.error("Error saving settings:", error.message);
+          alert(
+            "Error saving settings: " +
+              error.message +
+              ". Please try again or clear storage."
+          );
         }
-        const data = await response.json();
-        alert(data.message || 'Profile saved successfully!');
-        closeProfileModal();
-      } catch (error) {
-        console.error('Error saving profile:', error.message);
-        alert('Error saving profile: ' + error.message + '. Please try again.');
       }
-    });
 
-    const settingsModal = document.getElementById('settingsModal');
-    const themeToggle = document.getElementById('themeToggle');
-    const languageSelect = document.getElementById('language');
-    const emailNotifications = document.getElementById('emailNotifications');
-    const pushNotifications = document.getElementById('pushNotifications');
-    const profileVisibility = document.getElementById('profileVisibility');
-    const fontSizeSelect = document.getElementById('fontSize');
-    const twoFactorAuth = document.getElementById('twoFactorAuth');
-
-    function openSettingsModal() {
-      settingsModal.classList.add('active');
-      profile.classList.remove('active');
-      profileIcon.setAttribute('aria-expanded', false);
-      loadSettings();
-    }
-
-    function closeSettingsModal() {
-      settingsModal.classList.remove('active');
-    }
-
-    function loadSettings() {
-      try {
-        const settings = JSON.parse(localStorage.getItem('settings')) || {};
-        themeToggle.checked = localStorage.getItem('theme') === 'light';
-        languageSelect.value = settings.language || 'en';
-        emailNotifications.checked = settings.emailNotifications || false;
-        pushNotifications.checked = settings.pushNotifications || false;
-        profileVisibility.value = settings.profileVisibility || 'public';
-        fontSizeSelect.value = settings.fontSize || 'medium';
-        twoFactorAuth.checked = settings.twoFactorAuth || false;
-      } catch (error) {
-        console.error('Error loading settings:', error.message);
-        alert('Error loading settings: ' + error.message + '. Using default settings.');
-      }
-    }
-
-    function saveSettings() {
-      const settings = {
-        language: languageSelect.value,
-        emailNotifications: emailNotifications.checked,
-        pushNotifications: pushNotifications.checked,
-        profileVisibility: profileVisibility.value,
-        fontSize: fontSizeSelect.value,
-        twoFactorAuth: twoFactorAuth.checked
-      };
-      try {
-        localStorage.setItem('settings', JSON.stringify(settings));
-        document.body.classList.remove('font-small', 'font-medium', 'font-large');
-        document.body.classList.add(`font-${fontSizeSelect.value}`);
-        alert('Settings saved successfully!');
-        closeSettingsModal();
-      } catch (error) {
-        console.error('Error saving settings:', error.message);
-        alert('Error saving settings: ' + error.message + '. Please try again or clear storage.');
-      }
-    }
-
-    themeToggle.addEventListener('change', () => {
-      document.body.classList.toggle('light-mode');
-      try {
-        localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
-      } catch (error) {
-        console.error('Error saving theme:', error.message);
-        alert('Error saving theme: ' + error.message + '. Theme may not persist.');
-      }
-    });
-
-    function requestDataExport() {
-      alert('Data export request submitted. You will receive an email with your data soon.');
-    }
-
-    async function deleteAccount() {
-      if (!confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
-        return;
-      }
-      try {
-        const response = await fetch(`${BASE_URL}/api/user`, {
-          method: 'DELETE',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include'
-        });
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || 'Failed to delete account');
+      themeToggle.addEventListener("change", () => {
+        document.body.classList.toggle("light-mode");
+        try {
+          localStorage.setItem(
+            "theme",
+            document.body.classList.contains("light-mode") ? "light" : "dark"
+          );
+        } catch (error) {
+          console.error("Error saving theme:", error.message);
+          alert(
+            "Error saving theme: " + error.message + ". Theme may not persist."
+          );
         }
-        const data = await response.json();
-        alert(data.message || 'Account deleted successfully.');
-        closeSettingsModal();
-        window.location.href = 'loginandsignuppage.html';
-      } catch (error) {
-        console.error('Error deleting account:', error.message);
-        alert('Error deleting account: ' + error.message + '. Please try again.');
-      }
-    }
+      });
 
-    async function logout(event) {
-      event.preventDefault();
-      const overlay = document.getElementById('logoutOverlay');
-      if (!overlay) {
-        alert('Error logging out: Overlay not found. Please try again.');
-        return;
+      function requestDataExport() {
+        alert(
+          "Data export request submitted. You will receive an email with your data soon."
+        );
       }
-      overlay.classList.add('active');
-      try {
-        const response = await fetch(`${BASE_URL}/api/logout`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include'
-        });
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || 'Logout failed');
+
+      async function deleteAccount() {
+        if (
+          !confirm(
+            "Are you sure you want to delete your account? This action cannot be undone."
+          )
+        ) {
+          return;
         }
-        const data = await response.json();
-        alert(data.message || 'Logout successful');
-        overlay.classList.remove('active');
-        window.location.href = 'loginandsignuppage.html';
-      } catch (error) {
-        console.error('Error logging out:', error.message);
-        overlay.classList.remove('active');
-        alert('Error logging out: ' + error.message + '. Please try again.');
+        try {
+          const response = await fetch(`${BASE_URL}/api/user`, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+          });
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || "Failed to delete account");
+          }
+          const data = await response.json();
+          alert(data.message || "Account deleted successfully.");
+          closeSettingsModal();
+          window.location.href = "loginandsignuppage.html";
+        } catch (error) {
+          console.error("Error deleting account:", error.message);
+          alert(
+            "Error deleting account: " + error.message + ". Please try again."
+          );
+        }
       }
-    }
-  </script>
-</body>
+
+      async function logout(event) {
+        event.preventDefault();
+        const overlay = document.getElementById("logoutOverlay");
+        if (!overlay) {
+          alert("Error logging out: Overlay not found. Please try again.");
+          return;
+        }
+        overlay.classList.add("active");
+        try {
+          const response = await fetch(`${BASE_URL}/api/logout`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+          });
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || "Logout failed");
+          }
+          const data = await response.json();
+          alert(data.message || "Logout successful");
+          overlay.classList.remove("active");
+          window.location.href = "loginandsignuppage.html";
+        } catch (error) {
+          console.error("Error logging out:", error.message);
+          overlay.classList.remove("active");
+          alert("Error logging out: " + error.message + ". Please try again.");
+        }
+      }
+    </script>
+  </body>
 </html>

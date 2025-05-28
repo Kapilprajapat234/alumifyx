@@ -560,25 +560,6 @@
       transform: scale(1.2);
     }
 
-    .semester-filter {
-      text-align: center;
-      margin: 20px 0;
-    }
-
-    .semester-filter select {
-      padding: 10px;
-      border: 1px solid #8a2be2;
-      border-radius: 6px;
-      background: #0a0a0a;
-      color: #ffffff;
-      font-size: 16px;
-    }
-
-    body.light-mode .semester-filter select {
-      background: #f5f5f5;
-      color: #0a0a0a;
-    }
-
     .error-message {
       text-align: center;
       margin: 20px 0;
@@ -752,31 +733,17 @@
 
   <section class="hero">
     <h1 id="courseTitle">Subjects</h1>
-    <p>Select a semester to view subjects for your course.</p>
+    <p>View all subjects for your course.</p>
   </section>
-
-  <div class="semester-filter">
-    <select id="semesterSelect" onchange="filterSubjects()">
-      <option value="">Select Semester</option>
-      <option value="1">Semester 1</option>
-      <option value="2">Semester 2</option>
-      <option value="3">Semester 3</option>
-      <option value="4">Semester 4</option>
-      <option value="5">Semester 5</option>
-      <option value="6">Semester 6</option>
-      <option value="7">Semester 7</option>
-      <option value="8">Semester 8</option>
-    </select>
-  </div>
 
   <section class="intro" id="subjectsList"></section>
 
-  <div class="error-message" id="errorMessage" style="display: none;">
+  <div class="科學" id="errorMessage" style="display: none;">
     <p>Please select a course first. Go back to <a href="academic.html">Academic Hub</a>.</p>
   </div>
 
   <div class="back-link">
-    <a href="academic.html">Back to Academic Hub</a>
+    <a href="acadmic.html">Back to Academic Hub</a>
   </div>
 
   <script>
@@ -966,8 +933,8 @@
 
     const subjectsData = {
       "BCA": {
-        "1": ["c Programming", "Mathematics I", "web devlopment"],
-        "2": ["Data Structures", "Mathematics II", "Computer Organization"],
+        "1": ["c Programming", "Mathematics ", "web devlopment" , "Computer Fundamentals" , "environmental Studies", "tacnical communication"],
+        "2": ["Data Structures", , "Computer Organization"],
         "3": ["OOP with C++", "Database Management", "Operating Systems"],
         "4": ["Java Programming", "Software Engineering", "Computer Networks"],
         "5": ["Web Development", "Python Programming", "Cloud Computing"],
@@ -1029,34 +996,36 @@
       courseTitle.textContent = "Error";
       errorMessage.style.display = 'block';
       subjectsList.style.display = 'none';
-      document.getElementById('semesterSelect').style.display = 'none';
     } else {
       courseTitle.textContent = `${course} Subjects`;
+      displaySubjects();
     }
 
-    function filterSubjects() {
-      const semester = document.getElementById('semesterSelect').value;
+    function displaySubjects() {
       subjectsList.innerHTML = '';
 
-      if (!semester) {
+      // Collect all subjects into a single flat list
+      const allSubjects = [];
+      const semesters = Object.keys(subjectsData[course]);
+      semesters.forEach(semester => {
+        const subjects = subjectsData[course][semester] || [];
+        allSubjects.push(...subjects);
+      });
+
+      if (allSubjects.length === 0) {
+        subjectsList.innerHTML = '<p>No subjects available for this course.</p>';
         return;
       }
 
-      const subjects = subjectsData[course][semester] || [];
-      if (subjects.length === 0) {
-        subjectsList.innerHTML = '<p>No subjects available for this semester.</p>';
-        return;
-      }
-
-      subjects.forEach(subject => {
+      // Display all subjects as a flat list
+      allSubjects.forEach(subject => {
         const card = document.createElement('div');
         card.className = 'intro-card';
-        // Normalize subject name in URL to lowercase to avoid case sensitivity issues
         const subjectForUrl = encodeURIComponent(subject.toLowerCase());
         card.innerHTML = `
           <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zm0 7.59L4.41 7 12 4.41 19.59 7 12 9.59zM2 9l10 5 10-5v10H2V9zm2 8h16v-6.59L12 14 4 10.41V17z"/></svg>
           <h3>${subject}</h3>
-          <p>Explore resources for ${subject} in Semester ${semester}</p>
+          <p>Explore resources for ${subject}</p>
           <a href="resources.html?course=${course}&subject=${subjectForUrl}" class="cta-button">Explore Resources</a>
         `;
         subjectsList.appendChild(card);

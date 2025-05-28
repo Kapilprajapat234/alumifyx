@@ -644,7 +644,7 @@
     </div>
     <div class="profile" role="menu">
       <div class="profile-icon" role="button" aria-expanded="false" aria-label="Profile menu" tabindex="0">
-        <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4- preferentially 4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
       </div>
       <div class="profile-dropdown" role="menu">
         <button role="menuitem" onclick="openProfileModal()">My Profile</button>
@@ -782,8 +782,8 @@
         <a href="#" class="cta-button">Read PDF</a>
       </div>
     </section>
-    <div class="see-more-container">
-      <a href="all-books.html?category=study" class="cta-button">See More Study Books</a>
+    <div class="see-more-container" id="study-see-more">
+      <button class="cta-button" onclick="toggleBooks('study')">See More Study Books</button>
     </div>
   </div>
 
@@ -803,8 +803,8 @@
         <a href="#" class="cta-button">Read PDF</a>
       </div>
     </section>
-    <div class="see-more-container">
-      <a href="all-books.html?category=story" class="cta-button">See More Story Books</a>
+    <div class="see-more-container" id="story-see-more">
+      <button class="cta-button" onclick="toggleBooks('story')">See More Story Books</button>
     </div>
   </div>
 
@@ -1008,10 +1008,54 @@
       ]
     };
 
+    let displayedBooks = {
+      study: 2,
+      story: 2
+    };
+
+    function renderBooks(category, limit) {
+      const bookList = document.getElementById(`${category}-book-list`);
+      bookList.innerHTML = '';
+      const bookData = books[category].slice(0, limit);
+      if (bookData.length > 0) {
+        bookData.forEach(book => {
+          const card = document.createElement('div');
+          card.className = 'intro-card';
+          card.innerHTML = `
+            <img src="https://via.placeholder.com/150x200.png?text=${book.title.replace(/ /g, '+')}" alt="${book.title}">
+            <h3>${book.title}</h3>
+            <p>${book.description}</p>
+            <a href="#" class="cta-button">Read PDF</a>
+          `;
+          bookList.appendChild(card);
+        });
+      } else {
+        bookList.innerHTML = `<p>No ${category} books found.</p>`;
+      }
+    }
+
+    function toggleBooks(category) {
+      const bookList = document.getElementById(`${category}-book-list`);
+      const seeMoreContainer = document.getElementById(`${category}-see-more`);
+      const button = seeMoreContainer.querySelector('button');
+      
+      if (button.textContent.includes('See More')) {
+        displayedBooks[category] = books[category].length;
+        button.textContent = `Show Less ${category.charAt(0).toUpperCase() + category.slice(1)} Books`;
+      } else {
+        displayedBooks[category] = 2;
+        button.textContent = `See More ${category.charAt(0).toUpperCase() + category.slice(1)} Books`;
+      }
+      
+      renderBooks(category, displayedBooks[category]);
+    }
+
     function searchBooks() {
       const query = document.getElementById('search-input').value.toLowerCase();
       const studyBookList = document.getElementById('study-book-list');
       const storyBookList = document.getElementById('story-book-list');
+      const studySeeMore = document.getElementById('study-see-more');
+      const storySeeMore = document.getElementById('story-see-more');
 
       studyBookList.innerHTML = '';
       storyBookList.innerHTML = '';
@@ -1050,10 +1094,19 @@
         storyBookList.innerHTML = '<p>No story/motivational books found.</p>';
       }
 
-      document.querySelectorAll('.see-more-container').forEach(container => {
-        container.style.display = query ? 'none' : 'block';
-      });
+      studySeeMore.style.display = query ? 'none' : 'block';
+      storySeeMore.style.display = query ? 'none' : 'block';
+      
+      // Reset displayed books count and button text when searching
+      displayedBooks.study = 2;
+      displayedBooks.story = 2;
+      studySeeMore.querySelector('button').textContent = 'See More Study Books';
+      storySeeMore.querySelector('button').textContent = 'See More Story Books';
     }
+
+    // Initial render
+    renderBooks('study', displayedBooks.study);
+    renderBooks('story', displayedBooks.story);
   </script>
 </body>
 </html>
