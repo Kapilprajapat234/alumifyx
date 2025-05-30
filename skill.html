@@ -629,112 +629,41 @@
   </section>
 
   <script>
-    const skillData = {
-      personal_finance: {
-        title: "Personal Finance",
-        description: "Master the art of managing your money effectively with our Personal Finance course. Learn budgeting, saving, and investing strategies to achieve financial freedom.",
-        youtube: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        pdf: "https://example.com/personal_finance.pdf"
-      },
-      stock_market: {
-        title: "Stock Market",
-        description: "Dive into the world of stocks and investments. Understand market trends, trading strategies, and portfolio management.",
-        youtube: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        pdf: "https://example.com/stock_market.pdf"
-      },
-      tax_saving: {
-        title: "Tax Saving",
-        description: "Learn how to minimize your tax liabilities legally with expert tips on deductions, exemptions, and investments.",
-        youtube: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        pdf: "https://example.com/tax_saving.pdf"
-      },
-      credit_card_course: {
-        title: "Credit Card Course",
-        description: "Understand how to use credit cards wisely, manage debt, and maximize rewards without falling into traps.",
-        youtube: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        pdf: "https://example.com/credit_card_course.pdf"
-      },
-      tally: {
-        title: "Tally",
-        description: "Become proficient in Tally for accounting and financial management with hands-on training.",
-        youtube: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        pdf: "https://example.com/tally.pdf"
-      },
-      sales: {
-        title: "Sales",
-        description: "Learn proven sales techniques to boost your performance and close deals effectively.",
-        youtube: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        pdf: "https://example.com/sales.pdf"
-      },
-      marketing: {
-        title: "Marketing",
-        description: "Explore digital and traditional marketing strategies to grow your brand and reach your audience.",
-        youtube: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        pdf: "https://example.com/marketing.pdf"
-      },
-      personal_development: {
-        title: "Personal Development",
-        description: "Unlock your potential with skills in time management, goal setting, and self-discipline.",
-        youtube: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        pdf: "https://example.com/personal_development.pdf"
-      },
-      video_editing: {
-        title: "Video Editing",
-        description: "Create professional videos with our course on editing techniques using industry-standard software.",
-        youtube: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        pdf: "https://example.com/video_editing.pdf"
-      },
-      vibe_coding: {
-        title: "Vibe Coding",
-        description: "Learn coding with a fun, creative approach to building apps and websites that stand out.",
-        youtube: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        pdf: "https://example.com/vibe_coding.pdf"
-      },
-      graphic_design: {
-        title: "Graphic Design",
-        description: "Design stunning visuals with tools like Photoshop and Illustrator in our comprehensive course.",
-        youtube: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        pdf: "https://example.com/graphic_design.pdf"
-      },
-      python: {
-        title: "Python",
-        description: "Learn Python programming for data analysis, web development, and automation.",
-        youtube: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        pdf: "https://example.com/python.pdf"
-      },
-      web_development: {
-        title: "Web Development",
-        description: "Build modern, responsive websites with HTML, CSS, and JavaScript.",
-        youtube: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        pdf: "https://example.com/web_development.pdf"
-      },
-      programming: {
-        title: "Programming",
-        description: "Master the fundamentals of programming with hands-on projects in various languages.",
-        youtube: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        pdf: "https://example.com/programming.pdf"
-      },
-      ui_ux: {
-        title: "UI/UX",
-        description: "Design user-friendly interfaces and experiences with our UI/UX course.",
-        youtube: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        pdf: "https://example.com/ui_ux.pdf"
-      }
-    };
-
     const urlParams = new URLSearchParams(window.location.search);
-    const skill = urlParams.get('skill');
-    const data = skillData[skill] || {
-      title: "Skill Not Found",
-      description: "Please select a valid skill from the growth page.",
-      youtube: "",
-      pdf: "#"
-    };
+    const skillId = urlParams.get('skill');
+    const skillTitleElement = document.getElementById('skill-title');
+    const skillDescriptionElement = document.getElementById('skill-description');
+    const youtubeVideoElement = document.getElementById('youtube-video');
+    const pdfLinkElement = document.getElementById('pdf-link');
 
-    document.getElementById('skill-title').textContent = data.title;
-    document.getElementById('skill-description').textContent = data.description;
-    document.getElementById('youtube-video').src = data.youtube;
-    document.getElementById('pdf-link').href = data.pdf;
+    // Fetch skill data from backend
+    if (skillId) {
+      fetch(`http://localhost:3001/api/growth/skills/${encodeURIComponent(skillId)}`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Skill not found');
+          }
+          return response.json();
+        })
+        .then(data => {
+          skillTitleElement.textContent = data.title;
+          skillDescriptionElement.textContent = data.description;
+          youtubeVideoElement.src = data.youtube;
+          pdfLinkElement.href = data.pdf;
+        })
+        .catch(error => {
+          console.error('Error fetching skill data:', error);
+          skillTitleElement.textContent = "Error";
+          skillDescriptionElement.textContent = `Could not load skill data. ${error.message}`;
+          youtubeVideoElement.style.display = 'none';
+          pdfLinkElement.style.display = 'none';
+        });
+    } else {
+      skillTitleElement.textContent = "Error";
+      skillDescriptionElement.textContent = "No skill specified. Please select a skill from the growth page.";
+      youtubeVideoElement.style.display = 'none';
+      pdfLinkElement.style.display = 'none';
+    }
 
     const profile = document.querySelector('.profile');
     const profileIcon = document.querySelector('.profile-icon');

@@ -208,7 +208,7 @@
     }
 
     .intro-card h4 {
-      font-size: 20px;
+      font-size: 24px;
       margin-bottom: 15px;
       color: #8a2be2;
     }
@@ -313,7 +313,56 @@
       .hero p { font-size: 16px; }
       .intro { padding: 50px 20px; }
       .search-bar input { width: 90%; }
+      .modal-content, .settings-content { width: 95%; padding: 20px; }
     }
+
+    .resources-container {
+      display: grid;
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .resource-item {
+      background: rgba(138, 43, 226, 0.1);
+      padding: 20px;
+      border-radius: 8px;
+      text-align: left;
+    }
+
+    .resource-item h5 {
+      color: #8a2be2;
+      margin-bottom: 10px;
+      font-size: 18px;
+    }
+
+    .resource-item p {
+      color: #cccccc;
+      margin-bottom: 15px;
+    }
+
+    body.light-mode .resource-item {
+      background: rgba(138, 43, 226, 0.05);
+    }
+
+    body.light-mode .resource-item p {
+      color: #666666;
+    }
+
+    .resource-item iframe {
+      width: 100%;
+      height: 200px;
+      border: none;
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+
+    .resource-item .cta-button {
+      margin-top: 10px;
+    }
+
+    body.font-small { font-size: 14px; }
+    body.font-medium { font-size: 16px; }
+    body.font-large { font-size: 18px; }
   </style>
 </head>
 <body>
@@ -349,1004 +398,145 @@
   </div>
 
   <script>
-    // Map subjects to chapters (keys are lowercase to match URL parameters)
-    const subjectChapters = {
-      "c programming": ["Introduction to C", "Control Structures", "Functions", "Arrays", "Pointers"],
-      "mathematics i": ["Algebra", "Calculus", "Matrices"],
-      "web devlopment": ["HTML Basics", "CSS Basics", "JavaScript Basics"],
-      "data structures": ["Arrays and Linked Lists", "Stacks and Queues", "Trees and Graphs"],
-      "mathematics ii": ["Differential Equations", "Probability", "Statistics"],
-      "computer organization": ["CPU Basics", "Memory Systems", "I/O Systems"],
-      "oop with c++": ["Classes and Objects", "Inheritance", "Polymorphism"],
-      "database management": ["Relational Databases", "SQL Basics", "Normalization"],
-      "operating systems": ["Process Management", "Memory Management", "File Systems"],
-      "java programming": ["Java Basics", "OOP in Java", "Java Collections"],
-      "software engineering": ["SDLC", "Agile Methodology", "Testing"],
-      "computer networks": ["Network Models", "TCP/IP", "Routing"],
-      "web development": ["Frontend Development", "Backend Development", "APIs"],
-      "python programming": ["Python Basics", "Data Analysis with Python", "Python OOP"],
-      "cloud computing": ["Cloud Models", "AWS Basics", "Azure Basics"],
-      "mobile app development": ["Android Basics", "iOS Basics", "Cross-Platform"],
-      "cyber security": ["Threats", "Cryptography", "Network Security"],
-      "ai basics": ["Machine Learning Intro", "Neural Networks", "AI Applications"],
-      "principles of management": ["Management Concepts", "Planning", "Organizing"],
-      "business economics": ["Demand and Supply", "Market Structures", "Economic Policies"],
-      "financial accounting": ["Accounting Basics", "Balance Sheet", "Income Statement"],
-      "marketing management": ["Marketing Mix", "Consumer Behavior", "Digital Marketing"],
-      "business statistics": ["Descriptive Statistics", "Inferential Statistics", "Regression Analysis"],
-      "organizational behavior": ["Motivation Theories", "Leadership Styles", "Team Dynamics"],
-      "human resource management": ["Recruitment", "Training", "Performance Appraisal"],
-      "business law": ["Contract Law", "Company Law", "Consumer Protection"],
-      "cost accounting": ["Cost Concepts", "Budgeting", "Variance Analysis"],
-      "financial management": ["Time Value of Money", "Risk and Return", "Capital Budgeting"],
-      "operations management": ["Production Planning", "Quality Control", "Supply Chain"],
-      "entrepreneurship": ["Business Ideas", "Startup Funding", "Growth Strategies"],
-      "strategic management": ["SWOT Analysis", "Competitive Strategy", "Corporate Strategy"],
-      "international business": ["Global Markets", "Trade Policies", "Cultural Influences"],
-      "consumer behavior": ["Buying Behavior", "Market Segmentation", "Brand Loyalty"],
-      "business ethics": ["Ethical Theories", "Corporate Governance", "CSR"],
-      "project management": ["Project Planning", "Risk Management", "Agile Project Management"],
-      "e-commerce": ["E-Commerce Models", "Digital Payments", "Online Marketing"],
-      "business organization": ["Forms of Business", "Organizational Structure", "Business Ethics"],
-      "microeconomics": ["Demand Analysis", "Supply Analysis", "Market Equilibrium"],
-      "corporate accounting": ["Share Capital", "Debentures", "Final Accounts"],
-      "macroeconomics": ["National Income", "Inflation", "Fiscal Policy"],
-      "income tax": ["Tax Slabs", "Deductions", "Tax Filing"],
-      "management accounting": ["Ratio Analysis", "Cash Flow Statement", "Fund Flow Statement"],
-      "auditing": ["Audit Planning", "Internal Control", "Audit Report"],
-      "financial markets": ["Stock Market", "Bond Market", "Derivatives"],
-      "indirect taxes": ["GST Basics", "VAT", "Customs Duty"],
-      "corporate finance": ["Cost of Capital", "Leverage", "Dividend Policy"],
-      "international trade": ["Trade Theories", "Balance of Payments", "Forex Markets"],
-      "gst": ["GST Structure", "Input Tax Credit", "GST Returns"],
-      "investment management": ["Portfolio Theory", "Risk and Return", "Asset Allocation"],
-      "managerial economics": ["Demand Forecasting", "Production Analysis", "Market Structures"],
-      "accounting for managers": ["Financial Reporting", "Cost Analysis", "Budgetary Control"],
-      "operations research": ["Linear Programming", "Decision Theory", "Simulation"],
-      "business analytics": ["Data Analysis", "Predictive Modeling", "Visualization"],
-      "supply chain management": ["Logistics", "Inventory Management", "Supplier Relationships"],
-      "advanced programming": ["Advanced Java", "C# Programming", "Design Patterns"],
-      "discrete mathematics": ["Set Theory", "Graph Theory", "Combinatorics"],
-      "system analysis": ["Feasibility Study", "Requirement Analysis", "System Design"],
-      "data structures & algorithms": ["Sorting Algorithms", "Searching Algorithms", "Algorithm Complexity"],
-      "database systems": ["NoSQL", "Indexing", "Query Optimization"],
-      "network security": ["Firewalls", "VPNs", "Ethical Hacking"],
-      "software engineering": ["Software Testing", "DevOps", "Software Metrics"],
-      "machine learning": ["Supervised Learning", "Unsupervised Learning", "Deep Learning"],
-      "big data analytics": ["Hadoop", "Spark", "Data Lakes"],
-      "iot": ["IoT Architecture", "Sensors", "IoT Protocols"],
-      "advanced web technologies": ["ReactJS", "NodeJS", "Web Security"],
-      "advanced financial accounting": ["Consolidated Statements", "Accounting Standards", "Forensic Accounting"],
-      "business environment": ["PEST Analysis", "Economic Policies", "Globalization"],
-      "economic analysis": ["GDP Analysis", "Inflation", "Fiscal Policy"],
-      "corporate tax planning": ["Tax Strategies", "Tax Avoidance", "Tax Incentives"],
-      "international finance": ["Forex Markets", "Exchange Rates", "Hedging"],
-      "financial risk management": ["Risk Assessment", "Insurance", "Risk Mitigation"],
-      "research methodology": ["Research Design", "Data Collection", "Hypothesis Testing"],
-      "investment analysis": ["Equity Valuation", "Bond Valuation", "Portfolio Management"],
-      "corporate governance": ["Board Structures", "Shareholder Rights", "Compliance"],
-      "global trade": ["Trade Agreements", "Export-Import", "Trade Barriers"],
-      "engineering mathematics i": ["Linear Algebra", "Calculus", "Differential Equations"],
-      "physics": ["Mechanics", "Optics", "Electromagnetism"],
-      "basic electrical engineering": ["Circuits", "Transformers", "Motors"],
-      "engineering mathematics ii": ["Vector Calculus", "Complex Analysis", "Numerical Methods"],
-      "chemistry": ["Organic Chemistry", "Inorganic Chemistry", "Physical Chemistry"],
-      "basic mechanical engineering": ["Thermodynamics", "Mechanics", "Materials"],
-      "digital logic design": ["Logic Gates", "Flip-Flops", "Karnaugh Maps"],
-      "circuit theory": ["Network Theorems", "AC Circuits", "Transient Analysis"],
-      "algorithms": ["Divide and Conquer", "Dynamic Programming", "Greedy Algorithms"],
-      "microprocessors": ["8085 Architecture", "Interfacing", "Assembly Language"],
-      "signals and systems": ["Fourier Transform", "Laplace Transform", "Z-Transform"],
-      "control systems": ["Feedback Systems", "Stability Analysis", "PID Controllers"],
-      "embedded systems": ["Microcontrollers", "RTOS", "Embedded C"],
-      "vlsi design": ["CMOS Technology", "Logic Design", "Fabrication"],
-      "robotics": ["Kinematics", "Robotic Programming", "Sensors in Robotics"],
-      "ai and deep learning": ["Convolutional Neural Networks", "Recurrent Neural Networks", "AI Ethics"]
-    };
-
-    // Resources for each chapter (ensure at least one resource per chapter)
-    const resources = {
-      "Introduction to C": [
-        { type: 'pdf', title: 'C Programming Basics', url: 'https://example.com/c_basics.pdf' },
-        { type: 'video', title: 'C Programming Intro', url: 'https://www.youtube.com/embed/c_intro' }
-      ],
-      "Control Structures": [
-        { type: 'pdf', title: 'Control Structures in C', url: 'https://example.com/control_structures.pdf' }
-      ],
-      "Functions": [
-        { type: 'pdf', title: 'Functions in C', url: 'https://example.com/functions.pdf' }
-      ],
-      "Arrays": [
-        { type: 'pdf', title: 'Arrays in C', url: 'https://example.com/arrays.pdf' }
-      ],
-      "Pointers": [
-        { type: 'pdf', title: 'Pointers in C', url: 'https://example.com/pointers.pdf' }
-      ],
-      "Algebra": [
-        { type: 'pdf', title: 'Algebra Basics', url: 'https://example.com/algebra.pdf' }
-      ],
-      "Calculus": [
-        { type: 'pdf', title: 'Calculus Fundamentals', url: 'https://example.com/calculus.pdf' }
-      ],
-      "Matrices": [
-        { type: 'pdf', title: 'Matrices and Determinants', url: 'https://example.com/matrices.pdf' }
-      ],
-      "HTML Basics": [
-        { type: 'pdf', title: 'HTML Introduction', url: 'https://example.com/html_basics.pdf' }
-      ],
-      "CSS Basics": [
-        { type: 'pdf', title: 'CSS Fundamentals', url: 'https://example.com/css_basics.pdf' }
-      ],
-      "JavaScript Basics": [
-        { type: 'pdf', title: 'JavaScript Introduction', url: 'https://example.com/javascript_basics.pdf' }
-      ],
-      "Arrays and Linked Lists": [
-        { type: 'pdf', title: 'Arrays and Linked Lists', url: 'https://example.com/arrays_linked_lists.pdf' }
-      ],
-      "Stacks and Queues": [
-        { type: 'pdf', title: 'Stacks and Queues', url: 'https://example.com/stacks_queues.pdf' }
-      ],
-      "Trees and Graphs": [
-        { type: 'pdf', title: 'Trees and Graphs', url: 'https://example.com/trees_graphs.pdf' }
-      ],
-      "Differential Equations": [
-        { type: 'pdf', title: 'Differential Equations', url: 'https://example.com/diff_equations.pdf' }
-      ],
-      "Probability": [
-        { type: 'pdf', title: 'Probability Basics', url: 'https://example.com/probability.pdf' }
-      ],
-      "Statistics": [
-        { type: 'pdf', title: 'Statistics Fundamentals', url: 'https://example.com/statistics.pdf' }
-      ],
-      "CPU Basics": [
-        { type: 'pdf', title: 'CPU Architecture', url: 'https://example.com/cpu_architecture.pdf' }
-      ],
-      "Memory Systems": [
-        { type: 'pdf', title: 'Memory Systems', url: 'https://example.com/memory_systems.pdf' }
-      ],
-      "I/O Systems": [
-        { type: 'pdf', title: 'I/O Systems', url: 'https://example.com/io_systems.pdf' }
-      ],
-      "Classes and Objects": [
-        { type: 'pdf', title: 'Classes and Objects in C++', url: 'https://example.com/classes_objects.pdf' }
-      ],
-      "Inheritance": [
-        { type: 'pdf', title: 'Inheritance in C++', url: 'https://example.com/inheritance.pdf' }
-      ],
-      "Polymorphism": [
-        { type: 'pdf', title: 'Polymorphism in C++', url: 'https://example.com/polymorphism.pdf' }
-      ],
-      "Relational Databases": [
-        { type: 'pdf', title: 'Relational Databases', url: 'https://example.com/relational_db.pdf' }
-      ],
-      "SQL Basics": [
-        { type: 'pdf', title: 'SQL Basics', url: 'https://example.com/sql_basics.pdf' }
-      ],
-      "Normalization": [
-        { type: 'pdf', title: 'Database Normalization', url: 'https://example.com/normalization.pdf' }
-      ],
-      "Process Management": [
-        { type: 'pdf', title: 'Process Management in OS', url: 'https://example.com/process_management.pdf' }
-      ],
-      "Memory Management": [
-        { type: 'pdf', title: 'Memory Management in OS', url: 'https://example.com/memory_management.pdf' }
-      ],
-      "File Systems": [
-        { type: 'pdf', title: 'File Systems in OS', url: 'https://example.com/file_systems.pdf' }
-      ],
-      "Java Basics": [
-        { type: 'pdf', title: 'Java Introduction', url: 'https://example.com/java_basics.pdf' }
-      ],
-      "OOP in Java": [
-        { type: 'pdf', title: 'Object-Oriented Programming in Java', url: 'https://example.com/oop_java.pdf' }
-      ],
-      "Java Collections": [
-        { type: 'pdf', title: 'Java Collections Framework', url: 'https://example.com/java_collections.pdf' }
-      ],
-      "SDLC": [
-        { type: 'pdf', title: 'Software Development Life Cycle', url: 'https://example.com/sdlc.pdf' }
-      ],
-      "Agile Methodology": [
-        { type: 'pdf', title: 'Agile Methodology', url: 'https://example.com/agile.pdf' }
-      ],
-      "Testing": [
-        { type: 'pdf', title: 'Software Testing', url: 'https://example.com/testing.pdf' }
-      ],
-      "Network Models": [
-        { type: 'pdf', title: 'Network Models', url: 'https://example.com/network_models.pdf' }
-      ],
-      "TCP/IP": [
-        { type: 'pdf', title: 'TCP/IP Protocol', url: 'https://example.com/tcp_ip.pdf' }
-      ],
-      "Routing": [
-        { type: 'pdf', title: 'Routing in Networks', url: 'https://example.com/routing.pdf' }
-      ],
-      "Frontend Development": [
-        { type: 'pdf', title: 'Frontend Development Guide', url: 'https://example.com/frontend_dev.pdf' }
-      ],
-      "Backend Development": [
-        { type: 'pdf', title: 'Backend Development Guide', url: 'https://example.com/backend_dev.pdf' }
-      ],
-      "APIs": [
-        { type: 'pdf', title: 'API Development', url: 'https://example.com/apis.pdf' }
-      ],
-      "Python Basics": [
-        { type: 'pdf', title: 'Python Introduction', url: 'https://example.com/python_basics.pdf' }
-      ],
-      "Data Analysis with Python": [
-        { type: 'pdf', title: 'Data Analysis with Python', url: 'https://example.com/data_analysis_python.pdf' }
-      ],
-      "Python OOP": [
-        { type: 'pdf', title: 'OOP in Python', url: 'https://example.com/python_oop.pdf' }
-      ],
-      "Cloud Models": [
-        { type: 'pdf', title: 'Cloud Computing Models', url: 'https://example.com/cloud_models.pdf' }
-      ],
-      "AWS Basics": [
-        { type: 'pdf', title: 'AWS Basics', url: 'https://example.com/aws_basics.pdf' }
-      ],
-      "Azure Basics": [
-        { type: 'pdf', title: 'Azure Basics', url: 'https://example.com/azure_basics.pdf' }
-      ],
-      "Android Basics": [
-        { type: 'pdf', title: 'Android Development Basics', url: 'https://example.com/android_basics.pdf' }
-      ],
-      "iOS Basics": [
-        { type: 'pdf', title: 'iOS Development Basics', url: 'https://example.com/ios_basics.pdf' }
-      ],
-      "Cross-Platform": [
-        { type: 'pdf', title: 'Cross-Platform Development', url: 'https://example.com/cross_platform.pdf' }
-      ],
-      "Threats": [
-        { type: 'pdf', title: 'Cyber Threats', url: 'https://example.com/cyber_threats.pdf' }
-      ],
-      "Cryptography": [
-        { type: 'pdf', title: 'Cryptography Basics', url: 'https://example.com/cryptography.pdf' }
-      ],
-      "Network Security": [
-        { type: 'pdf', title: 'Network Security', url: 'https://example.com/network_security.pdf' }
-      ],
-      "Machine Learning Intro": [
-        { type: 'pdf', title: 'Introduction to Machine Learning', url: 'https://example.com/ml_intro.pdf' }
-      ],
-      "Neural Networks": [
-        { type: 'pdf', title: 'Neural Networks Basics', url: 'https://example.com/neural_networks.pdf' }
-      ],
-      "AI Applications": [
-        { type: 'pdf', title: 'AI Applications', url: 'https://example.com/ai_applications.pdf' }
-      ],
-      "Management Concepts": [
-        { type: 'pdf', title: 'Management Concepts', url: 'https://example.com/management_concepts.pdf' }
-      ],
-      "Planning": [
-        { type: 'pdf', title: 'Planning in Management', url: 'https://example.com/planning.pdf' }
-      ],
-      "Organizing": [
-        { type: 'pdf', title: 'Organizing in Management', url: 'https://example.com/organizing.pdf' }
-      ],
-      "Demand and Supply": [
-        { type: 'pdf', title: 'Demand and Supply', url: 'https://example.com/demand_supply.pdf' }
-      ],
-      "Market Structures": [
-        { type: 'pdf', title: 'Market Structures', url: 'https://example.com/market_structures.pdf' }
-      ],
-      "Economic Policies": [
-        { type: 'pdf', title: 'Economic Policies', url: 'https://example.com/economic_policies.pdf' }
-      ],
-      "Accounting Basics": [
-        { type: 'pdf', title: 'Accounting Basics', url: 'https://example.com/accounting_basics.pdf' }
-      ],
-      "Balance Sheet": [
-        { type: 'pdf', title: 'Balance Sheet Guide', url: 'https://example.com/balance_sheet.pdf' }
-      ],
-      "Income Statement": [
-        { type: 'pdf', title: 'Income Statement Guide', url: 'https://example.com/income_statement.pdf' }
-      ],
-      "Marketing Mix": [
-        { type: 'pdf', title: 'Marketing Mix', url: 'https://example.com/marketing_mix.pdf' }
-      ],
-      "Consumer Behavior": [
-        { type: 'pdf', title: 'Consumer Behavior', url: 'https://example.com/consumer_behavior.pdf' }
-      ],
-      "Digital Marketing": [
-        { type: 'pdf', title: 'Digital Marketing Basics', url: 'https://example.com/digital_marketing.pdf' }
-      ],
-      "Descriptive Statistics": [
-        { type: 'pdf', title: 'Descriptive Statistics', url: 'https://example.com/descriptive_statistics.pdf' }
-      ],
-      "Inferential Statistics": [
-        { type: 'pdf', title: 'Inferential Statistics', url: 'https://example.com/inferential_statistics.pdf' }
-      ],
-      "Regression Analysis": [
-        { type: 'pdf', title: 'Regression Analysis', url: 'https://example.com/regression_analysis.pdf' }
-      ],
-      "Motivation Theories": [
-        { type: 'pdf', title: 'Motivation Theories', url: 'https://example.com/motivation_theories.pdf' }
-      ],
-      "Leadership Styles": [
-        { type: 'pdf', title: 'Leadership Styles', url: 'https://example.com/leadership_styles.pdf' }
-      ],
-      "Team Dynamics": [
-        { type: 'pdf', title: 'Team Dynamics', url: 'https://example.com/team_dynamics.pdf' }
-      ],
-      "Recruitment": [
-        { type: 'pdf', title: 'Recruitment Strategies', url: 'https://example.com/recruitment.pdf' }
-      ],
-      "Training": [
-        { type: 'pdf', title: 'Training and Development', url: 'https://example.com/training.pdf' }
-      ],
-      "Performance Appraisal": [
-        { type: 'pdf', title: 'Performance Appraisal', url: 'https://example.com/performance_appraisal.pdf' }
-      ],
-      "Contract Law": [
-        { type: 'pdf', title: 'Contract Law Basics', url: 'https://example.com/contract_law.pdf' }
-      ],
-      "Company Law": [
-        { type: 'pdf', title: 'Company Law', url: 'https://example.com/company_law.pdf' }
-      ],
-      "Consumer Protection": [
-        { type: 'pdf', title: 'Consumer Protection Laws', url: 'https://example.com/consumer_protection.pdf' }
-      ],
-      "Cost Concepts": [
-        { type: 'pdf', title: 'Cost Concepts', url: 'https://example.com/cost_concepts.pdf' }
-      ],
-      "Budgeting": [
-        { type: 'pdf', title: 'Budgeting Basics', url: 'https://example.com/budgeting.pdf' }
-      ],
-      "Variance Analysis": [
-        { type: 'pdf', title: 'Variance Analysis', url: 'https://example.com/variance_analysis.pdf' }
-      ],
-      "Time Value of Money": [
-        { type: 'pdf', title: 'Time Value of Money', url: 'https://example.com/time_value_money.pdf' }
-      ],
-      "Risk and Return": [
-        { type: 'pdf', title: 'Risk and Return', url: 'https://example.com/risk_return.pdf' }
-      ],
-      "Capital Budgeting": [
-        { type: 'pdf', title: 'Capital Budgeting', url: 'https://example.com/capital_budgeting.pdf' }
-      ],
-      "Production Planning": [
-        { type: 'pdf', title: 'Production Planning', url: 'https://example.com/production_planning.pdf' }
-      ],
-      "Quality Control": [
-        { type: 'pdf', title: 'Quality Control', url: 'https://example.com/quality_control.pdf' }
-      ],
-      "Supply Chain": [
-        { type: 'pdf', title: 'Supply Chain Basics', url: 'https://example.com/supply_chain.pdf' }
-      ],
-      "Business Ideas": [
-        { type: 'pdf', title: 'Business Ideas', url: 'https://example.com/business_ideas.pdf' }
-      ],
-      "Startup Funding": [
-        { type: 'pdf', title: 'Startup Funding', url: 'https://example.com/startup_funding.pdf' }
-      ],
-      "Growth Strategies": [
-        { type: 'pdf', title: 'Growth Strategies', url: 'https://example.com/growth_strategies.pdf' }
-      ],
-      "SWOT Analysis": [
-        { type: 'pdf', title: 'SWOT Analysis', url: 'https://example.com/swot_analysis.pdf' }
-      ],
-      "Competitive Strategy": [
-        { type: 'pdf', title: 'Competitive Strategy', url: 'https://example.com/competitive_strategy.pdf' }
-      ],
-      "Corporate Strategy": [
-        { type: 'pdf', title: 'Corporate Strategy', url: 'https://example.com/corporate_strategy.pdf' }
-      ],
-      "Global Markets": [
-        { type: 'pdf', title: 'Global Markets', url: 'https://example.com/global_markets.pdf' }
-      ],
-      "Trade Policies": [
-        { type: 'pdf', title: 'Trade Policies', url: 'https://example.com/trade_policies.pdf' }
-      ],
-      "Cultural Influences": [
-        { type: 'pdf', title: 'Cultural Influences in Business', url: 'https://example.com/cultural_influences.pdf' }
-      ],
-      "Buying Behavior": [
-        { type: 'pdf', title: 'Buying Behavior Analysis', url: 'https://example.com/buying_behavior.pdf' }
-      ],
-      "Market Segmentation": [
-        { type: 'pdf', title: 'Market Segmentation Guide', url: 'https://example.com/market_segmentation.pdf' }
-      ],
-      "Brand Loyalty": [
-        { type: 'pdf', title: 'Building Brand Loyalty', url: 'https://example.com/brand_loyalty.pdf' }
-      ],
-      "Ethical Theories": [
-        { type: 'pdf', title: 'Ethical Theories in Business', url: 'https://example.com/ethical_theories.pdf' }
-      ],
-      "Corporate Governance": [
-        { type: 'pdf', title: 'Corporate Governance Principles', url: 'https://example.com/corporate_governance.pdf' }
-      ],
-      "CSR": [
-        { type: 'pdf', title: 'Corporate Social Responsibility', url: 'https://example.com/csr.pdf' }
-      ],
-      "Project Planning": [
-        { type: 'pdf', title: 'Project Planning Basics', url: 'https://example.com/project_planning.pdf' }
-      ],
-      "Risk Management": [
-        { type: 'pdf', title: 'Risk Management in Projects', url: 'https://example.com/risk_management.pdf' }
-      ],
-      "Agile Project Management": [
-        { type: 'pdf', title: 'Agile Project Management', url: 'https://example.com/agile_project_management.pdf' }
-      ],
-      "E-Commerce Models": [
-        { type: 'pdf', title: 'E-Commerce Business Models', url: 'https://example.com/ecommerce_models.pdf' }
-      ],
-      "Digital Payments": [
-        { type: 'pdf', title: 'Digital Payment Systems', url: 'https://example.com/digital_payments.pdf' }
-      ],
-      "Online Marketing": [
-        { type: 'pdf', title: 'Online Marketing Strategies', url: 'https://example.com/online_marketing.pdf' }
-      ],
-      "Forms of Business": [
-        { type: 'pdf', title: 'Forms of Business Organization', url: 'https://example.com/forms_of_business.pdf' }
-      ],
-      "Organizational Structure": [
-        { type: 'pdf', title: 'Organizational Structure Guide', url: 'https://example.com/organizational_structure.pdf' }
-      ],
-      "Business Ethics": [
-        { type: 'pdf', title: 'Business Ethics Overview', url: 'https://example.com/business_ethics.pdf' }
-      ],
-      "Demand Analysis": [
-        { type: 'pdf', title: 'Demand Analysis in Economics', url: 'https://example.com/demand_analysis.pdf' }
-      ],
-      "Supply Analysis": [
-        { type: 'pdf', title: 'Supply Analysis in Economics', url: 'https://example.com/supply_analysis.pdf' }
-      ],
-      "Market Equilibrium": [
-        { type: 'pdf', title: 'Market Equilibrium Concepts', url: 'https://example.com/market_equilibrium.pdf' }
-      ],
-      "Share Capital": [
-        { type: 'pdf', title: 'Share Capital in Accounting', url: 'https://example.com/share_capital.pdf' }
-      ],
-      "Debentures": [
-        { type: 'pdf', title: 'Debentures Explained', url: 'https://example.com/debentures.pdf' }
-      ],
-      "Final Accounts": [
-        { type: 'pdf', title: 'Final Accounts Preparation', url: 'https://example.com/final_accounts.pdf' }
-      ],
-      "National Income": [
-        { type: 'pdf', title: 'National Income Concepts', url: 'https://example.com/national_income.pdf' }
-      ],
-      "Inflation": [
-        { type: 'pdf', title: 'Inflation and Its Effects', url: 'https://example.com/inflation.pdf' }
-      ],
-      "Fiscal Policy": [
-        { type: 'pdf', title: 'Fiscal Policy Overview', url: 'https://example.com/fiscal_policy.pdf' }
-      ],
-      "Tax Slabs": [
-        { type: 'pdf', title: 'Income Tax Slabs', url: 'https://example.com/tax_slabs.pdf' }
-      ],
-      "Deductions": [
-        { type: 'pdf', title: 'Tax Deductions Guide', url: 'https://example.com/tax_deductions.pdf' }
-      ],
-      "Tax Filing": [
-        { type: 'pdf', title: 'Tax Filing Process', url: 'https://example.com/tax_filing.pdf' }
-      ],
-      "Ratio Analysis": [
-        { type: 'pdf', title: 'Ratio Analysis in Accounting', url: 'https://example.com/ratio_analysis.pdf' }
-      ],
-      "Cash Flow Statement": [
-        { type: 'pdf', title: 'Cash Flow Statement Guide', url: 'https://example.com/cash_flow_statement.pdf' }
-      ],
-      "Fund Flow Statement": [
-        { type: 'pdf', title: 'Fund Flow Statement Guide', url: 'https://example.com/fund_flow_statement.pdf' }
-      ],
-      "Audit Planning": [
-        { type: 'pdf', title: 'Audit Planning Basics', url: 'https://example.com/audit_planning.pdf' }
-      ],
-      "Internal Control": [
-        { type: 'pdf', title: 'Internal Control Systems', url: 'https://example.com/internal_control.pdf' }
-      ],
-      "Audit Report": [
-        { type: 'pdf', title: 'Audit Report Writing', url: 'https://example.com/audit_report.pdf' }
-      ],
-      "Stock Market": [
-        { type: 'pdf', title: 'Stock Market Basics', url: 'https://example.com/stock_market.pdf' }
-      ],
-      "Bond Market": [
-        { type: 'pdf', title: 'Bond Market Basics', url: 'https://example.com/bond_market.pdf' }
-      ],
-      "Derivatives": [
-        { type: 'pdf', title: 'Derivatives in Finance', url: 'https://example.com/derivatives.pdf' }
-      ],
-      "GST Basics": [
-        { type: 'pdf', title: 'GST Fundamentals', url: 'https://example.com/gst_basics.pdf' }
-      ],
-      "VAT": [
-        { type: 'pdf', title: 'Value Added Tax Guide', url: 'https://example.com/vat.pdf' }
-      ],
-      "Customs Duty": [
-        { type: 'pdf', title: 'Customs Duty Overview', url: 'https://example.com/customs_duty.pdf' }
-      ],
-      "Cost of Capital": [
-        { type: 'pdf', title: 'Cost of Capital Explained', url: 'https://example.com/cost_of_capital.pdf' }
-      ],
-      "Leverage": [
-        { type: 'pdf', title: 'Leverage in Finance', url: 'https://example.com/leverage.pdf' }
-      ],
-      "Dividend Policy": [
-        { type: 'pdf', title: 'Dividend Policy Guide', url: 'https://example.com/dividend_policy.pdf' }
-      ],
-      "Trade Theories": [
-        { type: 'pdf', title: 'International Trade Theories', url: 'https://example.com/trade_theories.pdf' }
-      ],
-      "Balance of Payments": [
-        { type: 'pdf', title: 'Balance of Payments Guide', url: 'https://example.com/balance_of_payments.pdf' }
-      ],
-      "Forex Markets": [
-        { type: 'pdf', title: 'Forex Markets Overview', url: 'https://example.com/forex_markets.pdf' }
-      ],
-      "GST Structure": [
-        { type: 'pdf', title: 'GST Structure Explained', url: 'https://example.com/gst_structure.pdf' }
-      ],
-      "Input Tax Credit": [
-        { type: 'pdf', title: 'Input Tax Credit Guide', url: 'https://example.com/input_tax_credit.pdf' }
-      ],
-      "GST Returns": [
-        { type: 'pdf', title: 'GST Returns Filing', url: 'https://example.com/gst_returns.pdf' }
-      ],
-      "Portfolio Theory": [
-        { type: 'pdf', title: 'Portfolio Theory Basics', url: 'https://example.com/portfolio_theory.pdf' }
-      ],
-      "Asset Allocation": [
-        { type: 'pdf', title: 'Asset Allocation Strategies', url: 'https://example.com/asset_allocation.pdf' }
-      ],
-      "Demand Forecasting": [
-        { type: 'pdf', title: 'Demand Forecasting Techniques', url: 'https://example.com/demand_forecasting.pdf' }
-      ],
-      "Production Analysis": [
-        { type: 'pdf', title: 'Production Analysis in Economics', url: 'https://example.com/production_analysis.pdf' }
-      ],
-      "Financial Reporting": [
-        { type: 'pdf', title: 'Financial Reporting Standards', url: 'https://example.com/financial_reporting.pdf' }
-      ],
-      "Cost Analysis": [
-        { type: 'pdf', title: 'Cost Analysis Techniques', url: 'https://example.com/cost_analysis.pdf' }
-      ],
-      "Budgetary Control": [
-        { type: 'pdf', title: 'Budgetary Control Systems', url: 'https://example.com/budgetary_control.pdf' }
-      ],
-      "Linear Programming": [
-        { type: 'pdf', title: 'Linear Programming Basics', url: 'https://example.com/linear_programming.pdf' }
-      ],
-      "Decision Theory": [
-        { type: 'pdf', title: 'Decision Theory Overview', url: 'https://example.com/decision_theory.pdf' }
-      ],
-      "Simulation": [
-        { type: 'pdf', title: 'Simulation in Operations Research', url: 'https://example.com/simulation.pdf' }
-      ],
-      "Data Analysis": [
-        { type: 'pdf', title: 'Data Analysis Techniques', url: 'https://example.com/data_analysis.pdf' }
-      ],
-      "Predictive Modeling": [
-        { type: 'pdf', title: 'Predictive Modeling Basics', url: 'https://example.com/predictive_modeling.pdf' }
-      ],
-      "Visualization": [
-        { type: 'pdf', title: 'Data Visualization Guide', url: 'https://example.com/data_visualization.pdf' }
-      ],
-      "Logistics": [
-        { type: 'pdf', title: 'Logistics Management', url: 'https://example.com/logistics.pdf' }
-      ],
-      "Inventory Management": [
-        { type: 'pdf', title: 'Inventory Management Techniques', url: 'https://example.com/inventory_management.pdf' }
-      ],
-      "Supplier Relationships": [
-        { type: 'pdf', title: 'Managing Supplier Relationships', url: 'https://example.com/supplier_relationships.pdf' }
-      ],
-      "Advanced Java": [
-        { type: 'pdf', title: 'Advanced Java Programming', url: 'https://example.com/advanced_java.pdf' }
-      ],
-      "C# Programming": [
-        { type: 'pdf', title: 'C# Programming Basics', url: 'https://example.com/csharp_programming.pdf' }
-      ],
-      "Design Patterns": [
-        { type: 'pdf', title: 'Design Patterns in Programming', url: 'https://example.com/design_patterns.pdf' }
-      ],
-      "Set Theory": [
-        { type: 'pdf', title: 'Set Theory Basics', url: 'https://example.com/set_theory.pdf' }
-      ],
-      "Graph Theory": [
-        { type: 'pdf', title: 'Graph Theory Fundamentals', url: 'https://example.com/graph_theory.pdf' }
-      ],
-      "Combinatorics": [
-        { type: 'pdf', title: 'Combinatorics Overview', url: 'https://example.com/combinatorics.pdf' }
-      ],
-      "Feasibility Study": [
-        { type: 'pdf', title: 'Feasibility Study Guide', url: 'https://example.com/feasibility_study.pdf' }
-      ],
-      "Requirement Analysis": [
-        { type: 'pdf', title: 'Requirement Analysis Process', url: 'https://example.com/requirement_analysis.pdf' }
-      ],
-      "System Design": [
-        { type: 'pdf', title: 'System Design Basics', url: 'https://example.com/system_design.pdf' }
-      ],
-      "Sorting Algorithms": [
-        { type: 'pdf', title: 'Sorting Algorithms Overview', url: 'https://example.com/sorting_algorithms.pdf' }
-      ],
-      "Searching Algorithms": [
-        { type: 'pdf', title: 'Searching Algorithms Overview', url: 'https://example.com/searching_algorithms.pdf' }
-      ],
-      "Algorithm Complexity": [
-        { type: 'pdf', title: 'Algorithm Complexity Analysis', url: 'https://example.com/algorithm_complexity.pdf' }
-      ],
-      "NoSQL": [
-        { type: 'pdf', title: 'NoSQL Databases', url: 'https://example.com/nosql.pdf' }
-      ],
-      "Indexing": [
-        { type: 'pdf', title: 'Indexing in Databases', url: 'https://example.com/indexing.pdf' }
-      ],
-      "Query Optimization": [
-        { type: 'pdf', title: 'Query Optimization Techniques', url: 'https://example.com/query_optimization.pdf' }
-      ],
-      "Firewalls": [
-        { type: 'pdf', title: 'Firewalls in Network Security', url: 'https://example.com/firewalls.pdf' }
-      ],
-      "VPNs": [
-        { type: 'pdf', title: 'VPNs Explained', url: 'https://example.com/vpns.pdf' }
-      ],
-      "Ethical Hacking": [
-        { type: 'pdf', title: 'Ethical Hacking Basics', url: 'https://example.com/ethical_hacking.pdf' }
-      ],
-      "Software Testing": [
-        { type: 'pdf', title: 'Software Testing Methods', url: 'https://example.com/software_testing.pdf' }
-      ],
-      "DevOps": [
-        { type: 'pdf', title: 'DevOps Practices', url: 'https://example.com/devops.pdf' }
-      ],
-      "Software Metrics": [
-        { type: 'pdf', title: 'Software Metrics Guide', url: 'https://example.com/software_metrics.pdf' }
-      ],
-      "Supervised Learning": [
-        { type: 'pdf', title: 'Supervised Learning Basics', url: 'https://example.com/supervised_learning.pdf' }
-      ],
-      "Unsupervised Learning": [
-        { type: 'pdf', title: 'Unsupervised Learning Basics', url: 'https://example.com/unsupervised_learning.pdf' }
-      ],
-      "Deep Learning": [
-        { type: 'pdf', title: 'Deep Learning Fundamentals', url: 'https://example.com/deep_learning.pdf' }
-      ],
-      "Hadoop": [
-        { type: 'pdf', title: 'Hadoop Basics', url: 'https://example.com/hadoop.pdf' }
-      ],
-      "Spark": [
-        { type: 'pdf', title: 'Apache Spark Overview', url: 'https://example.com/spark.pdf' }
-      ],
-      "Data Lakes": [
-        { type: 'pdf', title: 'Data Lakes Explained', url: 'https://example.com/data_lakes.pdf' }
-      ],
-      "IoT Architecture": [
-        { type: 'pdf', title: 'IoT Architecture Overview', url: 'https://example.com/iot_architecture.pdf' }
-      ],
-      "Sensors": [
-        { type: 'pdf', title: 'Sensors in IoT', url: 'https://example.com/sensors_iot.pdf' }
-      ],
-      "IoT Protocols": [
-        { type: 'pdf', title: 'IoT Protocols Guide', url: 'https://example.com/iot_protocols.pdf' }
-      ],
-      "ReactJS": [
-        { type: 'pdf', title: 'ReactJS Basics', url: 'https://example.com/reactjs.pdf' }
-      ],
-      "NodeJS": [
-        { type: 'pdf', title: 'NodeJS Basics', url: 'https://example.com/nodejs.pdf' }
-      ],
-      "Web Security": [
-        { type: 'pdf', title: 'Web Security Fundamentals', url: 'https://example.com/web_security.pdf' }
-      ],
-      "Consolidated Statements": [
-        { type: 'pdf', title: 'Consolidated Financial Statements', url: 'https://example.com/consolidated_statements.pdf' }
-      ],
-      "Accounting Standards": [
-        { type: 'pdf', title: 'Accounting Standards Overview', url: 'https://example.com/accounting_standards.pdf' }
-      ],
-      "Forensic Accounting": [
-        { type: 'pdf', title: 'Forensic Accounting Basics', url: 'https://example.com/forensic_accounting.pdf' }
-      ],
-      "PEST Analysis": [
-        { type: 'pdf', title: 'PEST Analysis Guide', url: 'https://example.com/pest_analysis.pdf' }
-      ],
-      "Economic Policies": [
-        { type: 'pdf', title: 'Economic Policies Overview', url: 'https://example.com/economic_policies.pdf' }
-      ],
-      "Globalization": [
-        { type: 'pdf', title: 'Globalization Impact', url: 'https://example.com/globalization.pdf' }
-      ],
-      "GDP Analysis": [
-        { type: 'pdf', title: 'GDP Analysis Techniques', url: 'https://example.com/gdp_analysis.pdf' }
-      ],
-      "Tax Strategies": [
-        { type: 'pdf', title: 'Corporate Tax Strategies', url: 'https://example.com/tax_strategies.pdf' }
-      ],
-      "Tax Avoidance": [
-        { type: 'pdf', title: 'Tax Avoidance Techniques', url: 'https://example.com/tax_avoidance.pdf' }
-      ],
-      "Tax Incentives": [
-        { type: 'pdf', title: 'Tax Incentives Guide', url: 'https://example.com/tax_incentives.pdf' }
-      ],
-      "Exchange Rates": [
-        { type: 'pdf', title: 'Exchange Rates Explained', url: 'https://example.com/exchange_rates.pdf' }
-      ],
-      "Hedging": [
-        { type: 'pdf', title: 'Hedging in Finance', url: 'https://example.com/hedging.pdf' }
-      ],
-      "Risk Assessment": [
-        { type: 'pdf', title: 'Risk Assessment Techniques', url: 'https://example.com/risk_assessment.pdf' }
-      ],
-      "Insurance": [
-        { type: 'pdf', title: 'Insurance in Risk Management', url: 'https://example.com/insurance.pdf' }
-      ],
-      "Risk Mitigation": [
-        { type: 'pdf', title: 'Risk Mitigation Strategies', url: 'https://example.com/risk_mitigation.pdf' }
-      ],
-      "Research Design": [
-        { type: 'pdf', title: 'Research Design Basics', url: 'https://example.com/research_design.pdf' }
-      ],
-      "Data Collection": [
-        { type: 'pdf', title: 'Data Collection Methods', url: 'https://example.com/data_collection.pdf' }
-      ],
-      "Hypothesis Testing": [
-        { type: 'pdf', title: 'Hypothesis Testing Guide', url: 'https://example.com/hypothesis_testing.pdf' }
-      ],
-      "Equity Valuation": [
-        { type: 'pdf', title: 'Equity Valuation Techniques', url: 'https://example.com/equity_valuation.pdf' }
-      ],
-      "Bond Valuation": [
-        { type: 'pdf', title: 'Bond Valuation Techniques', url: 'https://example.com/bond_valuation.pdf' }
-      ],
-      "Portfolio Management": [
-        { type: 'pdf', title: 'Portfolio Management Basics', url: 'https://example.com/portfolio_management.pdf' }
-      ],
-      "Board Structures": [
-        { type: 'pdf', title: 'Board Structures in Governance', url: 'https://example.com/board_structures.pdf' }
-      ],
-      "Shareholder Rights": [
-        { type: 'pdf', title: 'Shareholder Rights Guide', url: 'https://example.com/shareholder_rights.pdf' }
-      ],
-      "Compliance": [
-        { type: 'pdf', title: 'Compliance in Governance', url: 'https://example.com/compliance.pdf' }
-      ],
-      "Trade Agreements": [
-        { type: 'pdf', title: 'Trade Agreements Overview', url: 'https://example.com/trade_agreements.pdf' }
-      ],
-      "Export-Import": [
-        { type: 'pdf', title: 'Export-Import Procedures', url: 'https://example.com/export_import.pdf' }
-      ],
-      "Trade Barriers": [
-        { type: 'pdf', title: 'Trade Barriers Explained', url: 'https://example.com/trade_barriers.pdf' }
-      ],
-      "Linear Algebra": [
-        { type: 'pdf', title: 'Linear Algebra Basics', url: 'https://example.com/linear_algebra.pdf' }
-      ],
-      "Differential Equations": [
-        { type: 'pdf', title: 'Differential Equations Guide', url: 'https://example.com/differential_equations.pdf' }
-      ],
-      "Mechanics": [
-        { type: 'pdf', title: 'Mechanics in Physics', url: 'https://example.com/mechanics.pdf' }
-      ],
-      "Optics": [
-        { type: 'pdf', title: 'Optics Fundamentals', url: 'https://example.com/optics.pdf' }
-      ],
-      "Electromagnetism": [
-        { type: 'pdf', title: 'Electromagnetism Basics', url: 'https://example.com/electromagnetism.pdf' }
-      ],
-      "Circuits": [
-        { type: 'pdf', title: 'Electrical Circuits Guide', url: 'https://example.com/circuits.pdf' }
-      ],
-      "Transformers": [
-        { type: 'pdf', title: 'Transformers in Electrical Engineering', url: 'https://example.com/transformers.pdf' }
-      ],
-      "Motors": [
-        { type: 'pdf', title: 'Electric Motors Basics', url: 'https://example.com/motors.pdf' }
-      ],
-      "Vector Calculus": [
-        { type: 'pdf', title: 'Vector Calculus Basics', url: 'https://example.com/vector_calculus.pdf' }
-      ],
-      "Complex Analysis": [
-        { type: 'pdf', title: 'Complex Analysis Guide', url: 'https://example.com/complex_analysis.pdf' }
-      ],
-      "Numerical Methods": [
-        { type: 'pdf', title: 'Numerical Methods Overview', url: 'https://example.com/numerical_methods.pdf' }
-      ],
-      "Organic Chemistry": [
-        { type: 'pdf', title: 'Organic Chemistry Basics', url: 'https://example.com/organic_chemistry.pdf' }
-      ],
-      "Inorganic Chemistry": [
-        { type: 'pdf', title: 'Inorganic Chemistry Basics', url: 'https://example.com/inorganic_chemistry.pdf' }
-      ],
-      "Physical Chemistry": [
-        { type: 'pdf', title: 'Physical Chemistry Basics', url: 'https://example.com/physical_chemistry.pdf' }
-      ],
-      "Thermodynamics": [
-        { type: 'pdf', title: 'Thermodynamics in Mechanical Engineering', url: 'https://example.com/thermodynamics.pdf' }
-      ],
-      "Materials": [
-        { type: 'pdf', title: 'Materials in Mechanical Engineering', url: 'https://example.com/materials.pdf' }
-      ],
-      "Logic Gates": [
-        { type: 'pdf', title: 'Logic Gates Guide', url: 'https://example.com/logic_gates.pdf' }
-      ],
-      "Flip-Flops": [
-        { type: 'pdf', title: 'Flip-Flops in Digital Logic', url: 'https://example.com/flip_flops.pdf' }
-      ],
-      "Karnaugh Maps": [
-        { type: 'pdf', title: 'Karnaugh Maps Guide', url: 'https://example.com/karnaugh_maps.pdf' }
-      ],
-      "Network Theorems": [
-        { type: 'pdf', title: 'Network Theorems Overview', url: 'https://example.com/network_theorems.pdf' }
-      ],
-      "AC Circuits": [
-        { type: 'pdf', title: 'AC Circuits Basics', url: 'https://example.com/ac_circuits.pdf' }
-      ],
-      "Transient Analysis": [
-        { type: 'pdf', title: 'Transient Analysis in Circuits', url: 'https://example.com/transient_analysis.pdf' }
-      ],
-      "Divide and Conquer": [
-        { type: 'pdf', title: 'Divide and Conquer Algorithms', url: 'https://example.com/divide_conquer.pdf' }
-      ],
-      "Dynamic Programming": [
-        { type: 'pdf', title: 'Dynamic Programming Basics', url: 'https://example.com/dynamic_programming.pdf' }
-      ],
-      "Greedy Algorithms": [
-        { type: 'pdf', title: 'Greedy Algorithms Overview', url: 'https://example.com/greedy_algorithms.pdf' }
-      ],
-      "8085 Architecture": [
-        { type: 'pdf', title: '8085 Microprocessor Architecture', url: 'https://example.com/8085_architecture.pdf' }
-      ],
-      "Interfacing": [
-        { type: 'pdf', title: 'Interfacing with Microprocessors', url: 'https://example.com/interfacing.pdf' }
-      ],
-      "Assembly Language": [
-        { type: 'pdf', title: 'Assembly Language Programming', url: 'https://example.com/assembly_language.pdf' }
-      ],
-      "Fourier Transform": [
-        { type: 'pdf', title: 'Fourier Transform Basics', url: 'https://example.com/fourier_transform.pdf' }
-      ],
-      "Laplace Transform": [
-        { type: 'pdf', title: 'Laplace Transform Guide', url: 'https://example.com/laplace_transform.pdf' }
-      ],
-      "Z-Transform": [
-        { type: 'pdf', title: 'Z-Transform Overview', url: 'https://example.com/z_transform.pdf' }
-      ],
-      "Feedback Systems": [
-        { type: 'pdf', title: 'Feedback Systems in Control', url: 'https://example.com/feedback_systems.pdf' }
-      ],
-      "Stability Analysis": [
-        { type: 'pdf', title: 'Stability Analysis in Control Systems', url: 'https://example.com/stability_analysis.pdf' }
-      ],
-      "PID Controllers": [
-        { type: 'pdf', title: 'PID Controllers Guide', url: 'https://example.com/pid_controllers.pdf' }
-      ],
-      "Microcontrollers": [
-        { type: 'pdf', title: 'Microcontrollers Basics', url: 'https://example.com/microcontrollers.pdf' }
-      ],
-      "RTOS": [
-        { type: 'pdf', title: 'Real-Time Operating Systems', url: 'https://example.com/rtos.pdf' }
-      ],
-      "Embedded C": [
-        { type: 'pdf', title: 'Embedded C Programming', url: 'https://example.com/embedded_c.pdf' }
-      ],
-      "CMOS Technology": [
-        { type: 'pdf', title: 'CMOS Technology Overview', url: 'https://example.com/cmos_technology.pdf' }
-      ],
-      "Logic Design": [
-        { type: 'pdf', title: 'Logic Design in VLSI', url: 'https://example.com/logic_design.pdf' }
-      ],
-      "Fabrication": [
-        { type: 'pdf', title: 'VLSI Fabrication Process', url: 'https://example.com/fabrication.pdf' }
-      ],
-      "Kinematics": [
-        { type: 'pdf', title: 'Kinematics in Robotics', url: 'https://example.com/kinematics.pdf' }
-      ],
-      "Robotic Programming": [
-        { type: 'pdf', title: 'Robotic Programming Basics', url: 'https://example.com/robotic_programming.pdf' }
-      ],
-      "Sensors in Robotics": [
-        { type: 'pdf', title: 'Sensors in Robotics', url: 'https://example.com/sensors_robotics.pdf' }
-      ],
-      "Convolutional Neural Networks": [
-        { type: 'pdf', title: 'Convolutional Neural Networks Basics', url: 'https://example.com/convolutional_neural_networks.pdf' }
-      ],
-      "Recurrent Neural Networks": [
-        { type: 'pdf', title: 'Recurrent Neural Networks Basics', url: 'https://example.com/recurrent_neural_networks.pdf' }
-      ],
-      "AI Ethics": [
-        { type: 'pdf', title: 'AI Ethics Overview', url: 'https://example.com/ai_ethics.pdf' }
-      ]
-    };
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const course = urlParams.get('course');
-    const subject = urlParams.get('subject')?.toLowerCase(); // Normalize to lowercase
-    const resourceTitle = document.getElementById('resourceTitle');
-    const resourceList = document.getElementById('resourceList');
-    const errorMessage = document.getElementById('errorMessage');
-    const errorText = document.getElementById('errorText');
-    const backLink = document.getElementById('backLink');
-    const searchInput = document.getElementById('searchInput');
-
-    // Set the back link with the course parameter
-    if (course) {
-      backLink.href = `subjects.html?course=${encodeURIComponent(course)}`;
-    } else {
-      backLink.href = 'subjects.html';
+    const BASE_URL = "http://localhost:3001";
+    async function checkSessionOrRedirect() {
+      try {
+        const response = await fetch(`${BASE_URL}/api/user`, {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include"
+        });
+        if (!response.ok) throw new Error("Not logged in");
+        return await response.json();
+      } catch (e) {
+        window.location.href = "loginandsignuppage.html";
+        throw e;
+      }
     }
-
-    // Validate subject and course
-    if (!course) {
-      resourceTitle.textContent = "Error";
-      errorText.innerHTML = 'No course specified. Please go back to <a href="academic.html">Academic Hub</a> and select a course.';
-      errorMessage.style.display = 'block';
-      resourceList.style.display = 'none';
-      searchInput.style.display = 'none';
-    } else if (!subject || !subjectChapters[subject]) {
-      resourceTitle.textContent = "Error";
-      errorText.innerHTML = `Invalid subject: "${subject || 'none'}". Please go back to <a href="subjects.html?course=${encodeURIComponent(course)}">Subjects</a> and select a valid subject.`;
-      errorMessage.style.display = 'block';
-      resourceList.style.display = 'none';
-      searchInput.style.display = 'none';
-    } else {
-      // Capitalize subject for display (e.g., "c programming" -> "C Programming")
-      const formattedSubject = subject.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-      resourceTitle.textContent = `${formattedSubject} Resources`;
-      displayResources(subject);
-    }
-
-    function displayResources(subject) {
-      const chapters = subjectChapters[subject] || [];
-      resourceList.innerHTML = '';
-
-      if (chapters.length === 0) {
-        resourceList.innerHTML = '<p>No chapters available for this subject.</p>';
-        return;
+    document.addEventListener('DOMContentLoaded', async () => {
+      await checkSessionOrRedirect();
+      try {
+        const theme = localStorage.getItem('theme');
+        if (theme === 'light') {
+          document.body.classList.add('light-mode');
+        }
+        const settings = JSON.parse(localStorage.getItem('settings')) || {};
+        if (settings.fontSize) {
+          document.body.classList.add(`font-${settings.fontSize}`);
+        }
+      } catch (e) {
+        console.error('Error loading theme/font settings:', e);
       }
 
-      chapters.forEach(chapter => {
-        const chapterResources = resources[chapter] || [];
-        const card = document.createElement('div');
-        card.className = 'intro-card';
-        let resourcesHtml = '';
+      const urlParams = new URLSearchParams(window.location.search);
+      const course = urlParams.get('course');
+      const subject = urlParams.get('subject')?.toLowerCase();
+      const chapter = urlParams.get('chapter');
+      const resourceTitle = document.getElementById('resourceTitle');
+      const resourceList = document.getElementById('resourceList');
+      const errorMessage = document.getElementById('errorMessage');
+      const errorText = document.getElementById('errorText');
+      const backLink = document.getElementById('backLink');
+      const searchInput = document.getElementById('searchInput');
 
-        if (chapterResources.length === 0) {
-          resourcesHtml = '<p>No resources available for this chapter.</p>';
-        } else {
-          resourcesHtml = chapterResources.map(res => {
-            if (res.type === 'pdf') {
-              return `<p><a href="${res.url}" class="cta-button" target="_blank">Download PDF: ${res.title}</a></p>`;
-            } else if (res.type === 'video') {
-              return `<p>Watch Video: ${res.title}</p><iframe src="${res.url}" frameborder="0" allowfullscreen></iframe>`;
-            }
-            return '';
-          }).join('');
+      // Set the back link with the course parameter
+      if (course) {
+        backLink.href = `subjects.html?course=${encodeURIComponent(course)}`;
+      } else {
+        backLink.href = 'subjects.html';
+      }
+
+      // Sample resources data (you can replace this with your actual data)
+      const sampleResources = {
+        "c programming": {
+          "Introduction to C": [
+            { title: "C Programming Basics", type: "pdf", url: "https://example.com/c-basics.pdf" },
+            { title: "C Programming Tutorial", type: "video", url: "https://www.youtube.com/embed/example1" }
+          ],
+          "Variables and Data Types": [
+            { title: "Data Types in C", type: "pdf", url: "https://example.com/data-types.pdf" },
+            { title: "Variables Tutorial", type: "video", url: "https://www.youtube.com/embed/example2" }
+          ]
+        },
+        "web development": {
+          "HTML Basics": [
+            { title: "HTML5 Guide", type: "pdf", url: "https://example.com/html5.pdf" },
+            { title: "HTML Crash Course", type: "video", url: "https://www.youtube.com/embed/example3" }
+          ],
+          "CSS Fundamentals": [
+            { title: "CSS Complete Guide", type: "pdf", url: "https://example.com/css-guide.pdf" },
+            { title: "CSS Tutorial", type: "video", url: "https://www.youtube.com/embed/example4" }
+          ]
+        }
+        // Add more subjects and their resources here
+      };
+
+      // Validate subject and course
+      if (!course || !subject) {
+        resourceTitle.textContent = "Error";
+        errorText.innerHTML = 'Missing required parameters. Please go back to <a href="academic.html">Academic Hub</a> and select a course and subject.';
+        errorMessage.style.display = 'block';
+        resourceList.style.display = 'none';
+        searchInput.style.display = 'none';
+      } else {
+        // Capitalize subject for display
+        const formattedSubject = subject.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+        resourceTitle.textContent = `${formattedSubject} Resources`;
+        
+        // Get resources for the subject
+        const subjectResources = sampleResources[subject] || {};
+        
+        if (Object.keys(subjectResources).length === 0) {
+          resourceList.innerHTML = '<p>No resources available for this subject yet.</p>';
+          return;
         }
 
-        card.innerHTML = `
-          <h4>${chapter}</h4>
-          ${resourcesHtml}
-        `;
-        resourceList.appendChild(card);
-      });
-    }
+        // Display resources by chapter
+        Object.entries(subjectResources).forEach(([chapter, resources]) => {
+          const chapterCard = document.createElement('div');
+          chapterCard.className = 'intro-card';
+          chapterCard.innerHTML = `
+            <h4>${chapter}</h4>
+            <div class="resources-container">
+              ${resources.map(resource => `
+                <div class="resource-item">
+                  <h5>${resource.title}</h5>
+                  <p>${resource.type.toUpperCase()} Resource</p>
+                  ${resource.type === 'video' 
+                    ? `<iframe src="${resource.url}" frameborder="0" allowfullscreen></iframe>`
+                    : `<a href="${resource.url}" class="cta-button" target="_blank">Download ${resource.type.toUpperCase()}</a>`
+                  }
+                </div>
+              `).join('')}
+            </div>
+          `;
+          resourceList.appendChild(chapterCard);
+        });
+      }
 
-    // Search functionality
-    searchInput.addEventListener('input', () => {
-      const searchTerm = searchInput.value.toLowerCase();
-      const cards = resourceList.getElementsByClassName('intro-card');
+      // Search functionality
+      searchInput.addEventListener('input', () => {
+        const searchTerm = searchInput.value.toLowerCase();
+        const cards = resourceList.getElementsByClassName('intro-card');
 
-      Array.from(cards).forEach(card => {
-        const chapterTitle = card.querySelector('h4').textContent.toLowerCase();
-        const resources = card.querySelectorAll('p');
-        let resourceMatch = false;
+        Array.from(cards).forEach(card => {
+          const title = card.querySelector('h4').textContent.toLowerCase();
+          const resources = card.querySelectorAll('.resource-item');
+          let shouldShow = false;
 
-        resources.forEach(resource => {
-          if (resource.textContent.toLowerCase().includes(searchTerm)) {
-            resourceMatch = true;
+          resources.forEach(resource => {
+            const resourceTitle = resource.querySelector('h5').textContent.toLowerCase();
+            if (resourceTitle.includes(searchTerm)) {
+              shouldShow = true;
+            }
+          });
+
+          if (title.includes(searchTerm) || shouldShow) {
+            card.style.display = 'block';
+          } else {
+            card.style.display = 'none';
           }
         });
-
-        if (chapterTitle.includes(searchTerm) || resourceMatch) {
-          card.style.display = 'block';
-        } else {
-          card.style.display = 'none';
-        }
       });
     });
   </script>

@@ -747,290 +747,308 @@
   </div>
 
   <script>
-    const profile = document.querySelector('.profile');
-    const profileIcon = document.querySelector('.profile-icon');
-
-    function toggleProfileDropdown() {
-      profile.classList.toggle('active');
-      const isExpanded = profile.classList.contains('active');
-      profileIcon.setAttribute('aria-expanded', isExpanded);
-    }
-
-    profileIcon.addEventListener('click', toggleProfileDropdown);
-    profileIcon.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        toggleProfileDropdown();
+    const BASE_URL = "http://localhost:3001";
+    async function checkSessionOrRedirect() {
+      try {
+        const response = await fetch(`${BASE_URL}/api/user`, {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include"
+        });
+        if (!response.ok) throw new Error("Not logged in");
+        return await response.json();
+      } catch (e) {
+        window.location.href = "loginandsignuppage.html";
+        throw e;
       }
-    });
+    }
+    document.addEventListener('DOMContentLoaded', async () => {
+      await checkSessionOrRedirect();
+      const profile = document.querySelector('.profile');
+      const profileIcon = document.querySelector('.profile-icon');
 
-    document.addEventListener('click', (e) => {
-      if (!profile.contains(e.target)) {
+      function toggleProfileDropdown() {
+        profile.classList.toggle('active');
+        const isExpanded = profile.classList.contains('active');
+        profileIcon.setAttribute('aria-expanded', isExpanded);
+      }
+
+      profileIcon.addEventListener('click', toggleProfileDropdown);
+      profileIcon.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          toggleProfileDropdown();
+        }
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!profile.contains(e.target)) {
+          profile.classList.remove('active');
+          profileIcon.setAttribute('aria-expanded', false);
+        }
+      });
+
+      const profileModal = document.getElementById('profileModal');
+      const profileForm = document.getElementById('profileForm');
+      const profilePicInput = document.getElementById('profilePic');
+      const profilePicPreview = document.getElementById('profilePicPreview');
+
+      function openProfileModal() {
+        profileModal.classList.add('active');
         profile.classList.remove('active');
         profileIcon.setAttribute('aria-expanded', false);
+        loadProfileData();
       }
-    });
 
-    const profileModal = document.getElementById('profileModal');
-    const profileForm = document.getElementById('profileForm');
-    const profilePicInput = document.getElementById('profilePic');
-    const profilePicPreview = document.getElementById('profilePicPreview');
-
-    function openProfileModal() {
-      profileModal.classList.add('active');
-      profile.classList.remove('active');
-      profileIcon.setAttribute('aria-expanded', false);
-      loadProfileData();
-    }
-
-    function closeProfileModal() {
-      profileModal.classList.remove('active');
-    }
-
-    function loadProfileData() {
-      const profileData = JSON.parse(localStorage.getItem('profileData')) || {};
-      document.getElementById('name').value = profileData.name || '';
-      document.getElementById('email').value = profileData.email || '';
-      document.getElementById('phone').value = profileData.phone || '';
-      document.getElementById('education').value = profileData.education || '';
-      document.getElementById('skills').value = profileData.skills || '';
-      document.getElementById('certifications').value = profileData.certifications || '';
-      document.getElementById('address').value = profileData.address || '';
-      document.getElementById('gender').value = profileData.gender || '';
-      document.getElementById('dob').value = profileData.dob || '';
-      document.getElementById('bio').value = profileData.bio || '';
-      if (profileData.profilePic) {
-        profilePicPreview.src = profileData.profilePic;
-        profilePicPreview.style.display = 'block';
+      function closeProfileModal() {
+        profileModal.classList.remove('active');
       }
-    }
 
-    profilePicInput.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        if (file.size > 2 * 1024 * 1024) {
-          alert('Profile picture must be less than 2MB.');
+      function loadProfileData() {
+        const profileData = JSON.parse(localStorage.getItem('profileData')) || {};
+        document.getElementById('name').value = profileData.name || '';
+        document.getElementById('email').value = profileData.email || '';
+        document.getElementById('phone').value = profileData.phone || '';
+        document.getElementById('education').value = profileData.education || '';
+        document.getElementById('skills').value = profileData.skills || '';
+        document.getElementById('certifications').value = profileData.certifications || '';
+        document.getElementById('address').value = profileData.address || '';
+        document.getElementById('gender').value = profileData.gender || '';
+        document.getElementById('dob').value = profileData.dob || '';
+        document.getElementById('bio').value = profileData.bio || '';
+        if (profileData.profilePic) {
+          profilePicPreview.src = profileData.profilePic;
+          profilePicPreview.style.display = 'block';
+        }
+      }
+
+      profilePicInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          if (file.size > 2 * 1024 * 1024) {
+            alert('Profile picture must be less than 2MB.');
+            return;
+          }
+          const reader = new FileReader();
+          reader.onload = () => {
+            profilePicPreview.src = reader.result;
+            profilePicPreview.style.display = 'block';
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      profileForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const phone = document.getElementById('phone').value;
+        if (phone && !/^\+?\d{10,15}$/.test(phone)) {
+          alert('Please enter a valid phone number (10-15 digits).');
           return;
         }
-        const reader = new FileReader();
-        reader.onload = () => {
-          profilePicPreview.src = reader.result;
-          profilePicPreview.style.display = 'block';
+        const profileData = {
+          name: document.getElementById('name').value,
+          email: document.getElementById('email').value,
+          phone: document.getElementById('phone').value,
+          education: document.getElementById('education').value,
+          skills: document.getElementById('skills').value,
+          certifications: document.getElementById('certifications').value,
+          address: document.getElementById('address').value,
+          gender: document.getElementById('gender').value,
+          dob: document.getElementById('dob').value,
+          bio: document.getElementById('bio').value,
+          profilePic: profilePicPreview.src
         };
-        reader.readAsDataURL(file);
+        localStorage.setItem('profileData', JSON.stringify(profileData));
+        alert('Profile saved successfully!');
+        closeProfileModal();
+      });
+
+      const settingsModal = document.getElementById('settingsModal');
+      const themeToggle = document.getElementById('themeToggle');
+      const languageSelect = document.getElementById('language');
+      const emailNotifications = document.getElementById('emailNotifications');
+      const pushNotifications = document.getElementById('pushNotifications');
+      const profileVisibility = document.getElementById('profileVisibility');
+      const fontSizeSelect = document.getElementById('fontSize');
+      const twoFactorAuth = document.getElementById('twoFactorAuth');
+
+      function openSettingsModal() {
+        settingsModal.classList.add('active');
+        profile.classList.remove('active');
+        profileIcon.setAttribute('aria-expanded', false);
+        loadSettings();
       }
-    });
 
-    profileForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const phone = document.getElementById('phone').value;
-      if (phone && !/^\+?\d{10,15}$/.test(phone)) {
-        alert('Please enter a valid phone number (10-15 digits).');
-        return;
+      function closeSettingsModal() {
+        settingsModal.classList.remove('active');
       }
-      const profileData = {
-        name: document.getElementById('name').value,
-        email: document.getElementById('email').value,
-        phone: document.getElementById('phone').value,
-        education: document.getElementById('education').value,
-        skills: document.getElementById('skills').value,
-        certifications: document.getElementById('certifications').value,
-        address: document.getElementById('address').value,
-        gender: document.getElementById('gender').value,
-        dob: document.getElementById('dob').value,
-        bio: document.getElementById('bio').value,
-        profilePic: profilePicPreview.src
-      };
-      localStorage.setItem('profileData', JSON.stringify(profileData));
-      alert('Profile saved successfully!');
-      closeProfileModal();
-    });
 
-    const settingsModal = document.getElementById('settingsModal');
-    const themeToggle = document.getElementById('themeToggle');
-    const languageSelect = document.getElementById('language');
-    const emailNotifications = document.getElementById('emailNotifications');
-    const pushNotifications = document.getElementById('pushNotifications');
-    const profileVisibility = document.getElementById('profileVisibility');
-    const fontSizeSelect = document.getElementById('fontSize');
-    const twoFactorAuth = document.getElementById('twoFactorAuth');
+      function loadSettings() {
+        const settings = JSON.parse(localStorage.getItem('settings')) || {};
+        themeToggle.checked = localStorage.getItem('theme') === 'light';
+        languageSelect.value = settings.language || 'en';
+        emailNotifications.checked = settings.emailNotifications || false;
+        pushNotifications.checked = settings.pushNotifications || false;
+        profileVisibility.value = settings.profileVisibility || 'public';
+        fontSizeSelect.value = settings.fontSize || 'medium';
+        twoFactorAuth.checked = settings.twoFactorAuth || false;
+      }
 
-    function openSettingsModal() {
-      settingsModal.classList.add('active');
-      profile.classList.remove('active');
-      profileIcon.setAttribute('aria-expanded', false);
-      loadSettings();
-    }
+      function saveSettings() {
+        const settings = {
+          language: languageSelect.value,
+          emailNotifications: emailNotifications.checked,
+          pushNotifications: pushNotifications.checked,
+          profileVisibility: profileVisibility.value,
+          fontSize: fontSizeSelect.value,
+          twoFactorAuth: twoFactorAuth.checked
+        };
+        localStorage.setItem('settings', JSON.stringify(settings));
+        document.body.classList.remove('font-small', 'font-medium', 'font-large');
+        document.body.classList.add(`font-${fontSizeSelect.value}`);
+        alert('Settings saved successfully!');
+        closeSettingsModal();
+      }
 
-    function closeSettingsModal() {
-      settingsModal.classList.remove('active');
-    }
+      themeToggle.addEventListener('change', () => {
+        document.body.classList.toggle('light-mode');
+        localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+      });
 
-    function loadSettings() {
-      const settings = JSON.parse(localStorage.getItem('settings')) || {};
-      themeToggle.checked = localStorage.getItem('theme') === 'light';
-      languageSelect.value = settings.language || 'en';
-      emailNotifications.checked = settings.emailNotifications || false;
-      pushNotifications.checked = settings.pushNotifications || false;
-      profileVisibility.value = settings.profileVisibility || 'public';
-      fontSizeSelect.value = settings.fontSize || 'medium';
-      twoFactorAuth.checked = settings.twoFactorAuth || false;
-    }
+      function requestDataExport() {
+        alert('Data export request submitted. You will receive an email with your data soon.');
+      }
 
-    function saveSettings() {
-      const settings = {
-        language: languageSelect.value,
-        emailNotifications: emailNotifications.checked,
-        pushNotifications: pushNotifications.checked,
-        profileVisibility: profileVisibility.value,
-        fontSize: fontSizeSelect.value,
-        twoFactorAuth: twoFactorAuth.checked
-      };
-      localStorage.setItem('settings', JSON.stringify(settings));
-      document.body.classList.remove('font-small', 'font-medium', 'font-large');
-      document.body.classList.add(`font-${fontSizeSelect.value}`);
-      alert('Settings saved successfully!');
-      closeSettingsModal();
-    }
+      function deleteAccount() {
+        if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+          localStorage.removeItem('profileData');
+          localStorage.removeItem('settings');
+          localStorage.removeItem('theme');
+          alert('Account deleted successfully.');
+          closeSettingsModal();
+        }
+      }
 
-    themeToggle.addEventListener('change', () => {
-      document.body.classList.toggle('light-mode');
-      localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
-    });
-
-    function requestDataExport() {
-      alert('Data export request submitted. You will receive an email with your data soon.');
-    }
-
-    function deleteAccount() {
-      if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+      function logout() {
         localStorage.removeItem('profileData');
         localStorage.removeItem('settings');
         localStorage.removeItem('theme');
-        alert('Account deleted successfully.');
-        closeSettingsModal();
-      }
-    }
-
-    function logout() {
-      localStorage.removeItem('profileData');
-      localStorage.removeItem('settings');
-      localStorage.removeItem('theme');
-      alert('Logged out successfully.');
-      window.location.reload();
-    }
-
-    if (localStorage.getItem('theme') === 'light') {
-      document.body.classList.add('light-mode');
-      themeToggle.checked = true;
-    }
-
-    const settings = JSON.parse(localStorage.getItem('settings')) || {};
-    if (settings.fontSize) {
-      document.body.classList.add(`font-${settings.fontSize}`);
-      fontSizeSelect.value = settings.fontSize;
-    }
-
-    const subjectsData = {
-      "BCA": {
-        "1": ["c Programming", "Mathematics ", "web devlopment" , "Computer Fundamentals" , "environmental Studies", "tacnical communication"],
-        "2": ["Data Structures", , "Computer Organization"],
-        "3": ["OOP with C++", "Database Management", "Operating Systems"],
-        "4": ["Java Programming", "Software Engineering", "Computer Networks"],
-        "5": ["Web Development", "Python Programming", "Cloud Computing"],
-        "6": ["Mobile App Development", "Cyber Security", "AI Basics"]
-      },
-      "BBA": {
-        "1": ["Principles of Management", "Business Economics", "Financial Accounting"],
-        "2": ["Marketing Management", "Business Statistics", "Organizational Behavior"],
-        "3": ["Human Resource Management", "Business Law", "Cost Accounting"],
-        "4": ["Financial Management", "Operations Management", "Entrepreneurship"],
-        "5": ["Strategic Management", "International Business", "Consumer Behavior"],
-        "6": ["Business Ethics", "Project Management", "E-Commerce"]
-      },
-      "B.Com": {
-        "1": ["Financial Accounting", "Business Organization", "Microeconomics"],
-        "2": ["Corporate Accounting", "Business Statistics", "Macroeconomics"],
-        "3": ["Cost Accounting", "Business Law", "Income Tax"],
-        "4": ["Management Accounting", "Auditing", "Financial Markets"],
-        "5": ["Indirect Taxes", "Corporate Finance", "International Trade"],
-        "6": ["GST", "Investment Management", "Business Ethics"]
-      },
-      "MBA": {
-        "1": ["Organizational Behavior", "Managerial Economics", "Accounting for Managers"],
-        "2": ["Marketing Management", "Financial Management", "Operations Research"],
-        "3": ["Strategic Management", "Human Resource Management", "Business Analytics"],
-        "4": ["International Business", "Entrepreneurship", "Supply Chain Management"]
-      },
-      "MCA": {
-        "1": ["Advanced Programming", "Discrete Mathematics", "System Analysis"],
-        "2": ["Data Structures & Algorithms", "Database Systems", "Network Security"],
-        "3": ["Software Engineering", "Cloud Computing", "Machine Learning"],
-        "4": ["Big Data Analytics", "IoT", "Advanced Web Technologies"]
-      },
-      "M.Com": {
-        "1": ["Advanced Financial Accounting", "Business Environment", "Economic Analysis"],
-        "2": ["Corporate Tax Planning", "International Finance", "Strategic Management"],
-        "3": ["Financial Risk Management", "E-Commerce", "Research Methodology"],
-        "4": ["Investment Analysis", "Corporate Governance", "Global Trade"]
-      },
-      "B.Tech": {
-        "1": ["Engineering Mathematics I", "Physics", "Basic Electrical Engineering"],
-        "2": ["Engineering Mathematics II", "Chemistry", "Basic Mechanical Engineering"],
-        "3": ["Data Structures", "Digital Logic Design", "Circuit Theory"],
-        "4": ["Algorithms", "Microprocessors", "Signals and Systems"],
-        "5": ["Operating Systems", "Database Systems", "Control Systems"],
-        "6": ["Computer Networks", "Embedded Systems", "VLSI Design"],
-        "7": ["Machine Learning", "Cloud Computing", "Robotics"],
-        "8": ["AI and Deep Learning", "Cyber Security", "IoT"]
-      }
-    };
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const course = urlParams.get('course');
-    const courseTitle = document.getElementById('courseTitle');
-    const subjectsList = document.getElementById('subjectsList');
-    const errorMessage = document.getElementById('errorMessage');
-
-    if (!course || !subjectsData[course]) {
-      courseTitle.textContent = "Error";
-      errorMessage.style.display = 'block';
-      subjectsList.style.display = 'none';
-    } else {
-      courseTitle.textContent = `${course} Subjects`;
-      displaySubjects();
-    }
-
-    function displaySubjects() {
-      subjectsList.innerHTML = '';
-
-      // Collect all subjects into a single flat list
-      const allSubjects = [];
-      const semesters = Object.keys(subjectsData[course]);
-      semesters.forEach(semester => {
-        const subjects = subjectsData[course][semester] || [];
-        allSubjects.push(...subjects);
-      });
-
-      if (allSubjects.length === 0) {
-        subjectsList.innerHTML = '<p>No subjects available for this course.</p>';
-        return;
+        alert('Logged out successfully.');
+        window.location.reload();
       }
 
-      // Display all subjects as a flat list
-      allSubjects.forEach(subject => {
-        const card = document.createElement('div');
-        card.className = 'intro-card';
-        const subjectForUrl = encodeURIComponent(subject.toLowerCase());
-        card.innerHTML = `
-          <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zm0 7.59L4.41 7 12 4.41 19.59 7 12 9.59zM2 9l10 5 10-5v10H2V9zm2 8h16v-6.59L12 14 4 10.41V17z"/></svg>
-          <h3>${subject}</h3>
-          <p>Explore resources for ${subject}</p>
-          <a href="resources.html?course=${course}&subject=${subjectForUrl}" class="cta-button">Explore Resources</a>
-        `;
-        subjectsList.appendChild(card);
-      });
-    }
+      if (localStorage.getItem('theme') === 'light') {
+        document.body.classList.add('light-mode');
+        themeToggle.checked = true;
+      }
+
+      const settings = JSON.parse(localStorage.getItem('settings')) || {};
+      if (settings.fontSize) {
+        document.body.classList.add(`font-${settings.fontSize}`);
+        fontSizeSelect.value = settings.fontSize;
+      }
+
+      const subjectsData = {
+        "BCA": {
+          "1": ["c Programming", "Mathematics ", "web devlopment" , "Computer Fundamentals" , "environmental Studies", "tacnical communication"],
+          "2": ["Data Structures", , "Computer Organization"],
+          "3": ["OOP with C++", "Database Management", "Operating Systems"],
+          "4": ["Java Programming", "Software Engineering", "Computer Networks"],
+          "5": ["Web Development", "Python Programming", "Cloud Computing"],
+          "6": ["Mobile App Development", "Cyber Security", "AI Basics"]
+        },
+        "BBA": {
+          "1": ["Principles of Management", "Business Economics", "Financial Accounting"],
+          "2": ["Marketing Management", "Business Statistics", "Organizational Behavior"],
+          "3": ["Human Resource Management", "Business Law", "Cost Accounting"],
+          "4": ["Financial Management", "Operations Management", "Entrepreneurship"],
+          "5": ["Strategic Management", "International Business", "Consumer Behavior"],
+          "6": ["Business Ethics", "Project Management", "E-Commerce"]
+        },
+        "B.Com": {
+          "1": ["Financial Accounting", "Business Organization", "Microeconomics"],
+          "2": ["Corporate Accounting", "Business Statistics", "Macroeconomics"],
+          "3": ["Cost Accounting", "Business Law", "Income Tax"],
+          "4": ["Management Accounting", "Auditing", "Financial Markets"],
+          "5": ["Indirect Taxes", "Corporate Finance", "International Trade"],
+          "6": ["GST", "Investment Management", "Business Ethics"]
+        },
+        "MBA": {
+          "1": ["Organizational Behavior", "Managerial Economics", "Accounting for Managers"],
+          "2": ["Marketing Management", "Financial Management", "Operations Research"],
+          "3": ["Strategic Management", "Human Resource Management", "Business Analytics"],
+          "4": ["International Business", "Entrepreneurship", "Supply Chain Management"]
+        },
+        "MCA": {
+          "1": ["Advanced Programming", "Discrete Mathematics", "System Analysis"],
+          "2": ["Data Structures & Algorithms", "Database Systems", "Network Security"],
+          "3": ["Software Engineering", "Cloud Computing", "Machine Learning"],
+          "4": ["Big Data Analytics", "IoT", "Advanced Web Technologies"]
+        },
+        "M.Com": {
+          "1": ["Advanced Financial Accounting", "Business Environment", "Economic Analysis"],
+          "2": ["Corporate Tax Planning", "International Finance", "Strategic Management"],
+          "3": ["Financial Risk Management", "E-Commerce", "Research Methodology"],
+          "4": ["Investment Analysis", "Corporate Governance", "Global Trade"]
+        },
+        "B.Tech": {
+          "1": ["Engineering Mathematics I", "Physics", "Basic Electrical Engineering"],
+          "2": ["Engineering Mathematics II", "Chemistry", "Basic Mechanical Engineering"],
+          "3": ["Data Structures", "Digital Logic Design", "Circuit Theory"],
+          "4": ["Algorithms", "Microprocessors", "Signals and Systems"],
+          "5": ["Operating Systems", "Database Systems", "Control Systems"],
+          "6": ["Computer Networks", "Embedded Systems", "VLSI Design"],
+          "7": ["Machine Learning", "Cloud Computing", "Robotics"],
+          "8": ["AI and Deep Learning", "Cyber Security", "IoT"]
+        }
+      };
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const course = urlParams.get('course');
+      const courseTitle = document.getElementById('courseTitle');
+      const subjectsList = document.getElementById('subjectsList');
+      const errorMessage = document.getElementById('errorMessage');
+
+      if (!course || !subjectsData[course]) {
+        courseTitle.textContent = "Error";
+        errorMessage.style.display = 'block';
+        subjectsList.style.display = 'none';
+      } else {
+        courseTitle.textContent = `${course} Subjects`;
+        displaySubjects();
+      }
+
+      function displaySubjects() {
+        subjectsList.innerHTML = '';
+
+        // Collect all subjects into a single flat list
+        const allSubjects = [];
+        const semesters = Object.keys(subjectsData[course]);
+        semesters.forEach(semester => {
+          const subjects = subjectsData[course][semester] || [];
+          allSubjects.push(...subjects);
+        });
+
+        if (allSubjects.length === 0) {
+          subjectsList.innerHTML = '<p>No subjects available for this course.</p>';
+          return;
+        }
+
+        // Display all subjects as a flat list
+        allSubjects.forEach(subject => {
+          const card = document.createElement('div');
+          card.className = 'intro-card';
+          const subjectForUrl = encodeURIComponent(subject);
+          card.innerHTML = `
+            <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zm0 7.59L4.41 7 12 4.41 19.59 7 12 9.59zM2 9l10 5 10-5v10H2V9zm2 8h16v-6.59L12 14 4 10.41V17z"/></svg>
+            <h3>${subject}</h3>
+            <p>Explore resources for ${subject}</p>
+            <a href="chapters.html?course=${encodeURIComponent(course)}&subject=${subjectForUrl}" class="cta-button">View Chapters</a>
+          `;
+          subjectsList.appendChild(card);
+        });
+      }
+    });
   </script>
 </body>
 </html>

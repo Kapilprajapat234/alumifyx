@@ -617,7 +617,6 @@
         <label for="email">Email</label>
         <input type="email" id="email" placeholder="Your Email" required>
         <label for="phone">Phone Number</label>
-        <label for="phone">Phone Number</label>
         <input type="tel" id="phone" placeholder="Your Phone Number">
         <label for="education">Education</label>
         <textarea id="education" placeholder="Your Education (e.g., B.Tech, Computer Science)"></textarea>
@@ -720,6 +719,26 @@
   </section>
 
   <script>
+    const BASE_URL = "http://localhost:3001";
+    async function checkSessionOrRedirect() {
+      try {
+        const response = await fetch(`${BASE_URL}/api/user`, {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include"
+        });
+        if (!response.ok) throw new Error("Not logged in");
+        return await response.json();
+      } catch (e) {
+        window.location.href = "loginandsignuppage.html";
+        throw e;
+      }
+    }
+    document.addEventListener('DOMContentLoaded', async () => {
+      await checkSessionOrRedirect();
+      // ...rest of your page logic (existing code)
+    });
+
     // Utility function to safely parse JSON
     function safeParse(jsonString, fallback) {
       try {
@@ -730,258 +749,309 @@
       }
     }
 
-    // Ensure DOM is fully loaded before running scripts
-    document.addEventListener('DOMContentLoaded', () => {
-      // Initialize theme and font size
-      try {
-        const theme = localStorage.getItem('theme');
-        if (theme === 'light') {
-          document.body.classList.add('light-mode');
-          document.getElementById('themeToggle').checked = true;
-        }
-
-        const settings = safeParse(localStorage.getItem('settings'), { fontSize: 'medium' });
-        document.body.classList.add(`font-${settings.fontSize}`);
-        const fontSizeSelect = document.getElementById('fontSize');
-        if (fontSizeSelect) {
-          fontSizeSelect.value = settings.fontSize;
-        }
-      } catch (e) {
-        console.error('Error loading settings:', e);
-        alert('Error loading settings. Please try again.');
+    // Initialize theme and font size
+    try {
+      const theme = localStorage.getItem('theme');
+      if (theme === 'light') {
+        document.body.classList.add('light-mode');
+        document.getElementById('themeToggle').checked = true;
       }
 
-      // Profile dropdown
-      const profile = document.querySelector('.profile');
-      const profileIcon = document.querySelector('.profile-icon');
-
-      function toggleProfileDropdown() {
-        profile.classList.toggle('active');
-        const isExpanded = profile.classList.contains('active');
-        profileIcon.setAttribute('aria-expanded', isExpanded);
+      const settings = safeParse(localStorage.getItem('settings'), { fontSize: 'medium' });
+      document.body.classList.add(`font-${settings.fontSize}`);
+      const fontSizeSelect = document.getElementById('fontSize');
+      if (fontSizeSelect) {
+        fontSizeSelect.value = settings.fontSize;
       }
+    } catch (e) {
+      console.error('Error loading settings:', e);
+      alert('Error loading settings. Please try again.');
+    }
 
-      if (profileIcon) {
-        profileIcon.addEventListener('click', toggleProfileDropdown);
-        profileIcon.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            toggleProfileDropdown();
-          }
-        });
-      }
+    // Profile dropdown
+    const profile = document.querySelector('.profile');
+    const profileIcon = document.querySelector('.profile-icon');
 
-      document.addEventListener('click', (e) => {
-        if (!profile.contains(e.target)) {
-          profile.classList.remove('active');
-          profileIcon.setAttribute('aria-expanded', false);
+    function toggleProfileDropdown() {
+      profile.classList.toggle('active');
+      const isExpanded = profile.classList.contains('active');
+      profileIcon.setAttribute('aria-expanded', isExpanded);
+    }
+
+    if (profileIcon) {
+      profileIcon.addEventListener('click', toggleProfileDropdown);
+      profileIcon.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          toggleProfileDropdown();
         }
       });
+    }
 
-      // Profile modal
-      const profileModal = document.getElementById('profileModal');
-      const profileForm = document.getElementById('profileForm');
-      const profilePicInput = document.getElementById('profilePic');
-      const profilePicPreview = document.getElementById('profilePicPreview');
-
-      window.openProfileModal = function () {
-        profileModal.classList.add('active');
+    document.addEventListener('click', (e) => {
+      if (!profile.contains(e.target)) {
         profile.classList.remove('active');
         profileIcon.setAttribute('aria-expanded', false);
-        loadProfileData();
-      };
+      }
+    });
 
-      window.closeProfileModal = function () {
-        profileModal.classList.remove('active');
-      };
+    // Profile modal
+    const profileModal = document.getElementById('profileModal');
+    const profileForm = document.getElementById('profileForm');
+    const profilePicInput = document.getElementById('profilePic');
+    const profilePicPreview = document.getElementById('profilePicPreview');
 
-      function loadProfileData() {
-        const profileData = safeParse(localStorage.getItem('profileData'), {});
-        document.getElementById('name').value = profileData.name || '';
-        document.getElementById('email').value = profileData.email || '';
-        document.getElementById('phone').value = profileData.phone || '';
-        document.getElementById('education').value = profileData.education || '';
-        document.getElementById('skills').value = profileData.skills || '';
-        document.getElementById('certifications').value = profileData.certifications || '';
-        document.getElementById('address').value = profileData.address || '';
-        document.getElementById('gender').value = profileData.gender || '';
-        document.getElementById('dob').value = profileData.dob || '';
-        document.getElementById('bio').value = profileData.bio || '';
-        if (profileData.profilePic && profileData.profilePic.startsWith('data:image/')) {
-          profilePicPreview.src = profileData.profilePic;
+    window.openProfileModal = async function () {
+      profileModal.classList.add('active');
+      profile.classList.remove('active');
+      profileIcon.setAttribute('aria-expanded', false);
+      await loadProfileData();
+    };
+
+    window.closeProfileModal = function () {
+      profileModal.classList.remove('active');
+    };
+
+    async function loadProfileData() {
+      try {
+        const response = await fetch(`${BASE_URL}/api/user`, {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include'
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to load profile data');
+        }
+
+        const user = await response.json();
+        document.getElementById('name').value = user.name || '';
+        document.getElementById('email').value = user.email || '';
+        document.getElementById('phone').value = user.phone || '';
+        document.getElementById('education').value = user.education || '';
+        document.getElementById('skills').value = user.skills || '';
+        document.getElementById('certifications').value = user.certifications || '';
+        document.getElementById('address').value = user.address || '';
+        document.getElementById('gender').value = user.gender || '';
+        document.getElementById('dob').value = user.dob || '';
+        document.getElementById('bio').value = user.bio || '';
+        
+        if (user.profilePic) {
+          profilePicPreview.src = user.profilePic;
           profilePicPreview.style.display = 'block';
         } else {
           profilePicPreview.style.display = 'none';
         }
+      } catch (error) {
+        console.error('Error loading profile:', error);
+        alert('Error loading profile data. Please try again.');
       }
+    }
 
-      if (profilePicInput) {
-        profilePicInput.addEventListener('change', (e) => {
-          const file = e.target.files[0];
-          if (file) {
-            if (!file.type.startsWith('image/')) {
-              alert('Please upload a valid image file (e.g., PNG, JPEG).');
-              profilePicInput.value = '';
-              return;
-            }
-            if (file.size > 2 * 1024 * 1024) {
-              alert('Profile picture must be less than 2MB.');
-              profilePicInput.value = '';
-              return;
-            }
-            const reader = new FileReader();
-            reader.onload = () => {
-              profilePicPreview.src = reader.result;
-              profilePicPreview.style.display = 'block';
-            };
-            reader.onerror = () => {
-              alert('Error reading the file. Please try a different image.');
-              profilePicInput.value = '';
-            };
-            reader.readAsDataURL(file);
-          }
-        });
-      }
-
-      if (profileForm) {
-        profileForm.addEventListener('submit', (e) => {
-          e.preventDefault();
-          const phone = document.getElementById('phone').value;
-          if (phone && !/^\+?\d{10,15}$/.test(phone)) {
-            alert('Please enter a valid phone number (10-15 digits).');
+    if (profilePicInput) {
+      profilePicInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          if (!file.type.startsWith('image/')) {
+            alert('Please upload a valid image file (e.g., PNG, JPEG).');
+            profilePicInput.value = '';
             return;
           }
-          const profileData = {
-            name: document.getElementById('name').value,
-            email: document.getElementById('email').value,
-            phone: document.getElementById('phone').value,
-            education: document.getElementById('education').value,
-            skills: document.getElementById('skills').value,
-            certifications: document.getElementById('certifications').value,
-            address: document.getElementById('address').value,
-            gender: document.getElementById('gender').value,
-            dob: document.getElementById('dob').value,
-            bio: document.getElementById('bio').value,
-            profilePic: profilePicPreview.src
+          if (file.size > 2 * 1024 * 1024) {
+            alert('Profile picture must be less than 2MB.');
+            profilePicInput.value = '';
+            return;
+          }
+          const reader = new FileReader();
+          reader.onload = () => {
+            profilePicPreview.src = reader.result;
+            profilePicPreview.style.display = 'block';
           };
-          try {
-            const dataString = JSON.stringify(profileData);
-            const dataSize = new TextEncoder().encode(dataString).length;
-            const maxSize = 5 * 1024 * 1024;
-            if (dataSize > maxSize) {
-              alert('Profile data is too large (exceeds 5MB). Please reduce the size of your profile picture or other data.');
-              return;
-            }
-            localStorage.setItem('profileData', dataString);
-            alert('Profile saved successfully!');
-            closeProfileModal();
-          } catch (e) {
-            console.error('Error saving profile:', e);
-            if (e.name === 'QuotaExceededError') {
-              alert('Storage limit exceeded. Please reduce the size of your profile picture or clear some data.');
-            } else {
-              alert('Error saving profile. Please try again.');
-            }
-          }
-        });
-      }
-
-      // Settings modal
-      const settingsModal = document.getElementById('settingsModal');
-      const themeToggle = document.getElementById('themeToggle');
-      const fontSizeSelect = document.getElementById('fontSize');
-
-      window.openSettingsModal = function () {
-        settingsModal.classList.add('active');
-        profile.classList.remove('active');
-        profileIcon.setAttribute('aria-expanded', false);
-        loadSettings();
-      };
-
-      window.closeSettingsModal = function () {
-        settingsModal.classList.remove('active');
-      };
-
-      function loadSettings() {
-        const settings = safeParse(localStorage.getItem('settings'), { fontSize: 'medium' });
-        if (themeToggle) {
-          themeToggle.checked = localStorage.getItem('theme') === 'light';
+          reader.onerror = () => {
+            alert('Error reading the file. Please try a different image.');
+            profilePicInput.value = '';
+          };
+          reader.readAsDataURL(file);
         }
-        if (fontSizeSelect) {
-          fontSizeSelect.value = settings.fontSize || 'medium';
-        }
-      }
+      });
+    }
 
-      window.saveSettings = function () {
-        const settings = {
-          fontSize: fontSizeSelect.value
-        };
+    if (profileForm) {
+      profileForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const phone = document.getElementById('phone').value;
+        if (phone && !/^\+?\d{10,15}$/.test(phone)) {
+          alert('Please enter a valid phone number (10-15 digits).');
+          return;
+        }
+
+        const formData = new FormData();
+        formData.append('name', document.getElementById('name').value);
+        formData.append('email', document.getElementById('email').value);
+        formData.append('phone', document.getElementById('phone').value);
+        formData.append('education', document.getElementById('education').value);
+        formData.append('skills', document.getElementById('skills').value);
+        formData.append('certifications', document.getElementById('certifications').value);
+        formData.append('address', document.getElementById('address').value);
+        formData.append('gender', document.getElementById('gender').value);
+        formData.append('dob', document.getElementById('dob').value);
+        formData.append('bio', document.getElementById('bio').value);
+        
+        if (profilePicInput.files[0]) {
+          formData.append('profilePic', profilePicInput.files[0]);
+        }
+
         try {
-          localStorage.setItem('settings', JSON.stringify(settings));
-          document.body.classList.remove('font-small', 'font-medium', 'font-large');
-          document.body.classList.add(`font-${fontSizeSelect.value}`);
-          alert('Settings saved successfully!');
-          closeSettingsModal();
-        } catch (e) {
-          console.error('Error saving settings:', e);
-          alert('Error saving settings. Please try again.');
-        }
-      };
+          const response = await fetch(`${BASE_URL}/api/user`, {
+            method: 'PUT',
+            body: formData,
+            credentials: 'include'
+          });
 
+          if (!response.ok) {
+            throw new Error('Failed to update profile');
+          }
+
+          const data = await response.json();
+          alert(data.message || 'Profile updated successfully!');
+          closeProfileModal();
+        } catch (error) {
+          console.error('Error updating profile:', error);
+          alert('Error updating profile. Please try again.');
+        }
+      });
+    }
+
+    // Settings modal
+    const settingsModal = document.getElementById('settingsModal');
+    const themeToggle = document.getElementById('themeToggle');
+    const fontSizeSelect = document.getElementById('fontSize');
+
+    window.openSettingsModal = function () {
+      settingsModal.classList.add('active');
+      profile.classList.remove('active');
+      profileIcon.setAttribute('aria-expanded', false);
+      loadSettings();
+    };
+
+    window.closeSettingsModal = function () {
+      settingsModal.classList.remove('active');
+    };
+
+    function loadSettings() {
+      const settings = safeParse(localStorage.getItem('settings'), { fontSize: 'medium' });
       if (themeToggle) {
-        themeToggle.addEventListener('change', () => {
-          document.body.classList.toggle('light-mode');
-          try {
-            localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
-          } catch (e) {
-            console.error('Error saving theme:', e);
-            alert('Error saving theme. Please try again.');
-          }
-        });
+        themeToggle.checked = localStorage.getItem('theme') === 'light';
       }
+      if (fontSizeSelect) {
+        fontSizeSelect.value = settings.fontSize || 'medium';
+      }
+    }
 
-      // Logout
-      window.logout = function () {
-        try {
-          localStorage.removeItem('profileData');
-          localStorage.removeItem('adminData');
-          alert('Logged out successfully.');
-          window.location.href = 'index.html';
-        } catch (e) {
-          console.error('Error during logout:', e);
-          alert('Error logging out. Please try again.');
-        }
+    window.saveSettings = function () {
+      const settings = {
+        fontSize: fontSizeSelect.value
       };
+      try {
+        localStorage.setItem('settings', JSON.stringify(settings));
+        document.body.classList.remove('font-small', 'font-medium', 'font-large');
+        document.body.classList.add(`font-${fontSizeSelect.value}`);
+        alert('Settings saved successfully!');
+        closeSettingsModal();
+      } catch (e) {
+        console.error('Error saving settings:', e);
+        alert('Error saving settings. Please try again.');
+      }
+    };
 
-      // Load courses from localStorage
-      const courseSection = document.getElementById('courseSection');
+    if (themeToggle) {
+      themeToggle.addEventListener('change', () => {
+        document.body.classList.toggle('light-mode');
+        try {
+          localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+        } catch (e) {
+          console.error('Error saving theme:', e);
+          alert('Error saving theme. Please try again.');
+        }
+      });
+    }
 
-      function renderCourses() {
-        const courses = safeParse(localStorage.getItem('courses'), []);
+    // Logout
+    window.logout = async function () {
+      try {
+        const response = await fetch(`${BASE_URL}/api/auth/logout`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include'
+        });
+
+        if (!response.ok) {
+          throw new Error('Logout failed');
+        }
+
+        localStorage.removeItem('profileData');
+        localStorage.removeItem('adminData');
+        alert('Logged out successfully.');
+        window.location.href = 'loginandsignuppage.html';
+      } catch (error) {
+        console.error('Error during logout:', error);
+        alert('Error logging out. Please try again.');
+      }
+    };
+
+    // Load courses from backend
+    async function loadCourses() {
+      try {
+        const response = await fetch(`${BASE_URL}/api/courses`, {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include'
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to load courses');
+        }
+
+        const courses = await response.json();
+        const courseSection = document.getElementById('courseSection');
+        
         if (courses.length > 0) {
           const defaultCards = courseSection.querySelectorAll('.intro-card');
-          defaultCards.forEach(card => card.style.display = 'none'); // Hide default cards
+          defaultCards.forEach(card => card.style.display = 'none');
+          
           courses.forEach(course => {
-            const title = course.title || 'Untitled Course';
-            const description = course.description || 'No description available';
-            const image = course.image || 'https://via.placeholder.com/300x150';
             const card = document.createElement('div');
             card.className = 'intro-card';
             card.innerHTML = `
-              <img src="${image}" alt="${title}">
-              <h3>${title}</h3>
-              <p>${description}</p>
-              <a href="subjects.html?course=${encodeURIComponent(title)}" class="cta-button">Explore</a>
+              <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zm0 7.59L4.41 7 12 4.41 19.59 7 12 9.59zM2 9l10 5 10-5v10H2V9zm2 8h16v-6.59L12 14 4 10.41V17z"/></svg>
+              <h3>${course.title}</h3>
+              <p>${course.description}</p>
+              <a href="subjects.html?course=${encodeURIComponent(course.title)}" class="cta-button">Explore</a>
             `;
             courseSection.appendChild(card);
           });
         }
+      } catch (error) {
+        console.error('Error loading courses:', error);
+        // Keep default courses if loading fails
       }
+    }
 
-      // Check if user is admin and add dashboard link
-      function updateNavLinks() {
-        const adminData = localStorage.getItem('adminData');
-        if (adminData) {
+    // Check if user is admin and add dashboard link
+    async function checkAdminStatus() {
+      try {
+        const response = await fetch(`${BASE_URL}/api/user`, {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include'
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to check admin status');
+        }
+
+        const user = await response.json();
+        if (user.isAdmin) {
           const adminLink = document.createElement('a');
           adminLink.href = 'admin.html';
           adminLink.textContent = 'Admin Dashboard';
@@ -990,12 +1060,14 @@
             navLinks.appendChild(adminLink);
           }
         }
+      } catch (error) {
+        console.error('Error checking admin status:', error);
       }
+    }
 
-      // Initial render
-      renderCourses();
-      updateNavLinks();
-    });
+    // Initial load
+    loadCourses();
+    checkAdminStatus();
   </script>
 </body>
 </html>

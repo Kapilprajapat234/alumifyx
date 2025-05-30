@@ -258,6 +258,38 @@
   </section>
 
   <script>
+    const BASE_URL = "http://localhost:3001";
+    async function checkSessionOrRedirect() {
+      try {
+        const response = await fetch(`${BASE_URL}/api/user`, {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include"
+        });
+        if (!response.ok) throw new Error("Not logged in");
+        return await response.json();
+      } catch (e) {
+        window.location.href = "loginandsignuppage.html";
+        throw e;
+      }
+    }
+    document.addEventListener('DOMContentLoaded', async () => {
+      await checkSessionOrRedirect();
+      loadRecordedClasses();
+      if (localStorage.getItem('theme') === 'light') {
+        document.body.classList.add('light-mode');
+      }
+    });
+    function logout() {
+      fetch(`${BASE_URL}/api/auth/logout`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include'
+      }).then(() => {
+        window.location.href = 'loginandsignuppage.html';
+      });
+    }
+
     const profile = document.querySelector('.profile');
     const profileIcon = document.querySelector('.profile-icon');
 
@@ -285,34 +317,35 @@
     const recordedList = document.getElementById('recordedList');
 
     function loadRecordedClasses() {
-      const recordedClasses = JSON.parse(localStorage.getItem('recordedClasses')) || [];
-      recordedList.innerHTML = '';
-      recordedClasses.forEach(recorded => {
-        const recordedItem = document.createElement('div');
-        recordedItem.className = 'recorded-item';
-        recordedItem.innerHTML = `
-          <p><strong>${recorded.title}</strong></p>
-          <p>Topic: ${recorded.description}</p>
-          ${recorded.video ? `<video src="${recorded.video}" controls></video>` : ''}
-        `;
-        recordedList.appendChild(recordedItem);
-      });
-    }
-
-    function logout() {
-      localStorage.removeItem('profileData');
-      localStorage.removeItem('settings');
-      localStorage.removeItem('theme');
-      alert('Logged out successfully.');
-      window.location.href = 'homepage.html';
-    }
-
-    window.addEventListener('load', () => {
-      loadRecordedClasses();
-    });
-
-    if (localStorage.getItem('theme') === 'light') {
-      document.body.classList.add('light-mode');
+      // Fetch recorded classes from backend
+      fetch('http://localhost:3001/api/growth/recorded-classes')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Failed to fetch recorded classes');
+          }
+          return response.json();
+        })
+        .then(recordedClasses => {
+          recordedList.innerHTML = '';
+          if (recordedClasses.length === 0) {
+            recordedList.innerHTML = '<p>No recorded classes available.</p>';
+            return;
+          }
+          recordedClasses.forEach(recorded => {
+            const recordedItem = document.createElement('div');
+            recordedItem.className = 'recorded-item';
+            recordedItem.innerHTML = `
+              <p><strong>${recorded.title}</strong></p>
+              <p>Topic: ${recorded.description}</p>
+              ${recorded.video ? `<video src="${recorded.video}" controls></video>` : ''}
+            `;
+            recordedList.appendChild(recordedItem);
+          });
+        })
+        .catch(error => {
+          console.error('Error fetching recorded classes:', error);
+          recordedList.innerHTML = `<p class="error-message">Error loading recorded classes: ${error.message}</p>`;
+        });
     }
   </script>
 </body>

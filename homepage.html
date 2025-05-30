@@ -1004,44 +1004,27 @@
     </footer>
 
     <script>
-      const BASE_URL = "http://127.0.0.1:3001"; // Changed to 127.0.0.1 to avoid localhost resolution issues
+      const BASE_URL = "http://localhost:3001";
 
-      // Check if user is logged in when the page loads
-      window.onload = async () => {
+      async function checkSessionOrRedirect() {
         try {
           const response = await fetch(`${BASE_URL}/api/user`, {
             method: "GET",
             headers: { "Content-Type": "application/json" },
-            credentials: "include",
+            credentials: "include"
           });
-          if (!response.ok) {
-            let errorMessage =
-              "Session expired or invalid. Please log in again.";
-            try {
-              const errorData = await response.json();
-              errorMessage = errorData.error || errorMessage;
-            } catch (jsonErr) {
-              console.warn("Non-JSON error response from server");
-            }
-            throw new Error(errorMessage);
-          }
-          const user = await response.json();
-          const heroTitle = document.querySelector(".hero h1");
-          if (heroTitle) {
-            heroTitle.textContent = `Welcome to Alumifyx, ${
-              user.name || "User"
-            }!`;
-          }
-        } catch (error) {
-          console.error("Session verification failed:", error.message);
-          alert(
-            "Unable to verify session: " +
-              error.message +
-              ". Redirecting to login page."
-          );
+          if (!response.ok) throw new Error("Not logged in");
+          return await response.json();
+        } catch (e) {
           window.location.href = "loginandsignuppage.html";
+          throw e;
         }
-      };
+      }
+
+      document.addEventListener('DOMContentLoaded', async () => {
+        await checkSessionOrRedirect();
+        // ...rest of your page logic (existing code)
+      });
 
       // Load theme and font settings
       try {
@@ -1182,15 +1165,9 @@
         formData.append("name", document.getElementById("name").value);
         formData.append("email", document.getElementById("email").value);
         formData.append("phone", document.getElementById("phone").value);
-        formData.append(
-          "education",
-          document.getElementById("education").value
-        );
+        formData.append("education", document.getElementById("education").value);
         formData.append("skills", document.getElementById("skills").value);
-        formData.append(
-          "certifications",
-          document.getElementById("certifications").value
-        );
+        formData.append("certifications", document.getElementById("certifications").value);
         formData.append("address", document.getElementById("address").value);
         formData.append("gender", document.getElementById("gender").value);
         formData.append("dob", document.getElementById("dob").value);
@@ -1214,9 +1191,7 @@
           closeProfileModal();
         } catch (error) {
           console.error("Error saving profile:", error.message);
-          alert(
-            "Error saving profile: " + error.message + ". Please try again."
-          );
+          alert("Error saving profile: " + error.message + ". Please try again.");
         }
       });
 
@@ -1311,11 +1286,7 @@
       }
 
       async function deleteAccount() {
-        if (
-          !confirm(
-            "Are you sure you want to delete your account? This action cannot be undone."
-          )
-        ) {
+        if (!confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
           return;
         }
         try {
@@ -1334,9 +1305,7 @@
           window.location.href = "loginandsignuppage.html";
         } catch (error) {
           console.error("Error deleting account:", error.message);
-          alert(
-            "Error deleting account: " + error.message + ". Please try again."
-          );
+          alert("Error deleting account: " + error.message + ". Please try again.");
         }
       }
 
@@ -1349,7 +1318,7 @@
         }
         overlay.classList.add("active");
         try {
-          const response = await fetch(`${BASE_URL}/api/logout`, {
+          const response = await fetch(`${BASE_URL}/api/auth/logout`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: "include",

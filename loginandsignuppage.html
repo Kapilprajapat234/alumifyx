@@ -460,7 +460,7 @@
       <div class="form-section">
         <div class="website-brand">
           <img
-            src="https://placehold.co/40x40/8a2be2/ffffff?text=A"
+            src="logo.jpg"
             alt="Placeholder"
           />
           <span>Alumifyx</span>
@@ -509,12 +509,12 @@
       </div>
       <div class="image-section">
         <img
-          src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop"
+          src="altumcode-U0tBTn8UR8I-unsplash.jpg"
           alt="Collaboration"
         />
         <div class="notification">
           <img
-            src="https://via.placeholder.com/40/8a2be2/ffffff?text=A"
+            src="logo.jpg"
             alt="Alumifyx"
           />
           <div class="notification-text">
@@ -651,7 +651,6 @@
           themeToggle.checked = true;
         }
       } catch (e) {
-        console.error("Error loading theme:", e.message);
         alert("Error loading theme. Please try again.");
       }
 
@@ -663,7 +662,6 @@
             document.body.classList.contains("light-mode") ? "light" : "dark"
           );
         } catch (e) {
-          console.error("Error saving theme:", e.message);
           alert("Error saving theme. Please try again.");
         }
       });
@@ -723,256 +721,185 @@
       }
 
       // Login Form
-      // document
-      //   .getElementById("loginForm")
-      //   .addEventListener("submit", async (e) => {
-      //     e.preventDefault();
-      //     const email = document.getElementById("loginEmail");
-      //     const password = document.getElementById("loginPassword");
-      //     const emailError = document.getElementById("loginEmailError");
-      //     const passwordError = document.getElementById("loginPasswordError");
-      //     const submitBtn = loginForm.querySelector(".submit-btn");
+      document.getElementById("loginForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const emailInput = document.getElementById("loginEmail");
+        const passwordInput = document.getElementById("loginPassword");
+        const emailError = document.getElementById("loginEmailError");
+        const passwordError = document.getElementById("loginPasswordError");
+        const submitBtn = document.querySelector("#loginForm .submit-btn");
 
-      //     let isValid = true;
+        let isValid = true;
 
-      //     clearError(email, emailError);
-      //     clearError(password, passwordError);
+        clearError(emailInput, emailError);
+        clearError(passwordInput, passwordError);
 
-      //     if (!validateEmail(email.value)) {
-      //       isValid = showError(
-      //         email,
-      //         emailError,
-      //         "Please enter a valid email"
-      //       );
-      //     }
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
 
-      //     if (password.value.length < 6) {
-      //       isValid = showError(
-      //         password,
-      //         passwordError,
-      //         "Password must be at least 6 characters"
-      //       );
-      //     }
-
-      //     if (isValid) {
-      //       submitBtn.classList.add("loading");
-      //       submitBtn.disabled = true;
-
-      //       try {
-      //         const response = await fetch("http://localhost:3001/api/login", {
-      //           method: "POST",
-      //           headers: { "Content-Type": "application/json" },
-      //           body: JSON.stringify({
-      //             email: email.value,
-      //             password: password.value,
-      //           }),
-      //           credentials: "include",
-      //         });
-
-      //         const result = await response.json();
-
-      //         if (response.ok) {
-      //           // ✅ If your backend sends a JWT token, save it
-      //           if (result.token) {
-      //             localStorage.setItem("token", result.token);
-      //           }
-      //           window.location.href = "homepage.html";
-      //         } else {
-      //           if (result.error.includes("email")) {
-      //             showError(email, emailError, result.error);
-      //           } else if (result.error.includes("password")) {
-      //             showError(password, passwordError, result.error);
-      //           } else {
-      //             showError(email, emailError, result.error);
-      //             showError(password, passwordError, result.error);
-      //           }
-      //         }
-      //       } catch (error) {
-      //         console.error("Login error:", error);
-      //         showError(email, emailError, "Error connecting to the server");
-      //         showError(
-      //           password,
-      //           passwordError,
-      //           "Error connecting to the server"
-      //         );
-      //       } finally {
-      //         submitBtn.classList.remove("loading");
-      //         submitBtn.disabled = false;
-      //       }
-      //     }
-      //   });
-
-      // Signup Form
-      document
-        .getElementById("signupForm")
-        .addEventListener("submit", async (e) => {
-          e.preventDefault();
-          const name = document.getElementById("signupName");
-          const email = document.getElementById("signupEmail");
-          const password = document.getElementById("signupPassword");
-          const nameError = document.getElementById("signupNameError");
-          const emailError = document.getElementById("signupEmailError");
-          const passwordError = document.getElementById("signupPasswordError");
-          const submitBtn = signupForm.querySelector(".submit-btn");
-
-          let isValid = true;
-
-          clearError(name, nameError);
-          clearError(email, emailError);
-          clearError(password, passwordError);
-
-          if (name.value.trim() === "") {
-            isValid = showError(name, nameError, "Name is required");
-          }
-
-          if (!validateEmail(email.value)) {
-            isValid = showError(
-              email,
-              emailError,
-              "Please enter a valid email"
-            );
-          }
-
-          if (password.value.length < 6) {
-            isValid = showError(
-              password,
-              passwordError,
-              "Password must be at least 6 characters"
-            );
-          }
-
-          if (isValid) {
-            submitBtn.classList.add("loading");
-            submitBtn.disabled = true;
-
-            try {
-              const response = await fetch(
-                "http://localhost:3001/api/register",
-                {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({
-                    name: name.value,
-                    email: email.value,
-                    password: password.value,
-                  }),
-                  credentials: "include",
-                }
-              );
-
-              const result = await response.json();
-
-              if (response.ok) {
-                alert("Signup successful! Please log in.");
-                showLogin();
-                signupForm.reset();
-              } else {
-                if (result.error.includes("email")) {
-                  showError(email, emailError, result.error);
-                } else {
-                  showError(name, nameError, result.error);
-                  showError(email, emailError, result.error);
-                  showError(password, passwordError, result.error);
-                }
-              }
-            } catch (error) {
-              console.error("Signup error:", error);
-              showError(email, emailError, "Error connecting to the server");
-            } finally {
-              submitBtn.classList.remove("loading");
-              submitBtn.disabled = false;
-            }
-          }
-        });
-
-      // Forgot Password Form
-      document
-        .getElementById("forgotForm")
-        .addEventListener("submit", async (e) => {
-          e.preventDefault();
-          const email = document.getElementById("forgotEmail");
-          const emailError = document.getElementById("forgotEmailError");
-          const submitBtn = forgotForm.querySelector(".submit-btn");
-
-          let isValid = true;
-
-          clearError(email, emailError);
-
-          if (!validateEmail(email.value)) {
-            isValid = showError(
-              email,
-              emailError,
-              "Please enter a valid email"
-            );
-          }
-
-          if (isValid) {
-            submitBtn.classList.add("loading");
-            submitBtn.disabled = true;
-
-            try {
-              const response = await fetch(
-                "http://localhost:3001/api/forgot-password",
-                {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ email: email.value }),
-                  credentials: "include",
-                }
-              );
-
-              const result = await response.json();
-
-              if (response.ok) {
-                alert("Password reset link sent to your email.");
-                showLogin();
-                forgotForm.reset();
-              } else {
-                showError(
-                  email,
-                  emailError,
-                  result.error || "Error sending reset link"
-                );
-              }
-            } catch (error) {
-              console.error("Forgot password error:", error);
-              showError(email, emailError, "Error connecting to the server");
-            } finally {
-              submitBtn.classList.remove("loading");
-              submitBtn.disabled = false;
-            }
-          }
-        });
-        
-      document.addEventListener("DOMContentLoaded", function () {
-        const loginForm = document.getElementById("loginForm");
-        if (!loginForm) {
-          console.error("Login form not found!");
-          return;   
+        if (!validateEmail(email)) {
+          isValid = showError(emailInput, emailError, "Please enter a valid email");
         }
-        loginForm.addEventListener("submit", async (e) => {
-          e.preventDefault();
-          const email = document.getElementById("loginEmail").value;
-          const password = document.getElementById("loginPassword").value;
+
+        if (password.length < 6) {
+          isValid = showError(passwordInput, passwordError, "Password must be at least 6 characters");
+        }
+
+        if (isValid) {
+          submitBtn.classList.add("loading");
+          submitBtn.disabled = true;
+
           try {
-            const response = await fetch("http://127.0.0.1:3001/api/login", {
+            const response = await fetch("http://localhost:3001/api/auth/login", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               credentials: "include",
               body: JSON.stringify({ email, password }),
             });
+
             const result = await response.json();
+
             if (response.ok) {
               alert("Login successful");
               window.location.href = "homepage.html";
             } else {
-              alert(result.error || "Login failed");
+              if (result.error.includes("email")) {
+                showError(emailInput, emailError, result.error);
+              } else if (result.error.includes("password")) {
+                showError(passwordInput, passwordError, result.error);
+              } else {
+                showError(emailInput, emailError, result.error);
+                showError(passwordInput, passwordError, result.error);
+              }
             }
-          } catch (err) {
-            console.error("Login error:", err);
-            alert("Could not reach the server");
+          } catch (error) {
+            showError(emailInput, emailError, `Could not reach the server on port 3001: ${error.message}`);
+            showError(passwordInput, passwordError, `Could not reach the server on port 3001: ${error.message}`);
+          } finally {
+            submitBtn.classList.remove("loading");
+            submitBtn.disabled = false;
           }
-        });
+        }
+      });
+
+      // Signup Form
+      document.getElementById("signupForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const nameInput = document.getElementById("signupName");
+        const emailInput = document.getElementById("signupEmail");
+        const passwordInput = document.getElementById("signupPassword");
+        const nameError = document.getElementById("signupNameError");
+        const emailError = document.getElementById("signupEmailError");
+        const passwordError = document.getElementById("signupPasswordError");
+        const submitBtn = document.querySelector("#signupForm .submit-btn");
+
+        let isValid = true;
+
+        clearError(nameInput, nameError);
+        clearError(emailInput, emailError);
+        clearError(passwordInput, passwordError);
+
+        const name = nameInput.value.trim();
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
+
+        if (name === "") {
+          isValid = showError(nameInput, nameError, "Name is required");
+        }
+
+        if (!validateEmail(email)) {
+          isValid = showError(emailInput, emailError, "Please enter a valid email");
+        }
+
+        if (password.length < 6) {
+          isValid = showError(passwordInput, passwordError, "Password must be at least 6 characters");
+        }
+
+        if (isValid) {
+          submitBtn.classList.add("loading");
+          submitBtn.disabled = true;
+
+          try {
+            const response = await fetch("http://localhost:3001/api/auth/register", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              credentials: "include",
+              body: JSON.stringify({
+                name,
+                email,
+                password,
+              }),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+              alert("Signup successful! Please log in.");
+              showLogin();
+              document.getElementById("signupForm").reset();
+            } else {
+              if (result.error.includes("email")) {
+                showError(emailInput, emailError, result.error);
+              } else {
+                showError(nameInput, nameError, result.error);
+                showError(emailInput, emailError, result.error);
+                showError(passwordInput, passwordError, result.error);
+              }
+            }
+          } catch (error) {
+            showError(emailInput, emailError, `Could not reach the server on port 3001: ${error.message}`);
+          } finally {
+            submitBtn.classList.remove("loading");
+            submitBtn.disabled = false;
+          }
+        }
+      });
+
+      // Forgot Password Form
+      document.getElementById("forgotForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const emailInput = document.getElementById("forgotEmail");
+        const emailError = document.getElementById("forgotEmailError");
+        const submitBtn = document.querySelector("#forgotForm .submit-btn");
+
+        let isValid = true;
+
+        clearError(emailInput, emailError);
+
+        const email = emailInput.value.trim();
+
+        if (!validateEmail(email)) {
+          isValid = showError(emailInput, emailError, "Please enter a valid email");
+        }
+
+        if (isValid) {
+          submitBtn.classList.add("loading");
+          submitBtn.disabled = true;
+
+          try {
+            const response = await fetch("http://localhost:3001/api/auth/forgot-password", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              credentials: "include",
+              body: JSON.stringify({ email }),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+              alert("Password reset link sent to your email.");
+              showLogin();
+              document.getElementById("forgotForm").reset();
+            } else {
+              showError(emailInput, emailError, result.error || "Error sending reset link");
+            }
+          } catch (error) {
+            showError(emailInput, emailError, `Could not reach the server on port 3001: ${error.message}`);
+          } finally {
+            submitBtn.classList.remove("loading");
+            submitBtn.disabled = false;
+          }
+        }
       });
     </script>
   </body>

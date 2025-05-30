@@ -703,8 +703,8 @@
   <nav class="navbar">
     <div class="logo">Alumifyx</div>
     <div class="nav-links">
-      <a href="index.html">Home</a>
-      <a href="academic.html">Academic</a>
+      <a href="homepage.html">Home</a>
+      <a href="acadmic.html">Academic</a>
       <a href="library.html">Library</a>
       <a href="growth.html">Growth</a>
       <a href="jobs.html" class="active">Jobs</a>
@@ -1002,467 +1002,63 @@
   </section>
 
   <script>
-    const jobs = [
-      {
-        title: "Python Developer",
-        company: "TechCorp",
-        description: "Develop backend systems using Python and Django.",
-        skills: ["Python", "Web Development", "Back-End Development"],
-        location: "Bengaluru, India",
-        salary: "₹10-15 LPA",
-        link: "https://www.linkedin.com/jobs/view/python-developer-at-techcorp-1234567890"
-      },
-      {
-        title: "Frontend Developer",
-        company: "WebSolutions",
-        description: "Build responsive web applications using React.",
-        skills: ["JavaScript", "Web Development", "Front-End Development"],
-        location: "Remote",
-        salary: "₹8-12 LPA",
-        link: "https://www.indeed.com/viewjob?jk=frontend-developer-websolutions-987654321"
-      },
-      {
-        title: "Java Developer",
-        company: "SoftSys",
-        description: "Create enterprise applications with Java and Spring.",
-        skills: ["Java", "Back-End Development"],
-        location: "Hyderabad, India",
-        salary: "₹9-14 LPA",
-        link: "https://www.glassdoor.com/job-listing/java-developer-softsys-JV_4567891230"
-      },
-      {
-        title: "Data Analyst",
-        company: "DataInsight",
-        description: "Analyze data and create reports using Python and SQL.",
-        skills: ["Python", "Data Analysis"],
-        location: "Mumbai, India",
-        salary: "₹6-10 LPA",
-        link: "https://www.naukri.com/job-listings-data-analyst-datainsight-7891234560"
-      },
-      {
-        title: "Mobile App Developer",
-        company: "Appify",
-        description: "Develop Android apps using Java and Kotlin.",
-        skills: ["Java", "Mobile Development"],
-        location: "Pune, India",
-        salary: "₹7-11 LPA",
-        link: "https://www.monster.com/jobs/search/mobile-app-developer-appify-3216549870"
-      },
-      {
-        title: "Machine Learning Engineer",
-        company: "AIInnovate",
-        description: "Build ML models using Python and TensorFlow.",
-        skills: ["Python", "Machine Learning", "AI Development"],
-        location: "Delhi, India",
-        salary: "₹12-18 LPA",
-        link: "https://www.linkedin.com/jobs/view/ml-engineer-aiinnovate-6543219870"
-      },
-      {
-        title: "Cloud Engineer",
-        company: "CloudNet",
-        description: "Manage cloud infrastructure on AWS.",
-        skills: ["Cloud Computing", "DevOps"],
-        location: "Chennai, India",
-        salary: "₹10-16 LPA",
-        link: "https://www.indeed.com/viewjob?jk=cloud-engineer-cloudnet-1472583690"
-      },
-      {
-        title: "Full Stack Developer",
-        company: "InnovateTech",
-        description: "Work on both frontend and backend using JavaScript and Python.",
-        skills: ["JavaScript", "Python", "Web Development", "Front-End Development", "Back-End Development"],
-        location: "Remote",
-        salary: "₹9-14 LPA",
-        link: "https://www.glassdoor.com/job-listing/full-stack-developer-innovatetech-JV_8529637410"
-      },
-      {
-        title: "Marketing Manager",
-        company: "BrandBoost",
-        description: "Lead marketing campaigns and strategies.",
-        skills: ["Marketing", "Digital Marketing"],
-        location: "Gurugram, India",
-        salary: "₹8-12 LPA",
-        link: "https://www.naukri.com/job-listings-marketing-manager-brandboost-9638527410"
-      },
-      {
-        title: "Financial Analyst",
-        company: "FinCorp",
-        description: "Analyze financial data and prepare reports.",
-        skills: ["Finance", "Business Analytics"],
-        location: "Mumbai, India",
-        salary: "₹6-9 LPA",
-        link: "#"
-      },
-      {
-        title: "Accountant",
-        company: "LedgerWorks",
-        description: "Manage company accounts and audits.",
-        skills: ["Accounting"],
-        location: "Kolkata, India",
-        salary: "₹5-8 LPA",
-        link: "#"
-      },
-      {
-        title: "Business Analyst",
-        company: "GrowEasy",
-        description: "Analyze business processes and recommend improvements.",
-        skills: ["Business Analytics", "Project Management"],
-        location: "Bengaluru, India",
-        salary: "₹7-11 LPA",
-        link: "#"
-      },
-      {
-        title: "HR Manager",
-        company: "PeopleFirst",
-        description: "Oversee recruitment and employee relations.",
-        skills: ["Human Resources", "Leadership"],
-        location: "Delhi, India",
-        salary: "₹8-12 LPA",
-        link: "#"
-      },
-      {
-        title: "Sales Executive",
-        company: "SalesPro",
-        description: "Drive sales and manage client relationships.",
-        skills: ["Sales"],
-        location: "Pune, India",
-        salary: "₹5-9 LPA",
-        link: "#"
-      },
-      {
-        title: "Operations Manager",
-        company: "OpsStream",
-        description: "Optimize operational workflows and processes.",
-        skills: ["Operations Management"],
-        location: "Hyderabad, India",
-        salary: "₹9-13 LPA",
-        link: "#"
-      },
-      {
-        title: "Entrepreneurship Consultant",
-        company: "StartUpGuru",
-        description: "Guide startups on business strategies.",
-        skills: ["Entrepreneurship", "Leadership"],
-        location: "Remote",
-        salary: "₹10-15 LPA",
-        link: "#"
-      },
-      {
-        title: "Software Engineer",
-        company: "TechInnovators",
-        description: "Develop scalable software solutions for enterprise clients.",
-        skills: ["Software Engineering", "Web Development", "Python"],
-        location: "Bengaluru, India",
-        salary: "₹8-12 LPA",
-        link: "#"
-      },
-      {
-        title: "Application Developer",
-        company: "AppMasters",
-        description: "Build applications using advanced programming techniques.",
-        skills: ["Java", "Mobile Development", "Software Engineering"],
-        location: "Chennai, India",
-        salary: "₹7-10 LPA",
-        link: "#"
-      },
-      {
-        title: "Web Developer",
-        company: "WebCrafters",
-        description: "Create responsive websites using modern frameworks.",
-        skills: ["JavaScript", "Web Development", "Front-End Development"],
-        location: "Remote",
-        salary: "₹6-9 LPA",
-        link: "#"
-      },
-      {
-        title: "System Analyst",
-        company: "SysTech",
-        description: "Analyze and design IT systems for business needs.",
-        skills: ["System Analysis", "Data Analysis"],
-        location: "Mumbai, India",
-        salary: "₹7-11 LPA",
-        link: "#"
-      },
-      {
-        title: "Junior Developer",
-        company: "CodeWorks",
-        description: "Assist in developing web and mobile applications.",
-        skills: ["JavaScript", "Web Development"],
-        location: "Pune, India",
-        salary: "₹4-7 LPA",
-        link: "#"
-      },
-      {
-        title: "Embedded Systems Engineer",
-        company: "EmbedTech",
-        description: "Design and develop embedded systems for IoT devices.",
-        skills: ["IoT", "Software Engineering"],
-        location: "Bengaluru, India",
-        salary: "₹8-12 LPA",
-        link: "#"
-      },
-      {
-        title: "Cybersecurity Specialist",
-        company: "SecureNet",
-        description: "Protect systems from cyber threats and vulnerabilities.",
-        skills: ["Cybersecurity", "Network Administration"],
-        location: "Delhi, India",
-        salary: "₹9-14 LPA",
-        link: "#"
-      },
-      {
-        title: "DevOps Engineer",
-        company: "CloudSys",
-        description: "Automate and manage CI/CD pipelines.",
-        skills: ["DevOps", "Cloud Computing"],
-        location: "Hyderabad, India",
-        salary: "₹10-15 LPA",
-        link: "#"
-      },
-      {
-        title: "Blockchain Developer",
-        company: "ChainTech",
-        description: "Develop decentralized applications using blockchain technology.",
-        skills: ["Blockchain", "API Development"],
-        location: "Remote",
-        salary: "₹12-18 LPA",
-        link: "#"
-      },
-      {
-        title: "AI Developer",
-        company: "IntelliSoft",
-        description: "Create AI-driven solutions for business automation.",
-        skills: ["AI Development", "Machine Learning"],
-        location: "Bengaluru, India",
-        salary: "₹11-16 LPA",
-        link: "#"
-      },
-      {
-        title: "IoT Developer",
-        company: "SmartDevices",
-        description: "Build IoT solutions for smart home applications.",
-        skills: ["IoT", "Software Engineering"],
-        location: "Chennai, India",
-        salary: "₹8-12 LPA",
-        link: "#"
-      },
-      {
-        title: "Big Data Engineer",
-        company: "DataFlow",
-        description: "Process and analyze large datasets using Hadoop and Spark.",
-        skills: ["Big Data", "Data Analysis"],
-        location: "Mumbai, India",
-        salary: "₹10-15 LPA",
-        link: "#"
-      },
-      {
-        title: "Software Tester",
-        company: "QualityAssure",
-        description: "Ensure software quality through rigorous testing.",
-        skills: ["Software Testing"],
-        location: "Pune, India",
-        salary: "₹5-8 LPA",
-        link: "#"
-      },
-      {
-        title: "UI/UX Designer",
-        company: "DesignWorks",
-        description: "Design intuitive user interfaces for web applications.",
-        skills: ["UI/UX Design", "Graphic Design"],
-        location: "Remote",
-        salary: "₹7-11 LPA",
-        link: "#"
-      },
-      {
-        title: "Game Developer",
-        company: "GameStudio",
-        description: "Create immersive games using Unity and C#.",
-        skills: ["Game Development"],
-        location: "Bengaluru, India",
-        salary: "₹8-12 LPA",
-        link: "#"
-      },
-      {
-        title: "AR/VR Developer",
-        company: "VirtualLabs",
-        description: "Develop augmented and virtual reality applications.",
-        skills: ["AR/VR Development"],
-        location: "Delhi, India",
-        salary: "₹9-14 LPA",
-        link: "#"
-      },
-      {
-        title: "Database Administrator",
-        company: "DataCore",
-        description: "Manage and optimize databases for performance.",
-        skills: ["Database Management"],
-        location: "Hyderabad, India",
-        salary: "₹6-10 LPA",
-        link: "#"
-      },
-      {
-        title: "Project Manager",
-        company: "PlanEasy",
-        description: "Lead projects and ensure timely delivery.",
-        skills: ["Project Management", "Leadership"],
-        location: "Mumbai, India",
-        salary: "₹10-15 LPA",
-        link: "#"
-      },
-      {
-        title: "Digital Marketing Specialist",
-        company: "MarketPro",
-        description: "Run digital campaigns on social media platforms.",
-        skills: ["Digital Marketing", "Marketing"],
-        location: "Remote",
-        salary: "₹6-9 LPA",
-        link: "#"
-      },
-      {
-        title: "Content Writer",
-        company: "WriteWell",
-        description: "Create engaging content for blogs and websites.",
-        skills: ["Content Writing"],
-        location: "Kolkata, India",
-        salary: "₹4-7 LPA",
-        link: "#"
-      },
-      {
-        title: "Graphic Designer",
-        company: "CreativeStudio",
-        description: "Design visuals for branding and marketing.",
-        skills: ["Graphic Design"],
-        location: "Pune, India",
-        salary: "₹5-8 LPA",
-        link: "#"
-      },
-      {
-        title: "Product Manager",
-        company: "Productify",
-        description: "Oversee product development and strategy.",
-        skills: ["Product Management", "Leadership"],
-        location: "Bengaluru, India",
-        salary: "₹12-18 LPA",
-        link: "#"
-      }
-    ];
+    const BASE_URL = "http://localhost:3001";
 
-    function showJobs() {
-      const jobList = document.getElementById('jobList');
-      const showJobsBtn = document.querySelector('.show-jobs-btn');
-      if (!jobList || !showJobsBtn) {
-        console.error('Job list or button not found');
-        return;
-      }
-
-      showJobsBtn.classList.add('loading');
-      jobList.innerHTML = '<p>Loading jobs...</p>';
-
-      setTimeout(() => {
-        jobList.innerHTML = '';
-        const selectedSkills = Array.from(document.querySelectorAll('#skillsSelection input:checked'))
-          .map(input => input.value);
-
-        if (selectedSkills.length === 0) {
-          jobList.innerHTML = '<p class="no-jobs">Please select at least one skill to see job opportunities.</p>';
-          showJobsBtn.classList.remove('loading');
-          return;
-        }
-
-        const matchingJobs = jobs.filter(job => 
-          selectedSkills.every(skill => job.skills.includes(skill))
-        );
-
-        if (matchingJobs.length === 0) {
-          jobList.innerHTML = '<p class="no-jobs">No jobs found for the selected skills combination.</p>';
-          showJobsBtn.classList.remove('loading');
-          return;
-        }
-
-        matchingJobs.forEach(job => {
-          const jobDiv = document.createElement('div');
-          jobDiv.className = 'job';
-          const applyLink = job.link && job.link !== '#' ? job.link : '#';
-          const isLinkValid = job.link && job.link !== '#';
-          jobDiv.innerHTML = `
-            <h3>${job.title}</h3>
-            <p><strong>Company:</strong> ${job.company}</p>
-            <p><strong>Location:</strong> ${job.location}</p>
-            <p><strong>Salary:</strong> ${job.salary}</p>
-            <p>${job.description}</p>
-            <a href="${applyLink}" class="apply-btn ${!isLinkValid ? 'disabled' : ''}" ${isLinkValid ? 'target="_blank"' : ''} tabindex="0">Apply Now</a>
-          `;
-          jobList.appendChild(jobDiv);
+    async function checkSessionOrRedirect() {
+      try {
+        const response = await fetch(`${BASE_URL}/api/user`, {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include"
         });
-
-        showJobsBtn.classList.remove('loading');
-      }, 500);
-    }
-
-    function searchSkills(query) {
-      const skills = document.querySelectorAll('.skill-option');
-      if (!skills.length) {
-        console.error('No skill options found');
-        return;
+        if (!response.ok) throw new Error("Not logged in");
+        return await response.json();
+      } catch (e) {
+        window.location.href = "loginandsignuppage.html";
+        throw e;
       }
-      const lowerQuery = query.toLowerCase().trim();
-
-      skills.forEach(skill => {
-        const skillText = skill.querySelector('span').textContent.toLowerCase();
-        skill.classList.toggle('hidden', !skillText.includes(lowerQuery));
-      });
     }
 
-    const searchContainer = document.querySelector('.search-container');
-    const searchBtn = document.querySelector('.search-btn');
-    if (searchContainer && searchBtn) {
-      function toggleSearchDropdown() {
-        searchContainer.classList.toggle('active');
-        const isExpanded = searchContainer.classList.contains('active');
-        searchBtn.setAttribute('aria-expanded', isExpanded);
-        if (isExpanded) {
-          const searchInput = document.querySelector('.search-input');
-          if (searchInput) {
-            searchInput.focus();
-            searchInput.value = '';
-            searchSkills('');
-          }
+    document.addEventListener('DOMContentLoaded', async () => {
+      await checkSessionOrRedirect();
+
+      // Initialize theme and font size
+      try {
+        const theme = localStorage.getItem('theme');
+        if (theme === 'light') {
+          document.body.classList.add('light-mode');
+          const themeToggle = document.getElementById('themeToggle');
+          if (themeToggle) themeToggle.checked = true;
         }
+        const settings = safeParse(localStorage.getItem('settings'), { fontSize: 'medium' });
+        document.body.classList.add(`font-${settings.fontSize || 'medium'}`);
+        const fontSizeSelect = document.getElementById('fontSize');
+        if (fontSizeSelect) {
+          fontSizeSelect.value = settings.fontSize || 'medium';
+        }
+      } catch (e) {
+        // No alert, just use default
       }
 
-      searchBtn.addEventListener('click', toggleSearchDropdown);
-      searchBtn.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          toggleSearchDropdown();
-        }
-      });
+      // Profile dropdown
+      const profile = document.querySelector('.profile');
+      const profileIcon = document.querySelector('.profile-icon');
 
-      document.addEventListener('click', (e) => {
-        if (!searchContainer.contains(e.target) && e.target !== searchBtn) {
-          searchContainer.classList.remove('active');
-          searchBtn.setAttribute('aria-expanded', false);
-          searchSkills('');
-        }
-      });
-    }
-
-    const profile = document.querySelector('.profile');
-    const profileIcon = document.querySelector('.profile-icon');
-    if (profile && profileIcon) {
       function toggleProfileDropdown() {
         profile.classList.toggle('active');
         const isExpanded = profile.classList.contains('active');
         profileIcon.setAttribute('aria-expanded', isExpanded);
       }
 
-      profileIcon.addEventListener('click', toggleProfileDropdown);
-      profileIcon.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          toggleProfileDropdown();
-        }
-      });
+      if (profileIcon) {
+        profileIcon.addEventListener('click', toggleProfileDropdown);
+        profileIcon.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            toggleProfileDropdown();
+          }
+        });
+      }
 
       document.addEventListener('click', (e) => {
         if (!profile.contains(e.target)) {
@@ -1470,153 +1066,374 @@
           profileIcon.setAttribute('aria-expanded', false);
         }
       });
-    }
 
-    function openProfileModal() {
-      document.getElementById('profileModal').classList.add('active');
-      profile.classList.remove('active');
-      profileIcon.setAttribute('aria-expanded', false);
-      loadProfileData();
-    }
+      // Profile modal
+      const profileModal = document.getElementById('profileModal');
+      const profileForm = document.getElementById('profileForm');
+      const profilePicInput = document.getElementById('profilePic');
+      const profilePicPreview = document.getElementById('profilePicPreview');
 
-    function closeProfileModal() {
-      document.getElementById('profileModal').classList.remove('active');
-    }
+      window.openProfileModal = async function () {
+        profileModal.classList.add('active');
+        profile.classList.remove('active');
+        profileIcon.setAttribute('aria-expanded', false);
+        await loadProfileData();
+      };
 
-    function loadProfileData() {
-      const profileData = JSON.parse(localStorage.getItem('profileData')) || {};
-      document.getElementById('name').value = profileData.name || '';
-      document.getElementById('email').value = profileData.email || '';
-      document.getElementById('phone').value = profileData.phone || '';
-      document.getElementById('education').value = profileData.education || '';
-      document.getElementById('skills').value = profileData.skills || '';
-      document.getElementById('certifications').value = profileData.certifications || '';
-      document.getElementById('address').value = profileData.address || '';
-      document.getElementById('gender').value = profileData.gender || '';
-      document.getElementById('dob').value = profileData.dob || '';
-      document.getElementById('bio').value = profileData.bio || '';
-      if (profileData.profilePic) {
-        document.getElementById('profilePicPreview').src = profileData.profilePic;
-        document.getElementById('profilePicPreview').style.display = 'block';
-      }
-    }
+      window.closeProfileModal = function () {
+        profileModal.classList.remove('active');
+      };
 
-    document.getElementById('profilePic').addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        if (file.size > 2 * 1024 * 1024) {
-          alert('Profile picture must be less than 2MB.');
-          return;
+      async function loadProfileData() {
+        try {
+          const response = await fetch(`${BASE_URL}/api/user`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include'
+          });
+
+          if (!response.ok) {
+            throw new Error('Failed to load profile data');
+          }
+
+          const user = await response.json();
+          document.getElementById('name').value = user.name || '';
+          document.getElementById('email').value = user.email || '';
+          document.getElementById('phone').value = user.phone || '';
+          document.getElementById('education').value = user.education || '';
+          document.getElementById('skills').value = user.skills || '';
+          document.getElementById('certifications').value = user.certifications || '';
+          document.getElementById('address').value = user.address || '';
+          document.getElementById('gender').value = user.gender || '';
+          document.getElementById('dob').value = user.dob || '';
+          document.getElementById('bio').value = user.bio || '';
+          
+          if (user.profilePic) {
+            profilePicPreview.src = user.profilePic;
+            profilePicPreview.style.display = 'block';
+          } else {
+            profilePicPreview.style.display = 'none';
+          }
+        } catch (error) {
+          console.error('Error loading profile:', error);
+          alert('Error loading profile data. Please try again.');
         }
-        const reader = new FileReader();
-        reader.onload = () => {
-          document.getElementById('profilePicPreview').src = reader.result;
-          document.getElementById('profilePicPreview').style.display = 'block';
+      }
+
+      if (profilePicInput) {
+        profilePicInput.addEventListener('change', (e) => {
+          const file = e.target.files[0];
+          if (file) {
+            if (!file.type.startsWith('image/')) {
+              alert('Please upload a valid image file (e.g., PNG, JPEG).');
+              profilePicInput.value = '';
+              return;
+            }
+            if (file.size > 2 * 1024 * 1024) {
+              alert('Profile picture must be less than 2MB.');
+              profilePicInput.value = '';
+              return;
+            }
+            const reader = new FileReader();
+            reader.onload = () => {
+              profilePicPreview.src = reader.result;
+              profilePicPreview.style.display = 'block';
+            };
+            reader.onerror = () => {
+              alert('Error reading the file. Please try a different image.');
+              profilePicInput.value = '';
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+      }
+
+      if (profileForm) {
+        profileForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const phone = document.getElementById('phone').value;
+          if (phone && !/^\+?\d{10,15}$/.test(phone)) {
+            alert('Please enter a valid phone number (10-15 digits).');
+            return;
+          }
+
+          const formData = new FormData();
+          formData.append('name', document.getElementById('name').value);
+          formData.append('email', document.getElementById('email').value);
+          formData.append('phone', document.getElementById('phone').value);
+          formData.append('education', document.getElementById('education').value);
+          formData.append('skills', document.getElementById('skills').value);
+          formData.append('certifications', document.getElementById('certifications').value);
+          formData.append('address', document.getElementById('address').value);
+          formData.append('gender', document.getElementById('gender').value);
+          formData.append('dob', document.getElementById('dob').value);
+          formData.append('bio', document.getElementById('bio').value);
+          
+          if (profilePicInput.files[0]) {
+            formData.append('profilePic', profilePicInput.files[0]);
+          }
+
+          try {
+            const response = await fetch(`${BASE_URL}/api/user`, {
+              method: 'PUT',
+              body: formData,
+              credentials: 'include'
+            });
+
+            if (!response.ok) {
+              throw new Error('Failed to update profile');
+            }
+
+            const data = await response.json();
+            alert(data.message || 'Profile updated successfully!');
+            closeProfileModal();
+          } catch (error) {
+            console.error('Error updating profile:', error);
+            alert('Error updating profile. Please try again.');
+          }
+        });
+      }
+
+      // Settings modal
+      const settingsModal = document.getElementById('settingsModal');
+      const themeToggle = document.getElementById('themeToggle');
+      const fontSizeSelect = document.getElementById('fontSize');
+
+      window.openSettingsModal = function () {
+        settingsModal.classList.add('active');
+        profile.classList.remove('active');
+        profileIcon.setAttribute('aria-expanded', false);
+        loadSettings();
+      };
+
+      window.closeSettingsModal = function () {
+        settingsModal.classList.remove('active');
+      };
+
+      function loadSettings() {
+        const settings = safeParse(localStorage.getItem('settings'), { fontSize: 'medium' });
+        if (themeToggle) {
+          themeToggle.checked = localStorage.getItem('theme') === 'light';
+        }
+        if (fontSizeSelect) {
+          fontSizeSelect.value = settings.fontSize || 'medium';
+        }
+      }
+
+      window.saveSettings = function () {
+        const settings = {
+          fontSize: fontSizeSelect.value
         };
-        reader.readAsDataURL(file);
-      }
-    });
-
-    document.getElementById('profileForm').addEventListener('submit', (e) => {
-      e.preventDefault();
-      const phone = document.getElementById('phone').value;
-      if (phone && !/^\+?\d{10,15}$/.test(phone)) {
-        alert('Please enter a valid phone number (10-15 digits).');
-        return;
-      }
-      const profileData = {
-        name: document.getElementById('name').value,
-        email: document.getElementById('email').value,
-        phone: document.getElementById('phone').value,
-        education: document.getElementById('education').value,
-        skills: document.getElementById('skills').value,
-        certifications: document.getElementById('certifications').value,
-        address: document.getElementById('address').value,
-        gender: document.getElementById('gender').value,
-        dob: document.getElementById('dob').value,
-        bio: document.getElementById('bio').value,
-        profilePic: document.getElementById('profilePicPreview').src
+        try {
+          localStorage.setItem('settings', JSON.stringify(settings));
+          document.body.classList.remove('font-small', 'font-medium', 'font-large');
+          document.body.classList.add(`font-${fontSizeSelect.value}`);
+          alert('Settings saved successfully!');
+          closeSettingsModal();
+        } catch (e) {
+          console.error('Error saving settings:', e);
+          alert('Error saving settings. Please try again.');
+        }
       };
-      localStorage.setItem('profileData', JSON.stringify(profileData));
-      alert('Profile saved successfully!');
-      closeProfileModal();
-    });
 
-    function openSettingsModal() {
-      document.getElementById('settingsModal').classList.add('active');
-      profile.classList.remove('active');
-      profileIcon.setAttribute('aria-expanded', false);
-      loadSettings();
-    }
-
-    function closeSettingsModal() {
-      document.getElementById('settingsModal').classList.remove('active');
-    }
-
-    function loadSettings() {
-      const settings = JSON.parse(localStorage.getItem('settings')) || {};
-      document.getElementById('themeToggle').checked = localStorage.getItem('theme') === 'light';
-      document.getElementById('language').value = settings.language || 'en';
-      document.getElementById('emailNotifications').checked = settings.emailNotifications || false;
-      document.getElementById('pushNotifications').checked = settings.pushNotifications || false;
-      document.getElementById('profileVisibility').value = settings.profileVisibility || 'public';
-      document.getElementById('fontSize').value = settings.fontSize || 'medium';
-      document.getElementById('twoFactorAuth').checked = settings.twoFactorAuth || false;
-    }
-
-    function saveSettings() {
-      const settings = {
-        language: document.getElementById('language').value,
-        emailNotifications: document.getElementById('emailNotifications').checked,
-        pushNotifications: document.getElementById('pushNotifications').checked,
-        profileVisibility: document.getElementById('profileVisibility').value,
-        fontSize: document.getElementById('fontSize').value,
-        twoFactorAuth: document.getElementById('twoFactorAuth').checked
-      };
-      localStorage.setItem('settings', JSON.stringify(settings));
-      document.body.classList.remove('font-small', 'font-medium', 'font-large');
-      document.body.classList.add(`font-${settings.fontSize}`);
-      alert('Settings saved successfully!');
-      closeSettingsModal();
-    }
-
-    document.getElementById('themeToggle').addEventListener('change', () => {
-      document.body.classList.toggle('light-mode');
-      localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
-    });
-
-    function requestDataExport() {
-      alert('Data export request submitted. You will receive an email with your data soon.');
-    }
-
-    function deleteAccount() {
-      if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
-        localStorage.removeItem('profileData');
-        localStorage.removeItem('settings');
-        localStorage.removeItem('theme');
-        alert('Account deleted successfully.');
-        closeSettingsModal();
+      if (themeToggle) {
+        themeToggle.addEventListener('change', () => {
+          document.body.classList.toggle('light-mode');
+          try {
+            localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+          } catch (e) {
+            console.error('Error saving theme:', e);
+            alert('Error saving theme. Please try again.');
+          }
+        });
       }
-    }
 
-    function logout() {
-      localStorage.removeItem('profileData');
-      localStorage.removeItem('settings');
-      localStorage.removeItem('theme');
-      alert('Logged out successfully.');
-      window.location.href = 'index.html';
-    }
+      // Logout
+      window.logout = async function () {
+        try {
+          const response = await fetch(`${BASE_URL}/api/auth/logout`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include'
+          });
 
-    if (localStorage.getItem('theme') === 'light') {
-      document.body.classList.add('light-mode');
-      document.getElementById('themeToggle').checked = true;
-    }
+          if (!response.ok) {
+            throw new Error('Logout failed');
+          }
 
-    const settings = JSON.parse(localStorage.getItem('settings')) || {};
-    if (settings.fontSize) {
-      document.body.classList.add(`font-${settings.fontSize}`);
-      document.getElementById('fontSize').value = settings.fontSize;
-    }
+          localStorage.removeItem('profileData');
+          localStorage.removeItem('adminData');
+          alert('Logged out successfully.');
+          window.location.href = 'loginandsignuppage.html';
+        } catch (error) {
+          console.error('Error during logout:', error);
+          alert('Error logging out. Please try again.');
+        }
+      };
+
+      // Load jobs from backend
+      async function loadJobs() {
+        try {
+          const response = await fetch(`${BASE_URL}/api/jobs`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include'
+          });
+
+          if (!response.ok) {
+            throw new Error('Failed to load jobs');
+          }
+
+          const jobs = await response.json();
+          const jobList = document.getElementById('job-list');
+          
+          if (jobs.length > 0) {
+            // Clear existing jobs
+            jobList.innerHTML = '';
+            
+            jobs.forEach(job => {
+              const card = document.createElement('div');
+              card.className = 'job-card';
+              card.innerHTML = `
+                <div class="job-header">
+                  <h3>${job.title}</h3>
+                  <span class="company">${job.company}</span>
+                </div>
+                <div class="job-details">
+                  <p><i class="fas fa-map-marker-alt"></i> ${job.location}</p>
+                  <p><i class="fas fa-money-bill-wave"></i> ${job.salary}</p>
+                  <p><i class="fas fa-clock"></i> ${job.type}</p>
+                </div>
+                <div class="job-description">
+                  <p>${job.description}</p>
+                </div>
+                <div class="job-requirements">
+                  <h4>Requirements:</h4>
+                  <ul>
+                    ${job.requirements.map(req => `<li>${req}</li>`).join('')}
+                  </ul>
+                </div>
+                <div class="job-actions">
+                  <button onclick="applyForJob('${job._id}')" class="apply-button">Apply Now</button>
+                  <button onclick="saveJob('${job._id}')" class="save-button">Save Job</button>
+                </div>
+              `;
+              jobList.appendChild(card);
+            });
+          } else {
+            jobList.innerHTML = '<p>No jobs found.</p>';
+          }
+        } catch (error) {
+          console.error('Error loading jobs:', error);
+          jobList.innerHTML = '<p>Error loading jobs. Please try again later.</p>';
+        }
+      }
+
+      // Search jobs
+      window.searchJobs = async function () {
+        const query = document.getElementById('search-input').value.toLowerCase();
+        const location = document.getElementById('location-filter').value.toLowerCase();
+        const type = document.getElementById('type-filter').value.toLowerCase();
+
+        try {
+          const response = await fetch(`${BASE_URL}/api/jobs/search?q=${encodeURIComponent(query)}&location=${encodeURIComponent(location)}&type=${encodeURIComponent(type)}`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include'
+          });
+
+          if (!response.ok) {
+            throw new Error('Search failed');
+          }
+
+          const jobs = await response.json();
+          const jobList = document.getElementById('job-list');
+          
+          if (jobs.length > 0) {
+            jobList.innerHTML = '';
+            jobs.forEach(job => {
+              const card = document.createElement('div');
+              card.className = 'job-card';
+              card.innerHTML = `
+                <div class="job-header">
+                  <h3>${job.title}</h3>
+                  <span class="company">${job.company}</span>
+                </div>
+                <div class="job-details">
+                  <p><i class="fas fa-map-marker-alt"></i> ${job.location}</p>
+                  <p><i class="fas fa-money-bill-wave"></i> ${job.salary}</p>
+                  <p><i class="fas fa-clock"></i> ${job.type}</p>
+                </div>
+                <div class="job-description">
+                  <p>${job.description}</p>
+                </div>
+                <div class="job-requirements">
+                  <h4>Requirements:</h4>
+                  <ul>
+                    ${job.requirements.map(req => `<li>${req}</li>`).join('')}
+                  </ul>
+                </div>
+                <div class="job-actions">
+                  <button onclick="applyForJob('${job._id}')" class="apply-button">Apply Now</button>
+                  <button onclick="saveJob('${job._id}')" class="save-button">Save Job</button>
+                </div>
+              `;
+              jobList.appendChild(card);
+            });
+          } else {
+            jobList.innerHTML = '<p>No jobs found matching your criteria.</p>';
+          }
+        } catch (error) {
+          console.error('Error searching jobs:', error);
+          alert('Error searching jobs. Please try again.');
+        }
+      };
+
+      // Apply for job
+      window.applyForJob = async function (jobId) {
+        try {
+          const response = await fetch(`${BASE_URL}/api/jobs/${jobId}/apply`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include'
+          });
+
+          if (!response.ok) {
+            throw new Error('Failed to apply for job');
+          }
+
+          const data = await response.json();
+          alert(data.message || 'Application submitted successfully!');
+        } catch (error) {
+          console.error('Error applying for job:', error);
+          alert('Error applying for job. Please try again.');
+        }
+      };
+
+      // Save job
+      window.saveJob = async function (jobId) {
+        try {
+          const response = await fetch(`${BASE_URL}/api/jobs/${jobId}/save`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include'
+          });
+
+          if (!response.ok) {
+            throw new Error('Failed to save job');
+          }
+
+          const data = await response.json();
+          alert(data.message || 'Job saved successfully!');
+        } catch (error) {
+          console.error('Error saving job:', error);
+          alert('Error saving job. Please try again.');
+        }
+      };
+
+      // Initial load
+      loadJobs();
+    });
   </script>
 </body>
 </html>

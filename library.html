@@ -809,304 +809,388 @@
   </div>
 
   <script>
-    const profile = document.querySelector('.profile');
-    const profileIcon = document.querySelector('.profile-icon');
-
-    function toggleProfileDropdown() {
-      profile.classList.toggle('active');
-      const isExpanded = profile.classList.contains('active');
-      profileIcon.setAttribute('aria-expanded', isExpanded);
-    }
-
-    profileIcon.addEventListener('click', toggleProfileDropdown);
-    profileIcon.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        toggleProfileDropdown();
+    const BASE_URL = "http://localhost:3001";
+    async function checkSessionOrRedirect() {
+      try {
+        const response = await fetch(`${BASE_URL}/api/user`, {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include"
+        });
+        if (!response.ok) throw new Error("Not logged in");
+        return await response.json();
+      } catch (e) {
+        window.location.href = "loginandsignuppage.html";
+        throw e;
       }
+    }
+    document.addEventListener('DOMContentLoaded', async () => {
+      await checkSessionOrRedirect();
+      // ...rest of your page logic (existing code)
     });
 
-    document.addEventListener('click', (e) => {
-      if (!profile.contains(e.target)) {
+    // Utility function to safely parse JSON
+    function safeParse(jsonString, fallback) {
+      try {
+        return JSON.parse(jsonString) || fallback;
+      } catch (e) {
+        console.error('Error parsing JSON:', e);
+        return fallback;
+      }
+    }
+
+    // Ensure DOM is fully loaded before running scripts
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Initialize theme and font size
+      try {
+        const theme = localStorage.getItem('theme');
+        if (theme === 'light') {
+          document.body.classList.add('light-mode');
+          const themeToggle = document.getElementById('themeToggle');
+          if (themeToggle) themeToggle.checked = true;
+        }
+        const settings = safeParse(localStorage.getItem('settings'), { fontSize: 'medium' });
+        document.body.classList.add(`font-${settings.fontSize || 'medium'}`);
+        const fontSizeSelect = document.getElementById('fontSize');
+        if (fontSizeSelect) {
+          fontSizeSelect.value = settings.fontSize || 'medium';
+        }
+      } catch (e) {
+        // No alert, just use default
+      }
+
+      // Profile dropdown
+      const profile = document.querySelector('.profile');
+      const profileIcon = document.querySelector('.profile-icon');
+
+      function toggleProfileDropdown() {
+        profile.classList.toggle('active');
+        const isExpanded = profile.classList.contains('active');
+        profileIcon.setAttribute('aria-expanded', isExpanded);
+      }
+
+      if (profileIcon) {
+        profileIcon.addEventListener('click', toggleProfileDropdown);
+        profileIcon.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            toggleProfileDropdown();
+          }
+        });
+      }
+
+      document.addEventListener('click', (e) => {
+        if (!profile.contains(e.target)) {
+          profile.classList.remove('active');
+          profileIcon.setAttribute('aria-expanded', false);
+        }
+      });
+
+      // Profile modal
+      const profileModal = document.getElementById('profileModal');
+      const profileForm = document.getElementById('profileForm');
+      const profilePicInput = document.getElementById('profilePic');
+      const profilePicPreview = document.getElementById('profilePicPreview');
+
+      window.openProfileModal = async function () {
+        profileModal.classList.add('active');
         profile.classList.remove('active');
         profileIcon.setAttribute('aria-expanded', false);
-      }
-    });
+        await loadProfileData();
+      };
 
-    const profileModal = document.getElementById('profileModal');
-    const profileForm = document.getElementById('profileForm');
-    const profilePicInput = document.getElementById('profilePic');
-    const profilePicPreview = document.getElementById('profilePicPreview');
+      window.closeProfileModal = function () {
+        profileModal.classList.remove('active');
+      };
 
-    function openProfileModal() {
-      profileModal.classList.add('active');
-      profile.classList.remove('active');
-      profileIcon.setAttribute('aria-expanded', false);
-      loadProfileData();
-    }
+      async function loadProfileData() {
+        try {
+          const response = await fetch(`${BASE_URL}/api/user`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include'
+          });
 
-    function closeProfileModal() {
-      profileModal.classList.remove('active');
-    }
+          if (!response.ok) {
+            throw new Error('Failed to load profile data');
+          }
 
-    function loadProfileData() {
-      const profileData = JSON.parse(localStorage.getItem('profileData')) || {};
-      document.getElementById('name').value = profileData.name || '';
-      document.getElementById('email').value = profileData.email || '';
-      document.getElementById('phone').value = profileData.phone || '';
-      document.getElementById('education').value = profileData.education || '';
-      document.getElementById('skills').value = profileData.skills || '';
-      document.getElementById('certifications').value = profileData.certifications || '';
-      document.getElementById('address').value = profileData.address || '';
-      document.getElementById('gender').value = profileData.gender || '';
-      document.getElementById('dob').value = profileData.dob || '';
-      document.getElementById('bio').value = profileData.bio || '';
-      if (profileData.profilePic) {
-        profilePicPreview.src = profileData.profilePic;
-        profilePicPreview.style.display = 'block';
-      }
-    }
-
-    profilePicInput.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        if (file.size > 2 * 1024 * 1024) {
-          alert('Profile picture must be less than 2MB.');
-          return;
+          const user = await response.json();
+          document.getElementById('name').value = user.name || '';
+          document.getElementById('email').value = user.email || '';
+          document.getElementById('phone').value = user.phone || '';
+          document.getElementById('education').value = user.education || '';
+          document.getElementById('skills').value = user.skills || '';
+          document.getElementById('certifications').value = user.certifications || '';
+          document.getElementById('address').value = user.address || '';
+          document.getElementById('gender').value = user.gender || '';
+          document.getElementById('dob').value = user.dob || '';
+          document.getElementById('bio').value = user.bio || '';
+          
+          if (user.profilePic) {
+            profilePicPreview.src = user.profilePic;
+            profilePicPreview.style.display = 'block';
+          } else {
+            profilePicPreview.style.display = 'none';
+          }
+        } catch (error) {
+          console.error('Error loading profile:', error);
+          alert('Error loading profile data. Please try again.');
         }
-        const reader = new FileReader();
-        reader.onload = () => {
-          profilePicPreview.src = reader.result;
-          profilePicPreview.style.display = 'block';
+      }
+
+      if (profilePicInput) {
+        profilePicInput.addEventListener('change', (e) => {
+          const file = e.target.files[0];
+          if (file) {
+            if (!file.type.startsWith('image/')) {
+              alert('Please upload a valid image file (e.g., PNG, JPEG).');
+              profilePicInput.value = '';
+              return;
+            }
+            if (file.size > 2 * 1024 * 1024) {
+              alert('Profile picture must be less than 2MB.');
+              profilePicInput.value = '';
+              return;
+            }
+            const reader = new FileReader();
+            reader.onload = () => {
+              profilePicPreview.src = reader.result;
+              profilePicPreview.style.display = 'block';
+            };
+            reader.onerror = () => {
+              alert('Error reading the file. Please try a different image.');
+              profilePicInput.value = '';
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+      }
+
+      if (profileForm) {
+        profileForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const phone = document.getElementById('phone').value;
+          if (phone && !/^\+?\d{10,15}$/.test(phone)) {
+            alert('Please enter a valid phone number (10-15 digits).');
+            return;
+          }
+
+          const formData = new FormData();
+          formData.append('name', document.getElementById('name').value);
+          formData.append('email', document.getElementById('email').value);
+          formData.append('phone', document.getElementById('phone').value);
+          formData.append('education', document.getElementById('education').value);
+          formData.append('skills', document.getElementById('skills').value);
+          formData.append('certifications', document.getElementById('certifications').value);
+          formData.append('address', document.getElementById('address').value);
+          formData.append('gender', document.getElementById('gender').value);
+          formData.append('dob', document.getElementById('dob').value);
+          formData.append('bio', document.getElementById('bio').value);
+          
+          if (profilePicInput.files[0]) {
+            formData.append('profilePic', profilePicInput.files[0]);
+          }
+
+          try {
+            const response = await fetch(`${BASE_URL}/api/user`, {
+              method: 'PUT',
+              body: formData,
+              credentials: 'include'
+            });
+
+            if (!response.ok) {
+              throw new Error('Failed to update profile');
+            }
+
+            const data = await response.json();
+            alert(data.message || 'Profile updated successfully!');
+            closeProfileModal();
+          } catch (error) {
+            console.error('Error updating profile:', error);
+            alert('Error updating profile. Please try again.');
+          }
+        });
+      }
+
+      // Settings modal
+      const settingsModal = document.getElementById('settingsModal');
+      const themeToggle = document.getElementById('themeToggle');
+      const fontSizeSelect = document.getElementById('fontSize');
+
+      window.openSettingsModal = function () {
+        settingsModal.classList.add('active');
+        profile.classList.remove('active');
+        profileIcon.setAttribute('aria-expanded', false);
+        loadSettings();
+      };
+
+      window.closeSettingsModal = function () {
+        settingsModal.classList.remove('active');
+      };
+
+      function loadSettings() {
+        const settings = safeParse(localStorage.getItem('settings'), { fontSize: 'medium' });
+        if (themeToggle) {
+          themeToggle.checked = localStorage.getItem('theme') === 'light';
+        }
+        if (fontSizeSelect) {
+          fontSizeSelect.value = settings.fontSize || 'medium';
+        }
+      }
+
+      window.saveSettings = function () {
+        const settings = {
+          fontSize: fontSizeSelect.value
         };
-        reader.readAsDataURL(file);
-      }
-    });
-
-    profileForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const phone = document.getElementById('phone').value;
-      if (phone && !/^\+?\d{10,15}$/.test(phone)) {
-        alert('Please enter a valid phone number (10-15 digits).');
-        return;
-      }
-      const profileData = {
-        name: document.getElementById('name').value,
-        email: document.getElementById('email').value,
-        phone: document.getElementById('phone').value,
-        education: document.getElementById('education').value,
-        skills: document.getElementById('skills').value,
-        certifications: document.getElementById('certifications').value,
-        address: document.getElementById('address').value,
-        gender: document.getElementById('gender').value,
-        dob: document.getElementById('dob').value,
-        bio: document.getElementById('bio').value,
-        profilePic: profilePicPreview.src
+        try {
+          localStorage.setItem('settings', JSON.stringify(settings));
+          document.body.classList.remove('font-small', 'font-medium', 'font-large');
+          document.body.classList.add(`font-${fontSizeSelect.value}`);
+          alert('Settings saved successfully!');
+          closeSettingsModal();
+        } catch (e) {
+          console.error('Error saving settings:', e);
+          alert('Error saving settings. Please try again.');
+        }
       };
-      localStorage.setItem('profileData', JSON.stringify(profileData));
-      alert('Profile saved successfully!');
-      closeProfileModal();
-    });
 
-    const settingsModal = document.getElementById('settingsModal');
-    const themeToggle = document.getElementById('themeToggle');
-    const languageSelect = document.getElementById('language');
-    const emailNotifications = document.getElementById('emailNotifications');
-    const pushNotifications = document.getElementById('pushNotifications');
-    const profileVisibility = document.getElementById('profileVisibility');
-    const fontSizeSelect = document.getElementById('fontSize');
-    const twoFactorAuth = document.getElementById('twoFactorAuth');
+      if (themeToggle) {
+        themeToggle.addEventListener('change', () => {
+          document.body.classList.toggle('light-mode');
+          try {
+            localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+          } catch (e) {
+            console.error('Error saving theme:', e);
+            alert('Error saving theme. Please try again.');
+          }
+        });
+      }
 
-    function openSettingsModal() {
-      settingsModal.classList.add('active');
-      profile.classList.remove('active');
-      profileIcon.setAttribute('aria-expanded', false);
-      loadSettings();
-    }
+      // Logout
+      window.logout = async function () {
+        try {
+          const response = await fetch(`${BASE_URL}/api/auth/logout`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include'
+          });
 
-    function closeSettingsModal() {
-      settingsModal.classList.remove('active');
-    }
+          if (!response.ok) {
+            throw new Error('Logout failed');
+          }
 
-    function loadSettings() {
-      const settings = JSON.parse(localStorage.getItem('settings')) || {};
-      themeToggle.checked = localStorage.getItem('theme') === 'light';
-      languageSelect.value = settings.language || 'en';
-      emailNotifications.checked = settings.emailNotifications || false;
-      pushNotifications.checked = settings.pushNotifications || false;
-      profileVisibility.value = settings.profileVisibility || 'public';
-      fontSizeSelect.value = settings.fontSize || 'medium';
-      twoFactorAuth.checked = settings.twoFactorAuth || false;
-    }
-
-    function saveSettings() {
-      const settings = {
-        language: languageSelect.value,
-        emailNotifications: emailNotifications.checked,
-        pushNotifications: pushNotifications.checked,
-        profileVisibility: profileVisibility.value,
-        fontSize: fontSizeSelect.value,
-        twoFactorAuth: twoFactorAuth.checked
+          localStorage.removeItem('profileData');
+          localStorage.removeItem('adminData');
+          alert('Logged out successfully.');
+          window.location.href = 'loginandsignuppage.html';
+        } catch (error) {
+          console.error('Error during logout:', error);
+          alert('Error logging out. Please try again.');
+        }
       };
-      localStorage.setItem('settings', JSON.stringify(settings));
-      document.body.classList.remove('font-small', 'font-medium', 'font-large');
-      document.body.classList.add(`font-${fontSizeSelect.value}`);
-      alert('Settings saved successfully!');
-      closeSettingsModal();
-    }
 
-    themeToggle.addEventListener('change', () => {
-      document.body.classList.toggle('light-mode');
-      localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+      // Load books from backend
+      async function loadBooks() {
+        try {
+          const response = await fetch(`${BASE_URL}/api/books`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include'
+          });
+
+          if (!response.ok) {
+            throw new Error('Failed to load books');
+          }
+
+          const books = await response.json();
+          const studyBookList = document.getElementById('study-book-list');
+          const storyBookList = document.getElementById('story-book-list');
+          
+          if (books.length > 0) {
+            // Clear existing books
+            studyBookList.innerHTML = '';
+            storyBookList.innerHTML = '';
+            
+            books.forEach(book => {
+              const card = document.createElement('div');
+              card.className = 'intro-card';
+              card.innerHTML = `
+                <img src="${book.coverImage || `https://via.placeholder.com/150x200.png?text=${book.title.replace(/ /g, '+')}`}" alt="${book.title}">
+                <h3>${book.title}</h3>
+                <p>${book.description}</p>
+                <a href="${book.pdfUrl || '#'}" class="cta-button" ${book.pdfUrl ? 'target="_blank"' : ''}>Read PDF</a>
+              `;
+              
+              if (book.category === 'study') {
+                studyBookList.appendChild(card);
+              } else {
+                storyBookList.appendChild(card);
+              }
+            });
+          }
+        } catch (error) {
+          console.error('Error loading books:', error);
+          // Keep default books if loading fails
+        }
+      }
+
+      // Search books
+      window.searchBooks = async function () {
+        const query = document.getElementById('search-input').value.toLowerCase();
+        try {
+          const response = await fetch(`${BASE_URL}/api/books/search?q=${encodeURIComponent(query)}`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include'
+          });
+
+          if (!response.ok) {
+            throw new Error('Search failed');
+          }
+
+          const books = await response.json();
+          const studyBookList = document.getElementById('study-book-list');
+          const storyBookList = document.getElementById('story-book-list');
+          const studySeeMore = document.getElementById('study-see-more');
+          const storySeeMore = document.getElementById('story-see-more');
+
+          studyBookList.innerHTML = '';
+          storyBookList.innerHTML = '';
+
+          if (books.length === 0) {
+            studyBookList.innerHTML = '<p>No books found.</p>';
+            storyBookList.innerHTML = '<p>No books found.</p>';
+          } else {
+            books.forEach(book => {
+              const card = document.createElement('div');
+              card.className = 'intro-card';
+              card.innerHTML = `
+                <img src="${book.coverImage || `https://via.placeholder.com/150x200.png?text=${book.title.replace(/ /g, '+')}`}" alt="${book.title}">
+                <h3>${book.title}</h3>
+                <p>${book.description}</p>
+                <a href="${book.pdfUrl || '#'}" class="cta-button" ${book.pdfUrl ? 'target="_blank"' : ''}>Read PDF</a>
+              `;
+              
+              if (book.category === 'study') {
+                studyBookList.appendChild(card);
+              } else {
+                storyBookList.appendChild(card);
+              }
+            });
+          }
+
+          studySeeMore.style.display = query ? 'none' : 'block';
+          storySeeMore.style.display = query ? 'none' : 'block';
+        } catch (error) {
+          console.error('Error searching books:', error);
+          alert('Error searching books. Please try again.');
+        }
+      };
+
+      // Initial load
+      loadBooks();
     });
-
-    function requestDataExport() {
-      alert('Data export request submitted. You will receive an email with your data soon.');
-    }
-
-    function deleteAccount() {
-      if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
-        localStorage.removeItem('profileData');
-        localStorage.removeItem('settings');
-        localStorage.removeItem('theme');
-        alert('Account deleted successfully.');
-        closeSettingsModal();
-      }
-    }
-
-    function logout() {
-      localStorage.removeItem('profileData');
-      localStorage.removeItem('settings');
-      localStorage.removeItem('theme');
-      alert('Logged out successfully.');
-      window.location.reload();
-    }
-
-    if (localStorage.getItem('theme') === 'light') {
-      document.body.classList.add('light-mode');
-      themeToggle.checked = true;
-    }
-
-    const settings = JSON.parse(localStorage.getItem('settings')) || {};
-    if (settings.fontSize) {
-      document.body.classList.add(`font-${settings.fontSize}`);
-      fontSizeSelect.value = settings.fontSize;
-    }
-
-    const books = {
-      study: [
-        { title: 'Programming in Python', description: 'A comprehensive guide to Python programming.' },
-        { title: 'Data Structures', description: 'Learn the fundamentals of data structures.' },
-        { title: 'Engineering Mechanics', description: 'Core concepts for engineering students.' },
-        { title: 'Business Strategy', description: 'Strategies for business success.' }
-      ],
-      story: [
-        { title: 'The Alchemist', description: 'A journey of self-discovery and dreams.' },
-        { title: 'Atomic Habits', description: 'Small changes, remarkable results.' },
-        { title: 'Ikigai', description: 'The Japanese secret to a long and happy life.' },
-        { title: 'The Monk Who Sold His Ferrari', description: 'A tale of wisdom and fulfillment.' }
-      ]
-    };
-
-    let displayedBooks = {
-      study: 2,
-      story: 2
-    };
-
-    function renderBooks(category, limit) {
-      const bookList = document.getElementById(`${category}-book-list`);
-      bookList.innerHTML = '';
-      const bookData = books[category].slice(0, limit);
-      if (bookData.length > 0) {
-        bookData.forEach(book => {
-          const card = document.createElement('div');
-          card.className = 'intro-card';
-          card.innerHTML = `
-            <img src="https://via.placeholder.com/150x200.png?text=${book.title.replace(/ /g, '+')}" alt="${book.title}">
-            <h3>${book.title}</h3>
-            <p>${book.description}</p>
-            <a href="#" class="cta-button">Read PDF</a>
-          `;
-          bookList.appendChild(card);
-        });
-      } else {
-        bookList.innerHTML = `<p>No ${category} books found.</p>`;
-      }
-    }
-
-    function toggleBooks(category) {
-      const bookList = document.getElementById(`${category}-book-list`);
-      const seeMoreContainer = document.getElementById(`${category}-see-more`);
-      const button = seeMoreContainer.querySelector('button');
-      
-      if (button.textContent.includes('See More')) {
-        displayedBooks[category] = books[category].length;
-        button.textContent = `Show Less ${category.charAt(0).toUpperCase() + category.slice(1)} Books`;
-      } else {
-        displayedBooks[category] = 2;
-        button.textContent = `See More ${category.charAt(0).toUpperCase() + category.slice(1)} Books`;
-      }
-      
-      renderBooks(category, displayedBooks[category]);
-    }
-
-    function searchBooks() {
-      const query = document.getElementById('search-input').value.toLowerCase();
-      const studyBookList = document.getElementById('study-book-list');
-      const storyBookList = document.getElementById('story-book-list');
-      const studySeeMore = document.getElementById('study-see-more');
-      const storySeeMore = document.getElementById('story-see-more');
-
-      studyBookList.innerHTML = '';
-      storyBookList.innerHTML = '';
-
-      const studyResults = books.study.filter(book => book.title.toLowerCase().includes(query));
-      if (studyResults.length > 0) {
-        studyResults.forEach(book => {
-          const card = document.createElement('div');
-          card.className = 'intro-card';
-          card.innerHTML = `
-            <img src="https://via.placeholder.com/150x200.png?text=${book.title.replace(/ /g, '+')}" alt="${book.title}">
-            <h3>${book.title}</h3>
-            <p>${book.description}</p>
-            <a href="#" class="cta-button">Read PDF</a>
-          `;
-          studyBookList.appendChild(card);
-        });
-      } else {
-        studyBookList.innerHTML = '<p>No study books found.</p>';
-      }
-
-      const storyResults = books.story.filter(book => book.title.toLowerCase().includes(query));
-      if (storyResults.length > 0) {
-        storyResults.forEach(book => {
-          const card = document.createElement('div');
-          card.className = 'intro-card';
-          card.innerHTML = `
-            <img src="https://via.placeholder.com/150x200.png?text=${book.title.replace(/ /g, '+')}" alt="${book.title}">
-            <h3>${book.title}</h3>
-            <p>${book.description}</p>
-            <a href="#" class="cta-button">Read PDF</a>
-          `;
-          storyBookList.appendChild(card);
-        });
-      } else {
-        storyBookList.innerHTML = '<p>No story/motivational books found.</p>';
-      }
-
-      studySeeMore.style.display = query ? 'none' : 'block';
-      storySeeMore.style.display = query ? 'none' : 'block';
-      
-      // Reset displayed books count and button text when searching
-      displayedBooks.study = 2;
-      displayedBooks.story = 2;
-      studySeeMore.querySelector('button').textContent = 'See More Study Books';
-      storySeeMore.querySelector('button').textContent = 'See More Story Books';
-    }
-
-    // Initial render
-    renderBooks('study', displayedBooks.study);
-    renderBooks('story', displayedBooks.story);
   </script>
 </body>
 </html>

@@ -779,313 +779,331 @@
   </section>
 
   <script>
-    const mentors = [
-      {
-        name: "Amit Sharma",
-        skill: "Personal Finance",
-        photo: "https://via.placeholder.com/100?text=Amit",
-        bio: "Amit is a certified financial planner with over 10 years of experience helping individuals achieve financial independence.",
-        experience: "10+ years in financial planning, CFP certified.",
-        price: "₹5000/month"
-      },
-      {
-        name: "Priya Singh",
-        skill: "Stock Market",
-        photo: "https://via.placeholder.com/100?text=Priya",
-        bio: "Priya is a stock market expert with a track record of successful trading and portfolio management.",
-        experience: "8 years in stock trading, NSE certified.",
-        price: "₹6000/month"
-      },
-      {
-        name: "Rahul Verma",
-        skill: "Python",
-        photo: "https://via.placeholder.com/100?text=Rahul",
-        bio: "Rahul is a Python developer with expertise in data science and automation projects.",
-        experience: "7 years in software development, Python certified.",
-        price: "₹4500/month"
-      },
-      {
-        name: "Sneha Gupta",
-        skill: "Web Development",
-        photo: "https://via.placeholder.com/100?text=Sneha",
-        bio: "Sneha specializes in building responsive websites using modern frameworks like React and Node.js.",
-        experience: "6 years in web development, AWS certified.",
-        price: "₹5500/month"
-      },
-      {
-        name: "Vikram Patel",
-        skill: "Marketing",
-        photo: "https://via.placeholder.com/100?text=Vikram",
-        bio: "Vikram is a digital marketing guru with expertise in SEO, PPC, and social media strategies.",
-        experience: "9 years in digital marketing, Google Ads certified.",
-        price: "₹5200/month"
-      },
-      {
-        name: "Anjali Rao",
-        skill: "UI/UX Design",
-        photo: "https://via.placeholder.com/100?text=Anjali",
-        bio: "Anjali creates user-friendly interfaces with a focus on aesthetics and functionality.",
-        experience: "5 years in UI/UX design, Adobe certified.",
-        price: "₹4800/month"
-      },
-      {
-        name: "Karan Mehta",
-        skill: "Sales",
-        photo: "https://via.placeholder.com/100?text=Karan",
-        bio: "Karan is a sales coach who helps professionals close deals and build client relationships.",
-        experience: "12 years in sales, SPIN Selling certified.",
-        price: "₹5300/month"
-      },
-      {
-        name: "Neha Joshi",
-        skill: "Graphic Design",
-        photo: "https://via.placeholder.com/100?text=Neha",
-        bio: "Neha is a creative graphic designer skilled in branding and visual storytelling.",
-        experience: "6 years in graphic design, Adobe certified.",
-        price: "₹4700/month"
-      },
-      {
-        name: "Siddharth Nair",
-        skill: "Personal Development",
-        photo: "https://via.placeholder.com/100?text=Siddharth",
-        bio: "Siddharth is a life coach who empowers individuals to achieve their personal and professional goals.",
-        experience: "8 years in coaching, ICF certified.",
-        price: "₹4900/month"
-      },
-      {
-        name: "Riya Kapoor",
-        skill: "Video Editing",
-        photo: "https://via.placeholder.com/100?text=Riya",
-        bio: "Riya is a video editing expert who creates compelling content for brands and creators.",
-        experience: "5 years in video editing, Premiere Pro certified.",
-        price: "₹4600/month"
+    const BASE_URL = "http://localhost:3001";
+    async function checkSessionOrRedirect() {
+      try {
+        const response = await fetch(`${BASE_URL}/api/user`, {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include"
+        });
+        if (!response.ok) throw new Error("Not logged in");
+        return await response.json();
+      } catch (e) {
+        window.location.href = "loginandsignuppage.html";
+        throw e;
       }
-    ];
-
-    const mentorsGrid = document.getElementById('mentorsGrid');
-    mentors.forEach((mentor, index) => {
-      const card = document.createElement('div');
-      card.classList.add('mentor-card');
-      card.innerHTML = `
-        <img src="${mentor.photo}" alt="${mentor.name}" class="mentor-photo">
-        <h3>${mentor.name}</h3>
-        <p>Mentor for ${mentor.skill}</p>
-        <button onclick="openMentorPopup(${index})">Choose as Your Mentor</button>
-      `;
-      mentorsGrid.appendChild(card);
-    });
-
-    const mentorPopup = document.getElementById('mentorPopup');
-    const mentorPopupPhoto = document.getElementById('mentorPopupPhoto');
-    const mentorPopupName = document.getElementById('mentorPopupName');
-    const mentorPopupBio = document.getElementById('mentorPopupBio');
-    const mentorPopupSkill = document.getElementById('mentorPopupSkill');
-    const mentorPopupExperience = document.getElementById('mentorPopupExperience');
-    const mentorPopupPrice = document.getElementById('mentorPopupPrice');
-
-    function openMentorPopup(index) {
-      const mentor = mentors[index];
-      mentorPopupPhoto.src = mentor.photo;
-      mentorPopupName.textContent = mentor.name;
-      mentorPopupBio.textContent = mentor.bio;
-      mentorPopupSkill.textContent = `Specialization: ${mentor.skill}`;
-      mentorPopupExperience.textContent = `Experience: ${mentor.experience}`;
-      mentorPopupPrice.textContent = `Price: ${mentor.price}`;
-      mentorPopup.classList.add('active');
     }
+    document.addEventListener('DOMContentLoaded', async () => {
+      await checkSessionOrRedirect();
+      const mentors = [
+        {
+          name: "Amit Sharma",
+          skill: "Personal Finance",
+          photo: "https://via.placeholder.com/100?text=Amit",
+          bio: "Amit is a certified financial planner with over 10 years of experience helping individuals achieve financial independence.",
+          experience: "10+ years in financial planning, CFP certified.",
+          price: "₹5000/month"
+        },
+        {
+          name: "Priya Singh",
+          skill: "Stock Market",
+          photo: "https://via.placeholder.com/100?text=Priya",
+          bio: "Priya is a stock market expert with a track record of successful trading and portfolio management.",
+          experience: "8 years in stock trading, NSE certified.",
+          price: "₹6000/month"
+        },
+        {
+          name: "Rahul Verma",
+          skill: "Python",
+          photo: "https://via.placeholder.com/100?text=Rahul",
+          bio: "Rahul is a Python developer with expertise in data science and automation projects.",
+          experience: "7 years in software development, Python certified.",
+          price: "₹4500/month"
+        },
+        {
+          name: "Sneha Gupta",
+          skill: "Web Development",
+          photo: "https://via.placeholder.com/100?text=Sneha",
+          bio: "Sneha specializes in building responsive websites using modern frameworks like React and Node.js.",
+          experience: "6 years in web development, AWS certified.",
+          price: "₹5500/month"
+        },
+        {
+          name: "Vikram Patel",
+          skill: "Marketing",
+          photo: "https://via.placeholder.com/100?text=Vikram",
+          bio: "Vikram is a digital marketing guru with expertise in SEO, PPC, and social media strategies.",
+          experience: "9 years in digital marketing, Google Ads certified.",
+          price: "₹5200/month"
+        },
+        {
+          name: "Anjali Rao",
+          skill: "UI/UX Design",
+          photo: "https://via.placeholder.com/100?text=Anjali",
+          bio: "Anjali creates user-friendly interfaces with a focus on aesthetics and functionality.",
+          experience: "5 years in UI/UX design, Adobe certified.",
+          price: "₹4800/month"
+        },
+        {
+          name: "Karan Mehta",
+          skill: "Sales",
+          photo: "https://via.placeholder.com/100?text=Karan",
+          bio: "Karan is a sales coach who helps professionals close deals and build client relationships.",
+          experience: "12 years in sales, SPIN Selling certified.",
+          price: "₹5300/month"
+        },
+        {
+          name: "Neha Joshi",
+          skill: "Graphic Design",
+          photo: "https://via.placeholder.com/100?text=Neha",
+          bio: "Neha is a creative graphic designer skilled in branding and visual storytelling.",
+          experience: "6 years in graphic design, Adobe certified.",
+          price: "₹4700/month"
+        },
+        {
+          name: "Siddharth Nair",
+          skill: "Personal Development",
+          photo: "https://via.placeholder.com/100?text=Siddharth",
+          bio: "Siddharth is a life coach who empowers individuals to achieve their personal and professional goals.",
+          experience: "8 years in coaching, ICF certified.",
+          price: "₹4900/month"
+        },
+        {
+          name: "Riya Kapoor",
+          skill: "Video Editing",
+          photo: "https://via.placeholder.com/100?text=Riya",
+          bio: "Riya is a video editing expert who creates compelling content for brands and creators.",
+          experience: "5 years in video editing, Premiere Pro certified.",
+          price: "₹4600/month"
+        }
+      ];
 
-    function closeMentorPopup() {
-      mentorPopup.classList.remove('active');
-    }
+      const mentorsGrid = document.getElementById('mentorsGrid');
+      mentors.forEach((mentor, index) => {
+        const card = document.createElement('div');
+        card.classList.add('mentor-card');
+        card.innerHTML = `
+          <img src="${mentor.photo}" alt="${mentor.name}" class="mentor-photo">
+          <h3>${mentor.name}</h3>
+          <p>Mentor for ${mentor.skill}</p>
+          <button onclick="openMentorPopup(${index})">Choose as Your Mentor</button>
+        `;
+        mentorsGrid.appendChild(card);
+      });
 
-    function buyMentorship() {
-      alert('Redirecting to payment gateway for mentorship purchase...');
-      // Add actual payment gateway integration here
-    }
+      const mentorPopup = document.getElementById('mentorPopup');
+      const mentorPopupPhoto = document.getElementById('mentorPopupPhoto');
+      const mentorPopupName = document.getElementById('mentorPopupName');
+      const mentorPopupBio = document.getElementById('mentorPopupBio');
+      const mentorPopupSkill = document.getElementById('mentorPopupSkill');
+      const mentorPopupExperience = document.getElementById('mentorPopupExperience');
+      const mentorPopupPrice = document.getElementById('mentorPopupPrice');
 
-    const profile = document.querySelector('.profile');
-    const profileIcon = document.querySelector('.profile-icon');
-
-    function toggleProfileDropdown() {
-      profile.classList.toggle('active');
-      const isExpanded = profile.classList.contains('active');
-      profileIcon.setAttribute('aria-expanded', isExpanded);
-    }
-
-    profileIcon.addEventListener('click', toggleProfileDropdown);
-    profileIcon.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        toggleProfileDropdown();
+      function openMentorPopup(index) {
+        const mentor = mentors[index];
+        mentorPopupPhoto.src = mentor.photo;
+        mentorPopupName.textContent = mentor.name;
+        mentorPopupBio.textContent = mentor.bio;
+        mentorPopupSkill.textContent = `Specialization: ${mentor.skill}`;
+        mentorPopupExperience.textContent = `Experience: ${mentor.experience}`;
+        mentorPopupPrice.textContent = `Price: ${mentor.price}`;
+        mentorPopup.classList.add('active');
       }
-    });
 
-    document.addEventListener('click', (e) => {
-      if (!profile.contains(e.target)) {
+      function closeMentorPopup() {
+        mentorPopup.classList.remove('active');
+      }
+
+      function buyMentorship() {
+        alert('Redirecting to payment gateway for mentorship purchase...');
+        // Add actual payment gateway integration here
+      }
+
+      const profile = document.querySelector('.profile');
+      const profileIcon = document.querySelector('.profile-icon');
+
+      function toggleProfileDropdown() {
+        profile.classList.toggle('active');
+        const isExpanded = profile.classList.contains('active');
+        profileIcon.setAttribute('aria-expanded', isExpanded);
+      }
+
+      profileIcon.addEventListener('click', toggleProfileDropdown);
+      profileIcon.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          toggleProfileDropdown();
+        }
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!profile.contains(e.target)) {
+          profile.classList.remove('active');
+          profileIcon.setAttribute('aria-expanded', false);
+        }
+      });
+
+      const profileModal = document.getElementById('profileModal');
+      const profileForm = document.getElementById('profileForm');
+      const profilePicInput = document.getElementById('profilePic');
+      const profilePicPreview = document.getElementById('profilePicPreview');
+
+      function openProfileModal() {
+        profileModal.classList.add('active');
         profile.classList.remove('active');
         profileIcon.setAttribute('aria-expanded', false);
+        loadProfileData();
       }
-    });
 
-    const profileModal = document.getElementById('profileModal');
-    const profileForm = document.getElementById('profileForm');
-    const profilePicInput = document.getElementById('profilePic');
-    const profilePicPreview = document.getElementById('profilePicPreview');
-
-    function openProfileModal() {
-      profileModal.classList.add('active');
-      profile.classList.remove('active');
-      profileIcon.setAttribute('aria-expanded', false);
-      loadProfileData();
-    }
-
-    function closeProfileModal() {
-      profileModal.classList.remove('active');
-    }
-
-    function loadProfileData() {
-      const profileData = JSON.parse(localStorage.getItem('profileData')) || {};
-      document.getElementById('name').value = profileData.name || '';
-      document.getElementById('email').value = profileData.email || '';
-      document.getElementById('phone').value = profileData.phone || '';
-      document.getElementById('education').value = profileData.education || '';
-      document.getElementById('skills').value = profileData.skills || '';
-      document.getElementById('certifications').value = profileData.certifications || '';
-      document.getElementById('address').value = profileData.address || '';
-      document.getElementById('gender').value = profileData.gender || '';
-      document.getElementById('dob').value = profileData.dob || '';
-      document.getElementById('bio').value = profileData.bio || '';
-      if (profileData.profilePic) {
-        profilePicPreview.src = profileData.profilePic;
-        profilePicPreview.style.display = 'block';
+      function closeProfileModal() {
+        profileModal.classList.remove('active');
       }
-    }
 
-    profilePicInput.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        if (file.size > 2 * 1024 * 1024) {
-          alert('Profile picture must be less than 2MB.');
+      function loadProfileData() {
+        const profileData = JSON.parse(localStorage.getItem('profileData')) || {};
+        document.getElementById('name').value = profileData.name || '';
+        document.getElementById('email').value = profileData.email || '';
+        document.getElementById('phone').value = profileData.phone || '';
+        document.getElementById('education').value = profileData.education || '';
+        document.getElementById('skills').value = profileData.skills || '';
+        document.getElementById('certifications').value = profileData.certifications || '';
+        document.getElementById('address').value = profileData.address || '';
+        document.getElementById('gender').value = profileData.gender || '';
+        document.getElementById('dob').value = profileData.dob || '';
+        document.getElementById('bio').value = profileData.bio || '';
+        if (profileData.profilePic) {
+          profilePicPreview.src = profileData.profilePic;
+          profilePicPreview.style.display = 'block';
+        }
+      }
+
+      profilePicInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          if (file.size > 2 * 1024 * 1024) {
+            alert('Profile picture must be less than 2MB.');
+            return;
+          }
+          const reader = new FileReader();
+          reader.onload = () => {
+            profilePicPreview.src = reader.result;
+            profilePicPreview.style.display = 'block';
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      profileForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const phone = document.getElementById('phone').value;
+        if (phone && !/^\+?\d{10,15}$/.test(phone)) {
+          alert('Please enter a valid phone number (10-15 digits).');
           return;
         }
-        const reader = new FileReader();
-        reader.onload = () => {
-          profilePicPreview.src = reader.result;
-          profilePicPreview.style.display = 'block';
+        const profileData = {
+          name: document.getElementById('name').value,
+          email: document.getElementById('email').value,
+          phone: document.getElementById('phone').value,
+          education: document.getElementById('education').value,
+          skills: document.getElementById('skills').value,
+          certifications: document.getElementById('certifications').value,
+          address: document.getElementById('address').value,
+          gender: document.getElementById('gender').value,
+          dob: document.getElementById('dob').value,
+          bio: document.getElementById('bio').value,
+          profilePic: profilePicPreview.src
         };
-        reader.readAsDataURL(file);
+        localStorage.setItem('profileData', JSON.stringify(profileData));
+        alert('Profile saved successfully!');
+        closeProfileModal();
+      });
+
+      const settingsModal = document.getElementById('settingsModal');
+      const themeToggle = document.getElementById('themeToggle');
+      const languageSelect = document.getElementById('language');
+      const emailNotifications = document.getElementById('emailNotifications');
+      const pushNotifications = document.getElementById('pushNotifications');
+      const profileVisibility = document.getElementById('profileVisibility');
+      const fontSizeSelect = document.getElementById('fontSize');
+      const twoFactorAuth = document.getElementById('twoFactorAuth');
+
+      function openSettingsModal() {
+        settingsModal.classList.add('active');
+        profile.classList.remove('active');
+        profileIcon.setAttribute('aria-expanded', false);
+        loadSettings();
       }
-    });
 
-    profileForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const phone = document.getElementById('phone').value;
-      if (phone && !/^\+?\d{10,15}$/.test(phone)) {
-        alert('Please enter a valid phone number (10-15 digits).');
-        return;
+      function closeSettingsModal() {
+        settingsModal.classList.remove('active');
       }
-      const profileData = {
-        name: document.getElementById('name').value,
-        email: document.getElementById('email').value,
-        phone: document.getElementById('phone').value,
-        education: document.getElementById('education').value,
-        skills: document.getElementById('skills').value,
-        certifications: document.getElementById('certifications').value,
-        address: document.getElementById('address').value,
-        gender: document.getElementById('gender').value,
-        dob: document.getElementById('dob').value,
-        bio: document.getElementById('bio').value,
-        profilePic: profilePicPreview.src
-      };
-      localStorage.setItem('profileData', JSON.stringify(profileData));
-      alert('Profile saved successfully!');
-      closeProfileModal();
-    });
 
-    const settingsModal = document.getElementById('settingsModal');
-    const themeToggle = document.getElementById('themeToggle');
-    const languageSelect = document.getElementById('language');
-    const emailNotifications = document.getElementById('emailNotifications');
-    const pushNotifications = document.getElementById('pushNotifications');
-    const profileVisibility = document.getElementById('profileVisibility');
-    const fontSizeSelect = document.getElementById('fontSize');
-    const twoFactorAuth = document.getElementById('twoFactorAuth');
+      function loadSettings() {
+        const settings = JSON.parse(localStorage.getItem('settings')) || {};
+        themeToggle.checked = localStorage.getItem('theme') === 'light';
+        languageSelect.value = settings.language || 'en';
+        emailNotifications.checked = settings.emailNotifications || false;
+        pushNotifications.checked = settings.pushNotifications || false;
+        profileVisibility.value = settings.profileVisibility || 'public';
+        fontSizeSelect.value = settings.fontSize || 'medium';
+        twoFactorAuth.checked = settings.twoFactorAuth || false;
+      }
 
-    function openSettingsModal() {
-      settingsModal.classList.add('active');
-      profile.classList.remove('active');
-      profileIcon.setAttribute('aria-expanded', false);
-      loadSettings();
-    }
+      function saveSettings() {
+        const settings = {
+          language: languageSelect.value,
+          emailNotifications: emailNotifications.checked,
+          pushNotifications: pushNotifications.checked,
+          profileVisibility: profileVisibility.value,
+          fontSize: fontSizeSelect.value,
+          twoFactorAuth: twoFactorAuth.checked
+        };
+        localStorage.setItem('settings', JSON.stringify(settings));
+        document.body.classList.remove('font-small', 'font-medium', 'font-large');
+        document.body.classList.add(`font-${fontSizeSelect.value}`);
+        alert('Settings saved successfully!');
+        closeSettingsModal();
+      }
 
-    function closeSettingsModal() {
-      settingsModal.classList.remove('active');
-    }
+      themeToggle.addEventListener('change', () => {
+        document.body.classList.toggle('light-mode');
+        localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+      });
 
-    function loadSettings() {
-      const settings = JSON.parse(localStorage.getItem('settings')) || {};
-      themeToggle.checked = localStorage.getItem('theme') === 'light';
-      languageSelect.value = settings.language || 'en';
-      emailNotifications.checked = settings.emailNotifications || false;
-      pushNotifications.checked = settings.pushNotifications || false;
-      profileVisibility.value = settings.profileVisibility || 'public';
-      fontSizeSelect.value = settings.fontSize || 'medium';
-      twoFactorAuth.checked = settings.twoFactorAuth || false;
-    }
+      function requestDataExport() {
+        alert('Data export request submitted. You will receive an email with your data soon.');
+      }
 
-    function saveSettings() {
-      const settings = {
-        language: languageSelect.value,
-        emailNotifications: emailNotifications.checked,
-        pushNotifications: pushNotifications.checked,
-        profileVisibility: profileVisibility.value,
-        fontSize: fontSizeSelect.value,
-        twoFactorAuth: twoFactorAuth.checked
-      };
-      localStorage.setItem('settings', JSON.stringify(settings));
-      document.body.classList.remove('font-small', 'font-medium', 'font-large');
-      document.body.classList.add(`font-${fontSizeSelect.value}`);
-      alert('Settings saved successfully!');
-      closeSettingsModal();
-    }
+      function deleteAccount() {
+        if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+          localStorage.removeItem('profileData');
+          localStorage.removeItem('settings');
+          localStorage.removeItem('theme');
+          alert('Account deleted successfully.');
+          closeSettingsModal();
+        }
+      }
 
-    themeToggle.addEventListener('change', () => {
-      document.body.classList.toggle('light-mode');
-      localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
-    });
-
-    function requestDataExport() {
-      alert('Data export request submitted. You will receive an email with your data soon.');
-    }
-
-    function deleteAccount() {
-      if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+      function logout() {
         localStorage.removeItem('profileData');
         localStorage.removeItem('settings');
         localStorage.removeItem('theme');
-        alert('Account deleted successfully.');
-        closeSettingsModal();
+        alert('Logged out successfully.');
+        window.location.reload();
       }
-    }
 
-    function logout() {
-      localStorage.removeItem('profileData');
-      localStorage.removeItem('settings');
-      localStorage.removeItem('theme');
-      alert('Logged out successfully.');
-      window.location.reload();
-    }
+      if (localStorage.getItem('theme') === 'light') {
+        document.body.classList.add('light-mode');
+        themeToggle.checked = true;
+      }
 
-    if (localStorage.getItem('theme') === 'light') {
-      document.body.classList.add('light-mode');
-      themeToggle.checked = true;
-    }
-
-    const settings = JSON.parse(localStorage.getItem('settings')) || {};
-    if (settings.fontSize) {
-      document.body.classList.add(`font-${settings.fontSize}`);
-      fontSizeSelect.value = settings.fontSize;
-    }
+      const settings = JSON.parse(localStorage.getItem('settings')) || {};
+      if (settings.fontSize) {
+        document.body.classList.add(`font-${settings.fontSize}`);
+        fontSizeSelect.value = settings.fontSize;
+      }
+    });
   </script>
 </body>
 </html>

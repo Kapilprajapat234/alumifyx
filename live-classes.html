@@ -360,104 +360,139 @@
   </section>
 
   <script>
-    const profile = document.querySelector('.profile');
-    const profileIcon = document.querySelector('.profile-icon');
-
-    function toggleProfileDropdown() {
-      profile.classList.toggle('active');
-      const isExpanded = profile.classList.contains('active');
-      profileIcon.setAttribute('aria-expanded', isExpanded);
+    const BASE_URL = "http://localhost:3001";
+    async function checkSessionOrRedirect() {
+      try {
+        const response = await fetch(`${BASE_URL}/api/user`, {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include"
+        });
+        if (!response.ok) throw new Error("Not logged in");
+        return await response.json();
+      } catch (e) {
+        window.location.href = "loginandsignuppage.html";
+        throw e;
+      }
     }
 
-    profileIcon.addEventListener('click', toggleProfileDropdown);
-    profileIcon.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        toggleProfileDropdown();
+    document.addEventListener('DOMContentLoaded', async () => {
+      await checkSessionOrRedirect();
+      const profile = document.querySelector('.profile');
+      const profileIcon = document.querySelector('.profile-icon');
+
+      function toggleProfileDropdown() {
+        profile.classList.toggle('active');
+        const isExpanded = profile.classList.contains('active');
+        profileIcon.setAttribute('aria-expanded', isExpanded);
       }
-    });
 
-    document.addEventListener('click', (e) => {
-      if (!profile.contains(e.target)) {
-        profile.classList.remove('active');
-        profileIcon.setAttribute('aria-expanded', false);
-      }
-    });
-
-    const eventList = document.getElementById('eventList');
-    const liveNowContent = document.getElementById('liveNowContent');
-    const liveNowDate = document.getElementById('liveNowDate');
-
-    function loadEvents() {
-      const events = JSON.parse(localStorage.getItem('events')) || [];
-      const now = new Date();
-      const liveEvents = [];
-      const upcomingEvents = [];
-
-      events.forEach(event => {
-        const eventDate = new Date(event.date);
-        const timeDiff = Math.abs(now - eventDate);
-        const oneHour = 60 * 60 * 1000; // 1 hour in milliseconds
-
-        if (timeDiff <= oneHour && eventDate <= now) {
-          liveEvents.push(event);
-        } else if (eventDate > now) {
-          upcomingEvents.push(event);
+      profileIcon.addEventListener('click', toggleProfileDropdown);
+      profileIcon.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          toggleProfileDropdown();
         }
       });
 
-      // Display live events in the "Live Now" box
-      liveNowContent.innerHTML = '';
-      liveNowDate.innerHTML = '';
-      if (liveEvents.length > 0) {
-        liveEvents.forEach(event => {
-          const eventDate = new Date(event.date);
-          liveNowDate.innerHTML = `Live on ${eventDate.toLocaleDateString()} at ${eventDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
-          liveNowContent.innerHTML += `
-            <p><strong>${event.title}</strong></p>
-            <p>${event.description}</p>
-            ${event.link ? `<a href="${event.link}" target="_blank">Join Now</a>` : ''}
-          `;
-        });
-      } else {
-        liveNowContent.innerHTML = '<p>No live classes right now.</p>';
-        liveNowDate.style.display = 'none'; // Hide date if no live class
+      document.addEventListener('click', (e) => {
+        if (!profile.contains(e.target)) {
+          profile.classList.remove('active');
+          profileIcon.setAttribute('aria-expanded', false);
+        }
+      });
+
+      const eventList = document.getElementById('eventList');
+      const liveNowContent = document.getElementById('liveNowContent');
+      const liveNowDate = document.getElementById('liveNowDate');
+
+      function loadEvents() {
+        // Fetch live classes from backend
+        fetch('http://localhost:3001/api/growth/live-classes')
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Failed to fetch live classes');
+            }
+            return response.json();
+          })
+          .then(events => {
+            const now = new Date();
+            const liveEvents = [];
+            const upcomingEvents = [];
+
+            events.forEach(event => {
+              const eventDate = new Date(event.date);
+              const timeDiff = Math.abs(now - eventDate);
+              const oneHour = 60 * 60 * 1000; // 1 hour in milliseconds
+
+              if (timeDiff <= oneHour && eventDate <= now) {
+                liveEvents.push(event);
+              } else if (eventDate > now) {
+                upcomingEvents.push(event);
+              }
+            });
+
+            // Display live events in the "Live Now" box
+            liveNowContent.innerHTML = '';
+            liveNowDate.innerHTML = '';
+            if (liveEvents.length > 0) {
+              liveEvents.forEach(event => {
+                const eventDate = new Date(event.date);
+                liveNowDate.innerHTML = `Live on ${eventDate.toLocaleDateString()} at ${eventDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+                liveNowContent.innerHTML += `
+                  <p><strong>${event.title}</strong></p>
+                  <p>${event.description}</p>
+                  ${event.link ? `<a href="${event.link}" target="_blank">Join Now</a>` : ''}
+                `;
+              });
+               liveNowDate.style.display = 'inline-flex'; // Show date if live class exists
+            } else {
+              liveNowContent.innerHTML = '<p>No live classes right now.</p>';
+              liveNowDate.style.display = 'none'; // Hide date if no live class
+            }
+
+            // Display upcoming events
+            eventList.innerHTML = '';
+            if (upcomingEvents.length === 0) {
+              eventList.innerHTML = '<p>No upcoming live classes.</p>';
+            } else {
+              upcomingEvents.forEach(event => {
+                const eventItem = document.createElement('div');
+                eventItem.className = 'event-item';
+                eventItem.innerHTML = `
+                  <p><strong>${event.title}</strong></p>
+                  <p>Scheduled: ${new Date(event.date).toLocaleString()}</p>
+                  <p>${event.description}</p>
+                  ${event.link ? `<a href="${event.link}" target="_blank">Join Class</a>` : ''}
+                `;
+                eventList.appendChild(eventItem);
+              });
+            }
+          })
+          .catch(error => {
+            console.error('Error fetching live classes:', error);
+            liveNowContent.innerHTML = `<p class="error-message">Error loading live classes: ${error.message}</p>`;
+            eventList.innerHTML = ''; // Clear upcoming events list on error
+            liveNowDate.style.display = 'none'; // Hide date on error
+          });
       }
 
-      // Display upcoming events
-      eventList.innerHTML = '';
-      if (upcomingEvents.length === 0) {
-        eventList.innerHTML = '<p>No upcoming live classes.</p>';
-      } else {
-        upcomingEvents.forEach(event => {
-          const eventItem = document.createElement('div');
-          eventItem.className = 'event-item';
-          eventItem.innerHTML = `
-            <p><strong>${event.title}</strong></p>
-            <p>Scheduled: ${new Date(event.date).toLocaleString()}</p>
-            <p>${event.description}</p>
-            ${event.link ? `<a href="${event.link}" target="_blank">Join Class</a>` : ''}
-          `;
-          eventList.appendChild(eventItem);
-        });
+      function logout() {
+        localStorage.removeItem('profileData');
+        localStorage.removeItem('settings');
+        localStorage.removeItem('theme');
+        alert('Logged out successfully.');
+        window.location.href = 'homepage.html';
       }
-    }
 
-    function logout() {
-      localStorage.removeItem('profileData');
-      localStorage.removeItem('settings');
-      localStorage.removeItem('theme');
-      alert('Logged out successfully.');
-      window.location.href = 'homepage.html';
-    }
+      window.addEventListener('load', () => {
+        loadEvents();
+      });
 
-    window.addEventListener('load', () => {
-      loadEvents();
+      if (localStorage.getItem('theme') === 'light') {
+        document.body.classList.add('light-mode');
+      }
     });
-
-    if (localStorage.getItem('theme') === 'light') {
-      document.body.classList.add('light-mode');
-    }
   </script>
 </body>
 </html>
