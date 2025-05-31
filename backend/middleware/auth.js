@@ -1,35 +1,42 @@
 const User = require('../models/User');
 
 // Authentication middleware
-const isAuthenticated = (req, res, next) => {
-  console.log('Checking authentication...');
-  console.log('Session:', req.session);
-  console.log('Session ID:', req.sessionID);
-  console.log('User ID from session:', req.session.userId);
-  console.log('NODE_ENV:', process.env.NODE_ENV);
+const isAuthenticated = async (req, res, next) => {
+  try {
+    console.log('Checking authentication...');
+    console.log('Session:', req.session);
+    console.log('Session ID:', req.sessionID);
+    console.log('User ID from session:', req.session.userId);
 
-  // **Temporary Development Bypass:**
-  // In non-production environments, bypass the authentication check
-  if (process.env.NODE_ENV !== 'production') {
-    console.log('Authentication bypassed for development environment.');
-    // Explicitly call next() to proceed to the next middleware/route handler
-    return next();
-  }
-
-  // Original authentication logic (only active in production)
-  if (req.session && req.session.userId) {
-    console.log('User is authenticated.');
-    return next();
-  } else {
-    console.log('User not authenticated. Redirecting to login.');
-    // Check if the request is for an API endpoint
-    if (req.originalUrl.startsWith('/api')) {
-      // If it's an API request, send a 401 Unauthorized response
-      return res.status(401).json({ message: 'Unauthorized' });
-    } else {
-      // If it's a page request, redirect to the login page
-      return res.redirect('/login'); // Assuming your login page route is /login
+    if (!req.session || !req.session.userId) {
+      console.log('No session or userId found');
+      if (req.originalUrl.startsWith('/api')) {
+        return res.status(401).json({ message: 'Unauthorized - Please login' });
+      }
+      return res.redirect('/login');
     }
+
+    // Verify user still exists in database
+    const user = await User.findById(req.session.userId);
+    if (!user) {
+      console.log('User not found in database');
+      req.session.destroy();
+      if (req.originalUrl.startsWith('/api')) {
+        return res.status(401).json({ message: 'User not found - Please login again' });
+      }
+      return res.redirect('/login');
+    }
+
+    // Add user to request object
+    req.user = user;
+    console.log('User authenticated successfully');
+    next();
+  } catch (error) {
+    console.error('Authentication error:', error);
+    if (req.originalUrl.startsWith('/api')) {
+      return res.status(500).json({ message: 'Server error during authentication' });
+    }
+    return res.redirect('/login');
   }
 };
 
