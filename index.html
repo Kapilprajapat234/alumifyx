@@ -691,6 +691,8 @@
     </div>
 
     <script>
+      const BACKEND_URL = "https://alumifyx.onrender.com"; // Replace with your actual Render backend URL
+
       // Theme Toggle
       const themeToggle = document.getElementById("themeToggle");
       try {
@@ -794,7 +796,7 @@
         event.preventDefault();
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
-        const res = await fetch('http://localhost:5000/api/auth/login', {
+        const res = await fetch(`${BACKEND_URL}/api/auth/login`, {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password })
         });
@@ -841,7 +843,7 @@
           submitBtn.disabled = true;
 
           try {
-            const response = await fetch('http://localhost:3001/api/auth/signup', {
+            const response = await fetch(`${BACKEND_URL}/api/auth/signup`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json'
@@ -885,7 +887,7 @@
           submitBtn.disabled = true;
 
           try {
-            const response = await fetch('http://localhost:5000/api/auth/forgot', {
+            const response = await fetch(`${BACKEND_URL}/api/auth/forgot`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json'
