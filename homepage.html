@@ -17,7 +17,7 @@
       }
 
       body {
-        background: #0a0a0a;
+        background: linear-gradient(135deg, #8a2be2 0%, #4b006e 100%);
         color: #ffffff;
         overflow-x: hidden;
         transition: background 0.3s ease, color 0.3s ease;
@@ -422,10 +422,11 @@
         justify-content: center;
         align-items: center;
         text-align: center;
-        background: linear-gradient(90deg, #1a1a1a 60%, #22223b 100%);
+        background: transparent;
         overflow: hidden;
         margin-bottom: 0;
         background-image: none !important;
+        padding-top: 120px; /* Add space for navbar */
       }
 
       .hero::before,
@@ -815,6 +816,7 @@
             My Profile
           </button>
           <button role="menuitem" onclick="openSettingsModal()">
+            <svg style="vertical-align:middle;width:18px;height:18px;margin-right:6px;fill:#8a2be2;" viewBox="0 0 24 24"><path d="M12 15.5A3.5 3.5 0 1 0 12 8.5a3.5 3.5 0 0 0 0 7zm7.43-2.9l1.77-1.03a.5.5 0 0 0 .18-.68l-1.68-2.92a.5.5 0 0 0-.61-.23l-2.08.83a7.03 7.03 0 0 0-1.61-.93l-.31-2.23A.5.5 0 0 0 14 4h-4a.5.5 0 0 0-.5.42l-.31 2.23c-.6.23-1.17.54-1.7.93l-2.08-.83a.5.5 0 0 0-.61.23l-1.68 2.92a.5.5 0 0 0 .18.68l1.77 1.03c-.04.32-.07.65-.07.98s.03.66.07.98l-1.77 1.03a.5.5 0 0 0-.18.68l1.68 2.92c.13.23.4.32.61.23l2.08-.83c.53.39 1.1.7 1.7.93l.31 2.23A.5.5 0 0 0 10 20h4a.5.5 0 0 0 .5-.42l.31-2.23c.6-.23 1.17-.54 1.7-.93l2.08.83c.21.09.48 0 .61-.23l1.68-2.92a.5.5 0 0 0-.18-.68l-1.77-1.03c.04-.32.07-.65.07-.98s-.03-.66-.07-.98z"/></svg>
             Settings
           </button>
           <a
