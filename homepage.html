@@ -1199,9 +1199,11 @@
 
       async function loadProfileData() {
         try {
+          const token = getUserToken();
+          if (!token) throw new Error('No token');
           const response = await fetch(`${BACKEND_URL}/api/user`, {
             method: "GET",
-            headers: { "Content-Type": "application/json" },
+            headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token }
           });
           if (!response.ok) {
             const errorData = await response.json();
@@ -1216,8 +1218,7 @@
           document.getElementById("phone").value = user.phone || "";
           document.getElementById("education").value = user.education || "";
           document.getElementById("skills").value = user.skills || "";
-          document.getElementById("certifications").value =
-            user.certifications || "";
+          document.getElementById("certifications").value = user.certifications || "";
           document.getElementById("address").value = user.address || "";
           document.getElementById("gender").value = user.gender || "";
           document.getElementById("dob").value = user.dob || "";
@@ -1283,10 +1284,12 @@
         }
 
         try {
+          const token = getUserToken();
+          if (!token) throw new Error('No token');
           const response = await fetch(`${BACKEND_URL}/api/user`, {
             method: "PUT",
             body: formData,
-            headers: { "Authorization": `Bearer ${localStorage.getItem('user').token}` },
+            headers: { "Authorization": "Bearer " + token },
           });
           if (!response.ok) {
             const errorData = await response.json();
@@ -1396,9 +1399,11 @@
           return;
         }
         try {
+          const token = getUserToken();
+          if (!token) throw new Error('No token');
           const response = await fetch(`${BACKEND_URL}/api/user`, {
             method: "DELETE",
-            headers: { "Content-Type": "application/json" },
+            headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
           });
           if (!response.ok) {
             const errorData = await response.json();
