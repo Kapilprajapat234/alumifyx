@@ -17,7 +17,7 @@
       }
 
       body {
-        background: linear-gradient(135deg, #8a2be2 0%, #4b006e 100%);
+        background: #0a0a0a;
         color: #ffffff;
         overflow-x: hidden;
         transition: background 0.3s ease, color 0.3s ease;
@@ -811,7 +811,7 @@
         >
       
         </div>
-        <div cass="profile-dropdown" role="menu">
+        <div class="profile-dropdown" role="menu">
           <button role="menuitem" onclick="openProfileModal()">
             My Profile
           </button>
@@ -1065,21 +1065,35 @@
     <script>
       const BACKEND_URL = "https://alumifyx.onrender.com";
 
-      document.addEventListener('DOMContentLoaded', async function() {
-        const token = localStorage.getItem('token');
-        if (!token) return window.location.href = 'index.html';
-        const res = await fetch(`${BACKEND_URL}/api/user`, {
-          headers: { 'Authorization': 'Bearer ' + token }
-        });
-        if (!res.ok) {
-          localStorage.removeItem('token');
+      async function checkSessionOrRedirect() {
+        try {
+          const token = localStorage.getItem('token');
+          if (!token) throw new Error('No token');
+          const res = await fetch(`${BACKEND_URL}/api/user`, {
+            headers: { 'Authorization': 'Bearer ' + token }
+          });
+          if (!res.ok) throw new Error('Not logged in');
+          return await res.json();
+        } catch (e) {
           window.location.href = 'index.html';
-        } else {
-          const data = await res.json();
-          if (document.getElementById('userName')) {
-            document.getElementById('userName').textContent = data.user.name;
-            document.getElementById('userEmail').textContent = data.user.email;
-            document.querySelector('.user-info').style.display = 'inline-block';
+          throw e;
+        }
+      }
+
+      document.addEventListener('DOMContentLoaded', async function() {
+        await checkSessionOrRedirect();
+        const token = localStorage.getItem('token');
+        if (token) {
+          const res = await fetch(`${BACKEND_URL}/api/user`, {
+            headers: { 'Authorization': 'Bearer ' + token }
+          });
+          if (res.ok) {
+            const data = await res.json();
+            if (document.getElementById('userName')) {
+              document.getElementById('userName').textContent = data.user.name;
+              document.getElementById('userEmail').textContent = data.user.email;
+              document.querySelector('.user-info').style.display = 'inline-block';
+            }
           }
         }
       });
