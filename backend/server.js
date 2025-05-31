@@ -1,7 +1,5 @@
 const express = require('express');
 const cors = require('cors');
-const session = require('express-session');
-const MongoStore = require('connect-mongo');
 const path = require('path');
 const mongoose = require('mongoose');
 require('dotenv').config();
@@ -19,21 +17,7 @@ const { handleMulterError } = require('./middleware/upload');
 const connectDB = require('./config/database');
 
 const app = express();
-const port = process.env.NODE_ENV === 'production' ? process.env.PORT : 3001; // Use port 3001 in development, process.env.PORT in production
-
-console.log(`Attempting to start server on port: ${port}`);
-console.log(`process.env.PORT is: ${process.env.PORT}`);
-console.log(`Resolved port is: ${port}`);
-console.log(`process.env.NODE_ENV is: ${process.env.NODE_ENV}`);
-
-// Validate critical environment variables
-const requiredEnvVars = ['EMAIL_USER', 'EMAIL_PASS', 'SESSION_SECRET'];
-for (const envVar of requiredEnvVars) {
-  if (!process.env[envVar]) {
-    console.error(`Error: ${envVar} must be set in .env file`);
-    process.exit(1);
-  }
-}
+const port = process.env.NODE_ENV === 'production' ? process.env.PORT : 3001;
 
 // Connect to MongoDB
 connectDB();
@@ -51,49 +35,14 @@ app.use(cors({
     'https://alumifyx.onrender.com',
     'http://127.0.0.1:5500'
   ],
-  credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie', 'Set-Cookie'],
-  exposedHeaders: ['Set-Cookie'],
-  preflightContinue: false,
-  optionsSuccessStatus: 204
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 // Log All Incoming Requests
 app.use((req, res, next) => {
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.url} from origin: ${req.headers.origin}`);
   console.log('Request headers:', req.headers);
-  console.log('Session ID from cookie:', req.cookies ? req.cookies['connect.sid'] : 'No session cookie sent'); // Assuming 'connect.sid' is your session cookie name
-  next();
-});
-
-// Session Configuration
-app.use(session({
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false,
-  unset: 'destroy',
-  store: MongoStore.create({
-    mongoUrl: process.env.MONGO_URI || 'mongodb://localhost:27017/alumifyxDB',
-    touchAfter: 24 * 3600,
-    ttl: 7 * 24 * 60 * 60, // 7 days
-    autoRemove: 'native',
-    collectionName: 'sessions'
-  }),
-  cookie: {
-    httpOnly: true,
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    path: '/',
-    domain: process.env.NODE_ENV === 'production' ? '.onrender.com' : undefined
-  }
-}));
-
-// Add session debugging middleware
-app.use((req, res, next) => {
-  console.log('Session before request:', req.session);
-  console.log('Session ID after middleware:', req.sessionID);
   next();
 });
 
