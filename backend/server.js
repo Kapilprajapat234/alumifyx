@@ -7,7 +7,26 @@ const userRoutes = require('./routes/user');
 
 const app = express();
 app.use(express.json());
-app.use(cors({ origin: [process.env.FRONTEND_URL], credentials: true }));
+
+const allowedOrigins = [
+  'https://alumifyx.vercel.app',
+  'https://alumifyx.onrender.com',
+  'http://localhost:5500',
+];
+
+app.use(cors({
+  origin: function(origin, callback) {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('MongoDB connected'))
