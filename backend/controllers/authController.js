@@ -72,6 +72,9 @@ const login = async (req, res) => {
     req.session.userId = user._id;
     console.log('Login successful for user:', user._id);
     
+    // Generate a simple token (you might want to use JWT in production)
+    const token = crypto.randomBytes(32).toString('hex');
+    
     // Save session explicitly
     req.session.save((err) => {
       if (err) {
@@ -81,7 +84,8 @@ const login = async (req, res) => {
       console.log('Session saved successfully');
       res.json({
         message: 'Login successful',
-        user: { name: user.name, email: user.email }
+        user: { name: user.name, email: user.email },
+        token: token
       });
     });
   } catch (error) {

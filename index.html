@@ -814,8 +814,16 @@
             const result = await response.json();
 
             if (response.ok) {
-              // Store user info in localStorage
-              localStorage.setItem('user', JSON.stringify(result.user));
+              // Store user info and token in localStorage
+              const userData = {
+                ...result.user,
+                token: result.token // Make sure your backend sends a token
+              };
+              localStorage.setItem('user', JSON.stringify(userData));
+              
+              // Set a flag to indicate successful login
+              sessionStorage.setItem('isLoggedIn', 'true');
+              
               alert("Login successful");
               window.location.href = "homepage.html";
             } else {

@@ -1085,14 +1085,33 @@
 
       async function checkSessionOrRedirect() {
         try {
+          // First check if we have user data in localStorage
+          const userData = localStorage.getItem('user');
+          if (!userData) {
+            throw new Error('No user data found');
+          }
+
           const response = await fetch(`${BASE_URL}/api/user`, {
             method: "GET",
-            headers: { "Content-Type": "application/json" },
+            headers: { 
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${JSON.parse(userData).token}`
+            },
             credentials: "include"
           });
-          if (!response.ok) throw new Error("Not logged in");
-          return await response.json();
+
+          if (!response.ok) {
+            // If session is invalid, clear localStorage and redirect
+            localStorage.removeItem('user');
+            throw new Error("Session expired");
+          }
+
+          const user = await response.json();
+          // Update localStorage with fresh user data
+          localStorage.setItem('user', JSON.stringify(user));
+          return user;
         } catch (e) {
+          console.error('Session check failed:', e);
           window.location.href = "index.html";
           throw e;
         }
