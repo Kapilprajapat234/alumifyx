@@ -807,14 +807,18 @@
               body: JSON.stringify({ email, password })
             });
             const data = await response.json();
-            if (response.ok) {
+            console.log('Login API response:', data); // Debug log
+            if (response.ok && data.token) {
               localStorage.setItem('token', data.token);
+              console.log('Token saved to localStorage:', data.token); // Debug log
               window.location.href = 'homepage.html';
             } else {
               showError(emailError, emailError, data.error || 'Login failed');
+              console.error('Login failed:', data.error || data);
             }
           } catch (error) {
             showError(emailError, emailError, 'Server error. Please try again.');
+            console.error('Login error:', error);
           } finally {
             submitBtn.classList.remove('loading');
             submitBtn.disabled = false;
