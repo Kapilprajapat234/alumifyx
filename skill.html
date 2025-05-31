@@ -638,7 +638,7 @@
 
     // Fetch skill data from backend
     if (skillId) {
-      fetch(`http://localhost:3001/api/growth/skills/${encodeURIComponent(skillId)}`)
+      fetch(`https://alumifyx.onrender.com/api/growth/skills/${encodeURIComponent(skillId)}`)
         .then(response => {
           if (!response.ok) {
             throw new Error('Skill not found');

@@ -360,7 +360,7 @@
   </section>
 
   <script>
-    const BASE_URL = "http://localhost:3001";
+    const BASE_URL = "https://alumifyx.onrender.com";
     async function checkSessionOrRedirect() {
       try {
         const response = await fetch(`${BASE_URL}/api/user`, {
@@ -408,7 +408,7 @@
 
       function loadEvents() {
         // Fetch live classes from backend
-        fetch('http://localhost:3001/api/growth/live-classes')
+        fetch('https://alumifyx.onrender.com/api/growth/live-classes')
           .then(response => {
             if (!response.ok) {
               throw new Error('Failed to fetch live classes');
