@@ -697,6 +697,51 @@
       .skill-option { padding: 10px 15px; }
       .job { width: 90%; }
     }
+
+    @media (max-width: 900px) {
+      .navbar {
+        padding: 12px 16px;
+      }
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        background: #181818;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        width: 100vw;
+        z-index: 1001;
+        gap: 0;
+        border-bottom: 1px solid #8a2be2;
+      }
+      .nav-links.active {
+        display: flex;
+      }
+      .hamburger {
+        display: block;
+        cursor: pointer;
+        width: 32px;
+        height: 32px;
+        margin-left: auto;
+        z-index: 1002;
+      }
+      .hamburger span {
+        display: block;
+        height: 4px;
+        width: 100%;
+        background: #8a2be2;
+        margin: 6px 0;
+        border-radius: 2px;
+        transition: 0.3s;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .main-section { padding: 16px; }
+      .job { width: 95vw; max-width: 100vw; }
+      .skills-selection { grid-template-columns: 1fr; }
+      h2 { font-size: 20px; }
+    }
   </style>
 </head>
 <body class="font-medium">
@@ -1000,6 +1045,12 @@
     <button class="show-jobs-btn" onclick="showJobs()">Show Jobs</button>
     <div class="job-list" id="jobList"></div>
   </section>
+
+  <div class="hamburger" onclick="toggleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
 
   <script>
     const BASE_URL = "https://alumifyx.onrender.com";
@@ -1434,6 +1485,10 @@
       // Initial load
       loadJobs();
     });
+
+    function toggleMenu() {
+      document.querySelector('.nav-links').classList.toggle('active');
+    }
   </script>
 </body>
 </html>

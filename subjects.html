@@ -604,6 +604,51 @@
       .intro { padding: 50px 20px; }
       .modal-content, .settings-content { width: 95%; padding: 20px; }
     }
+
+    @media (max-width: 900px) {
+      .navbar {
+        padding: 12px 16px;
+      }
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        background: #181818;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        width: 100vw;
+        z-index: 1001;
+        gap: 0;
+        border-bottom: 1px solid #8a2be2;
+      }
+      .nav-links.active {
+        display: flex;
+      }
+      .hamburger {
+        display: block;
+        cursor: pointer;
+        width: 32px;
+        height: 32px;
+        margin-left: auto;
+        z-index: 1002;
+      }
+      .hamburger span {
+        display: block;
+        height: 4px;
+        width: 100%;
+        background: #8a2be2;
+        margin: 6px 0;
+        border-radius: 2px;
+        transition: 0.3s;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .subjects-section { padding: 16px; }
+      .subjects-list { flex-direction: column; align-items: center; }
+      .intro-card { min-width: 90vw; max-width: 100vw; }
+      h2 { font-size: 20px; }
+    }
   </style>
 </head>
 <body class="font-medium">
@@ -626,6 +671,11 @@
         <button role="menuitem" onclick="openSettingsModal()">Settings</button>
         <a href="#" role="menuitem" onclick="logout()">Logout</a>
       </div>
+    </div>
+    <div class="hamburger" onclick="toggleMenu()">
+      <span></span>
+      <span></span>
+      <span></span>
     </div>
   </nav>
 
@@ -1047,6 +1097,10 @@
           `;
           subjectsList.appendChild(card);
         });
+      }
+
+      function toggleMenu() {
+        document.querySelector('.nav-links').classList.toggle('active');
       }
     });
   </script>
