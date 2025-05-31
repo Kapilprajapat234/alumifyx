@@ -754,7 +754,14 @@
         document.querySelector(".forgot-page").classList.add("active");
         bindAllForms();
       }
-      document.addEventListener('DOMContentLoaded', bindAllForms);
+      document.addEventListener('DOMContentLoaded', function() {
+        bindAllForms();
+        // Directly bind login for safety
+        var loginForm = document.getElementById('loginForm');
+        if (loginForm) {
+          loginForm.onsubmit = login;
+        }
+      });
 
       // Social Login (Placeholder)
       function openPopup(provider) {
@@ -794,6 +801,7 @@
       // Login function
       async function login(event) {
         event.preventDefault();
+        console.log("Login function called");
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
         const loginError = document.getElementById('loginError');
