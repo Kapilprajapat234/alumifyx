@@ -16,12 +16,13 @@
   </form>
   <a href="index.html">Back to Login</a>
   <script>
+    const BACKEND_URL = "https://alumifyx.onrender.com";
     document.getElementById('signupForm').onsubmit = async function(e) {
       e.preventDefault();
       const name = document.getElementById('name').value;
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
-      const res = await fetch('http://localhost:5000/api/auth/signup', {
+      const res = await fetch(`${BACKEND_URL}/api/auth/signup`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, password })
       });

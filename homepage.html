@@ -1061,12 +1061,12 @@
     </div>
 
     <script>
-      const BASE_URL = "https://alumifyx.onrender.com";
+      const BACKEND_URL = "https://alumifyx.onrender.com";
 
       document.addEventListener('DOMContentLoaded', async function() {
         const token = localStorage.getItem('token');
         if (!token) return window.location.href = 'index.html';
-        const res = await fetch('https://alumifyx.onrender.com/api/user', {
+        const res = await fetch(`${BACKEND_URL}/api/user`, {
           headers: { 'Authorization': 'Bearer ' + token }
         });
         if (!res.ok) {
@@ -1092,7 +1092,7 @@
         overlay.classList.add("active");
         (async () => {
           try {
-            const response = await fetch(`${BASE_URL}/api/auth/logout`, {
+            const response = await fetch(`${BACKEND_URL}/api/auth/logout`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
             });
@@ -1178,7 +1178,7 @@
 
       async function loadProfileData() {
         try {
-          const response = await fetch(`${BASE_URL}/api/user`, {
+          const response = await fetch(`${BACKEND_URL}/api/user`, {
             method: "GET",
             headers: { "Content-Type": "application/json" },
           });
@@ -1262,7 +1262,7 @@
         }
 
         try {
-          const response = await fetch(`${BASE_URL}/api/user`, {
+          const response = await fetch(`${BACKEND_URL}/api/user`, {
             method: "PUT",
             body: formData,
             headers: { "Authorization": `Bearer ${localStorage.getItem('user').token}` },
@@ -1375,7 +1375,7 @@
           return;
         }
         try {
-          const response = await fetch(`${BASE_URL}/api/user`, {
+          const response = await fetch(`${BACKEND_URL}/api/user`, {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
           });

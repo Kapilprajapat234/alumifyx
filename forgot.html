@@ -14,10 +14,11 @@
     <div id="forgotSuccess" style="color:green;"></div>
   </form>
   <script>
+    const BACKEND_URL = "https://alumifyx.onrender.com";
     document.getElementById('forgotForm').onsubmit = async function(e) {
       e.preventDefault();
       const email = document.getElementById('email').value;
-      const res = await fetch('http://localhost:5000/api/auth/forgot', {
+      const res = await fetch(`${BACKEND_URL}/api/auth/forgot`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email })
       });
