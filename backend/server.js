@@ -11,7 +11,7 @@ app.use(express.json());
 const allowedOrigins = [
   'https://alumifyx.vercel.app',
   'https://alumifyx.onrender.com',
-  'http://localhost:5500',
+  'http://localhost:5500'
 ];
 
 app.use(cors({
@@ -25,8 +25,11 @@ app.use(cors({
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
+// Handle preflight requests for all routes
+app.options('*', cors());
 
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('MongoDB connected'))
