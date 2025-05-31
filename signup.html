@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Signup | Alumifyx</title>
+</head>
+<body>
+  <h2>Sign Up</h2>
+  <form id="signupForm">
+    <input type="text" id="name" placeholder="Name" required />
+    <input type="email" id="email" placeholder="Email" required />
+    <input type="password" id="password" placeholder="Password" required />
+    <button type="submit">Sign Up</button>
+    <div id="signupError" style="color:red;"></div>
+  </form>
+  <a href="index.html">Back to Login</a>
+  <script>
+    document.getElementById('signupForm').onsubmit = async function(e) {
+      e.preventDefault();
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const res = await fetch('http://localhost:5000/api/auth/signup', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        alert('Signup successful! Please login.');
+        window.location.href = 'index.html';
+      } else {
+        document.getElementById('signupError').textContent = data.error;
+      }
+    };
+  </script>
+</body>
+</html> 

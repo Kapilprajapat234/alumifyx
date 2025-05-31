@@ -1,113 +1,19 @@
-const express = require('express');
-const cors = require('cors');
-const path = require('path');
-const mongoose = require('mongoose');
 require('dotenv').config();
-
-// Import routes
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
-const academicRoutes = require('./routes/academic');
-const growthRoutes = require('./routes/growth');
-
-// Import middleware
-const { handleMulterError } = require('./middleware/upload');
-
-// Import database connection
-const connectDB = require('./config/database');
 
 const app = express();
-const port = process.env.NODE_ENV === 'production' ? process.env.PORT : 3001;
-
-// Connect to MongoDB
-connectDB();
-
-// Middleware
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use(cors({ origin: [process.env.FRONTEND_URL], credentials: true }));
 
-// CORS Configuration
-app.use(cors({
-  origin: [
-    'http://localhost:8000',
-    'https://alumifyx.vercel.app',
-    'https://alumifyx.onrender.com',
-    'http://127.0.0.1:5500'
-  ],
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log('MongoDB connected'))
+  .catch(err => console.log(err));
 
-// Log All Incoming Requests
-app.use((req, res, next) => {
-  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url} from origin: ${req.headers.origin}`);
-  console.log('Request headers:', req.headers);
-  next();
-});
-
-// Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
-app.use('/api/academic', academicRoutes);
-app.use('/api/growth', growthRoutes);
 
-// Error Handling Middleware
-app.use(handleMulterError);
-app.use((err, req, res, next) => {
-  console.error('Server error:', err.message);
-  res.status(500).json({ error: 'Something went wrong' });
-});
-
-// Start Server
-const server = app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
-  console.log('Server started at:', new Date().toISOString());
-});
-
-// Graceful Shutdown
-process.on('SIGTERM', async () => {
-  console.log('SIGTERM received. Closing server...');
-  server.close(async () => {
-    console.log('HTTP server closed.');
-    try {
-      await mongoose.connection.close();
-      console.log('MongoDB connection closed.');
-      process.exit(0);
-    } catch (err) {
-      console.error('Error closing MongoDB connection:', err);
-      process.exit(1);
-    }
-  });
-});
-
-// Error Handling
-process.on('uncaughtException', async (err) => {
-  console.error('Uncaught Exception:', err.message);
-  server.close(async () => {
-    console.log('HTTP server closed due to uncaught exception.');
-    try {
-      await mongoose.connection.close();
-      console.log('MongoDB connection closed.');
-      process.exit(1);
-    } catch (mongoErr) {
-      console.error('Error closing MongoDB connection after uncaught exception:', mongoErr);
-      process.exit(1);
-    }
-  });
-});
-
-process.on('unhandledRejection', async (reason, promise) => {
-  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
-  server.close(async () => {
-    console.log('HTTP server closed due to unhandled rejection.');
-    try {
-      await mongoose.connection.close();
-      console.log('MongoDB connection closed.');
-      process.exit(1);
-    } catch (mongoErr) {
-      console.error('Error closing MongoDB connection after unhandled rejection:', mongoErr);
-      process.exit(1);
-    }
-  });
-}); 
+app.listen(5000, () => console.log('Server running on port 5000')); 

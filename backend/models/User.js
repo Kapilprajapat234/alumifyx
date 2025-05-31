@@ -40,8 +40,8 @@ const userSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'Mentorship' 
   }],
-  resetPasswordToken: String,
-  resetPasswordExpires: Date
+  resetToken: String,
+  resetTokenExpiry: Date
 }, {
   timestamps: true
 });
@@ -71,8 +71,8 @@ userSchema.methods.comparePassword = async function(candidatePassword) {
 userSchema.methods.getPublicProfile = function() {
   const userObject = this.toObject();
   delete userObject.password;
-  delete userObject.resetPasswordToken;
-  delete userObject.resetPasswordExpires;
+  delete userObject.resetToken;
+  delete userObject.resetTokenExpiry;
   return userObject;
 };
 
