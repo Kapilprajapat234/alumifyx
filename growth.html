@@ -526,6 +526,60 @@
       .modal-content, .settings-content { width: 95%; padding: 20px; }
       .class-buttons { flex-direction: column; gap: 10px; }
     }
+
+    /* Add/Update card styles for image on top */
+    .growth-card {
+      background: #181818;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(138,43,226,0.08);
+      padding: 0 0 16px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: transform 0.2s, box-shadow 0.2s;
+      margin: 12px;
+      min-width: 220px;
+      max-width: 260px;
+      border: 1.5px solid #8a2be2;
+      overflow: hidden;
+    }
+    .growth-card:hover {
+      transform: translateY(-8px) scale(1.03);
+      box-shadow: 0 8px 32px rgba(138,43,226,0.18);
+    }
+    .growth-card img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      border-radius: 0;
+      margin-bottom: 18px;
+      background: #fff;
+      display: block;
+    }
+    .growth-card-title {
+      font-size: 20px;
+      color: #fff;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 0;
+      letter-spacing: 0.5px;
+    }
+    @media (max-width: 900px) {
+      .growth-cards-container {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .growth-card {
+        min-width: 160px;
+        max-width: 200px;
+      }
+      .growth-card img {
+        height: 90px;
+      }
+      .growth-card-title {
+        font-size: 16px;
+      }
+    }
   </style>
 </head>
 <body class="font-medium">
@@ -659,22 +713,67 @@
       <a href="live-classes.html">Live Classes</a>
       <a href="recorded-classes.html">Recorded Classes</a>
     </div>
-    <div class="skills-grid">
-      <div class="skill-card"><a href="skill.html?skill=personal_finance">Personal Finance</a></div>
-      <div class="skill-card"><a href="skill.html?skill=stock_market">Stock Market</a></div>
-      <div class="skill-card"><a href="skill.html?skill=tax_saving">Tax Saving</a></div>
-      <div class="skill-card"><a href="skill.html?skill=credit_card_course">Credit Card Course</a></div>
-      <div class="skill-card"><a href="skill.html?skill=tally">Tally</a></div>
-      <div class="skill-card"><a href="skill.html?skill=sales">Sales</a></div>
-      <div class="skill-card"><a href="skill.html?skill=marketing">Marketing</a></div>
-      <div class="skill-card"><a href="skill.html?skill=personal_development">Personal Development</a></div>
-      <div class="skill-card"><a href="skill.html?skill=video_editing">Video Editing</a></div>
-      <div class="skill-card"><a href="skill.html?skill=vibe_coding">Vibe Coding</a></div>
-      <div class="skill-card"><a href="skill.html?skill=graphic_design">Graphic Design</a></div>
-      <div class="skill-card"><a href="skill.html?skill=python">Python</a></div>
-      <div class="skill-card"><a href="skill.html?skill=web_development">Web Development</a></div>
-      <div class="skill-card"><a href="skill.html?skill=programming">Programming</a></div>
-      <div class="skill-card"><a href="skill.html?skill=ui_ux">UI/UX</a></div>
+    <div class="growth-cards-container" style="display: flex; flex-wrap: wrap; justify-content: center; margin-top: 32px;">
+      <div class="growth-card">
+        <img src="https://source.unsplash.com/80x80/?finance,money" alt="Personal Finance">
+        <div class="growth-card-title">Personal Finance</div>
+      </div>
+      <div class="growth-card">
+        <img src="https://source.unsplash.com/80x80/?stock,market" alt="Stock Market">
+        <div class="growth-card-title">Stock Market</div>
+      </div>
+      <div class="growth-card">
+        <img src="https://source.unsplash.com/80x80/?tax,accounting" alt="Tax Saving">
+        <div class="growth-card-title">Tax Saving</div>
+      </div>
+      <div class="growth-card">
+        <img src="https://source.unsplash.com/80x80/?credit,card" alt="Credit Card Course">
+        <div class="growth-card-title">Credit Card Course</div>
+      </div>
+      <div class="growth-card">
+        <img src="https://source.unsplash.com/80x80/?tally,accounting" alt="Tally">
+        <div class="growth-card-title">Tally</div>
+      </div>
+      <div class="growth-card">
+        <img src="https://source.unsplash.com/80x80/?sales,business" alt="Sales">
+        <div class="growth-card-title">Sales</div>
+      </div>
+      <div class="growth-card">
+        <img src="https://source.unsplash.com/80x80/?marketing" alt="Marketing">
+        <div class="growth-card-title">Marketing</div>
+      </div>
+      <div class="growth-card">
+        <img src="https://source.unsplash.com/80x80/?personal,development" alt="Personal Development">
+        <div class="growth-card-title">Personal Development</div>
+      </div>
+      <div class="growth-card">
+        <img src="https://source.unsplash.com/80x80/?video,editing" alt="Video Editing">
+        <div class="growth-card-title">Video Editing</div>
+      </div>
+      <div class="growth-card">
+        <img src="https://source.unsplash.com/80x80/?coding,programming" alt="Vibe Coding">
+        <div class="growth-card-title">Vibe Coding</div>
+      </div>
+      <div class="growth-card">
+        <img src="https://source.unsplash.com/80x80/?graphic,design" alt="Graphic Design">
+        <div class="growth-card-title">Graphic Design</div>
+      </div>
+      <div class="growth-card">
+        <img src="https://source.unsplash.com/80x80/?python,code" alt="Python">
+        <div class="growth-card-title">Python</div>
+      </div>
+      <div class="growth-card">
+        <img src="https://source.unsplash.com/80x80/?web,development" alt="Web Development">
+        <div class="growth-card-title">Web Development</div>
+      </div>
+      <div class="growth-card">
+        <img src="https://source.unsplash.com/80x80/?programming,code" alt="Programming">
+        <div class="growth-card-title">Programming</div>
+      </div>
+      <div class="growth-card">
+        <img src="https://source.unsplash.com/80x80/?ui,ux,design" alt="UI/UX">
+        <div class="growth-card-title">UI/UX</div>
+      </div>
     </div>
   </section>
 
@@ -691,7 +790,7 @@
         if (!response.ok) throw new Error("Not logged in");
         return await response.json();
       } catch (e) {
-        window.location.href = "loginandsignuppage.html";
+        window.location.href = "index.html";
         throw e;
       }
     }
@@ -966,7 +1065,7 @@
           localStorage.removeItem('profileData');
           localStorage.removeItem('adminData');
           alert('Logged out successfully.');
-          window.location.href = 'loginandsignuppage.html';
+          window.location.href = 'index.html';
         } catch (error) {
           console.error('Error during logout:', error);
           alert('Error logging out. Please try again.');

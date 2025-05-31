@@ -258,7 +258,7 @@
   </section>
 
   <script>
-    const BASE_URL = "http://localhost:3001";
+    const BASE_URL = "https://alumifyx.onrender.com";
     async function checkSessionOrRedirect() {
       try {
         const response = await fetch(`${BASE_URL}/api/user`, {
@@ -269,7 +269,7 @@
         if (!response.ok) throw new Error("Not logged in");
         return await response.json();
       } catch (e) {
-        window.location.href = "loginandsignuppage.html";
+        window.location.href = "index.html";
         throw e;
       }
     }
@@ -286,7 +286,7 @@
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include'
       }).then(() => {
-        window.location.href = 'loginandsignuppage.html';
+        window.location.href = 'index.html';
       });
     }
 
@@ -318,7 +318,7 @@
 
     function loadRecordedClasses() {
       // Fetch recorded classes from backend
-      fetch('http://localhost:3001/api/growth/recorded-classes')
+      fetch('https://alumifyx.onrender.com/api/growth/recorded-classes')
         .then(response => {
           if (!response.ok) {
             throw new Error('Failed to fetch recorded classes');

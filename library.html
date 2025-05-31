@@ -820,7 +820,7 @@
         if (!response.ok) throw new Error("Not logged in");
         return await response.json();
       } catch (e) {
-        window.location.href = "loginandsignuppage.html";
+        window.location.href = "index.html";
         throw e;
       }
     }
@@ -1083,7 +1083,7 @@
           localStorage.removeItem('profileData');
           localStorage.removeItem('adminData');
           alert('Logged out successfully.');
-          window.location.href = 'loginandsignuppage.html';
+          window.location.href = 'index.html';
         } catch (error) {
           console.error('Error during logout:', error);
           alert('Error logging out. Please try again.');
