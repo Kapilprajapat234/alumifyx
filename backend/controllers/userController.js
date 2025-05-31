@@ -4,16 +4,7 @@ const path = require('path');
 
 // Get user profile
 const getProfile = async (req, res) => {
-  try {
-    const user = req.user;
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-    res.json(user);
-  } catch (error) {
-    console.error('Error fetching user:', error.message);
-    res.status(500).json({ error: 'Server error while fetching user' });
-  }
+  res.json({ user: { name: req.user.name, email: req.user.email } });
 };
 
 // Update user profile

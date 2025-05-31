@@ -3,9 +3,10 @@ const router = express.Router();
 const userController = require('../controllers/userController');
 const { isAuthenticated } = require('../middleware/auth');
 const { upload } = require('../middleware/upload');
+const { getProfile } = require('../controllers/userController');
 
 // Get user profile
-router.get('/', isAuthenticated, userController.getProfile);
+router.get('/', isAuthenticated, getProfile);
 
 // Update user profile
 router.put('/', isAuthenticated, upload.single('profilePic'), userController.updateProfile);

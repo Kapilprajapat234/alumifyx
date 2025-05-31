@@ -42,40 +42,13 @@ const register = async (req, res) => {
 
 // Login user
 const login = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    console.log('Login request:', { email });
-
-    // Validation
-    if (!email || !password) {
-      return res.status(400).json({ error: 'Email and password are required' });
-    }
-
-    // Find user
-    const user = await User.findOne({ email });
-    if (!user) {
-      console.log('User not found for email:', email);
-      return res.status(400).json({ error: 'Invalid email or password' });
-    }
-
-    // Check password
-    const isMatch = await user.comparePassword(password);
-    if (!isMatch) {
-      console.log('Password mismatch for email:', email);
-      return res.status(400).json({ error: 'Invalid email or password' });
-    }
-
-    // Generate JWT
-    const token = jwt.sign({ userId: user._id }, process.env.SESSION_SECRET, { expiresIn: '7d' });
-    res.json({
-      message: 'Login successful',
-      user: { name: user.name, email: user.email },
-      token
-    });
-  } catch (error) {
-    console.error('Login error:', error.message);
-    res.status(500).json({ error: 'Server error during login' });
+  const { email, password } = req.body;
+  const user = await User.findOne({ email });
+  if (!user || !(await user.comparePassword(password))) {
+    return res.status(401).json({ error: 'Invalid email or password' });
   }
+  const token = jwt.sign({ userId: user._id }, process.env.SESSION_SECRET, { expiresIn: '7d' });
+  res.json({ token, user: { name: user.name, email: user.email } });
 };
 
 // Forgot password
