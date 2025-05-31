@@ -112,8 +112,9 @@ const forgotPassword = async (req, res) => {
     user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
     await user.save();
 
-    // Send reset email
-    const resetLink = `http://localhost:8000/reset-password.html?token=${token}`;
+    // Use environment variable for frontend URL
+    const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:8000';
+    const resetLink = `${FRONTEND_URL}/reset-password.html?token=${token}`;
     await transporter.sendMail({
       to: email,
       subject: 'Alumifyx Password Reset',
