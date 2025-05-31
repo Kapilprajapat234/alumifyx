@@ -928,6 +928,14 @@
           }
         }
       }
+
+      // Bind login function to form submit after DOM is loaded
+      document.addEventListener('DOMContentLoaded', function() {
+        var loginForm = document.getElementById('loginForm');
+        if (loginForm) {
+          loginForm.addEventListener('submit', login);
+        }
+      });
     </script>
   </body>
 </html>
