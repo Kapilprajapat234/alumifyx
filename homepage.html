@@ -414,46 +414,19 @@
       }
 
       .hero {
-        height: 100vh;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        padding: 80px 20px 0;
-        position: relative;
+        width: 100vw;
+        max-width: 100%;
         overflow: hidden;
+        position: relative;
+        background: linear-gradient(90deg, #1a1a1a 60%, #22223b 100%);
       }
 
-      body.light-mode .hero {
-        background: linear-gradient(45deg, #f5f5f5, #e0e0e0);
-      }
-
-      .hero::before {
-        content: "";
-        position: absolute;
+      .hero img {
         width: 100%;
-        height: 100%;
-        background: radial-gradient(
-          circle,
-          rgba(138, 43, 226, 0.2),
-          transparent
-        );
-        top: 0;
-        left: 0;
-        animation: pulse 10s infinite ease-in-out;
-      }
-
-      @keyframes pulse {
-        0% {
-          transform: scale(1);
-        }
-        50% {
-          transform: scale(1.2);
-        }
-        100% {
-          transform: scale(1);
-        }
+        max-width: 100vw;
+        height: auto;
+        display: block;
+        object-fit: cover;
       }
 
       .hero h1 {
@@ -799,6 +772,11 @@
         .intro-card h3 { font-size: 18px; }
         .intro-card p { font-size: 14px; }
         .cta-button { font-size: 16px; padding: 12px 18px; }
+      }
+
+      /* Hide any large decorative images that overflow */
+      .big-bg, .decorative-bg, .right-bg, .background-image {
+        display: none !important;
       }
     </style>
   </head>
