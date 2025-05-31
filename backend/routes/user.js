@@ -4,7 +4,6 @@ const userController = require('../controllers/userController');
 const { isAuthenticated } = require('../middleware/auth');
 const { upload } = require('../middleware/upload');
 const { getProfile } = require('../controllers/userController');
-const auth = require('../middleware/auth');
 const User = require('../models/User');
 
 // Get user profile
@@ -17,7 +16,7 @@ router.put('/', isAuthenticated, upload.single('profilePic'), userController.upd
 router.delete('/', isAuthenticated, userController.deleteAccount);
 
 // Get user profile (JWT protected)
-router.get('/', auth, async (req, res) => {
+router.get('/', isAuthenticated, async (req, res) => {
   const user = await User.findById(req.user.id).select('-password');
   res.json({ user });
 });
