@@ -817,15 +817,39 @@
               // Store user info and token in localStorage
               const userData = {
                 ...result.user,
-                token: result.token // Make sure your backend sends a token
+                token: result.token
               };
               localStorage.setItem('user', JSON.stringify(userData));
               
               // Set a flag to indicate successful login
               sessionStorage.setItem('isLoggedIn', 'true');
               
-              alert("Login successful");
-              window.location.href = "homepage.html";
+              // Wait a moment to ensure session is set
+              await new Promise(resolve => setTimeout(resolve, 1000));
+              
+              // Verify session before redirecting
+              try {
+                const verifyResponse = await fetch(`${BASE_URL}/api/user`, {
+                  method: "GET",
+                  headers: { 
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${result.token}`
+                  },
+                  credentials: "include"
+                });
+                
+                if (!verifyResponse.ok) {
+                  throw new Error("Session verification failed");
+                }
+                
+                alert("Login successful");
+                window.location.href = "homepage.html";
+              } catch (error) {
+                console.error("Session verification failed:", error);
+                alert("Login successful but session verification failed. Please try again.");
+                localStorage.removeItem('user');
+                sessionStorage.removeItem('isLoggedIn');
+              }
             } else {
               if (result.error.includes("email")) {
                 showError(emailInput, emailError, result.error);

@@ -1083,11 +1083,11 @@
     <script>
       const BASE_URL = "https://alumifyx.onrender.com";
 
-      async function checkSessionOrRedirect() {
+      // Check if user is logged in
+      async function checkSession() {
         try {
-          // First check if we have user data in localStorage
-          const userData = localStorage.getItem('user');
-          if (!userData) {
+          const user = JSON.parse(localStorage.getItem('user'));
+          if (!user || !user.token) {
             throw new Error('No user data found');
           }
 
@@ -1095,31 +1095,43 @@
             method: "GET",
             headers: { 
               "Content-Type": "application/json",
-              "Authorization": `Bearer ${JSON.parse(userData).token}`
+              "Authorization": `Bearer ${user.token}`
             },
             credentials: "include"
           });
 
           if (!response.ok) {
-            // If session is invalid, clear localStorage and redirect
-            localStorage.removeItem('user');
-            throw new Error("Session expired");
+            throw new Error('Session invalid');
           }
 
-          const user = await response.json();
-          // Update localStorage with fresh user data
-          localStorage.setItem('user', JSON.stringify(user));
-          return user;
-        } catch (e) {
-          console.error('Session check failed:', e);
-          window.location.href = "index.html";
-          throw e;
+          const data = await response.json();
+          if (!data.user) {
+            throw new Error('No user data in response');
+          }
+
+          // Update UI with user data
+          document.getElementById('userName').textContent = data.user.name;
+          document.getElementById('userEmail').textContent = data.user.email;
+          
+          // Show user info and hide login button
+          document.getElementById('userInfo').style.display = 'block';
+          document.getElementById('loginButton').style.display = 'none';
+          
+          return true;
+        } catch (error) {
+          console.error('Session check failed:', error);
+          // Clear invalid session data
+          localStorage.removeItem('user');
+          sessionStorage.removeItem('isLoggedIn');
+          // Redirect to login
+          window.location.href = 'index.html';
+          return false;
         }
       }
 
-      document.addEventListener('DOMContentLoaded', async () => {
-        await checkSessionOrRedirect();
-        // ...rest of your page logic (existing code)
+      // Check session on page load
+      document.addEventListener('DOMContentLoaded', () => {
+        checkSession();
       });
 
       // Load theme and font settings
