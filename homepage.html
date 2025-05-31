@@ -1065,9 +1065,14 @@
     <script>
       const BACKEND_URL = "https://alumifyx.onrender.com";
 
+      function getUserToken() {
+        const user = JSON.parse(localStorage.getItem('user'));
+        return user && user.token ? user.token : null;
+      }
+
       async function checkSessionOrRedirect() {
         try {
-          const token = localStorage.getItem('token');
+          const token = getUserToken();
           if (!token) throw new Error('No token');
           const res = await fetch(`${BACKEND_URL}/api/user`, {
             headers: { 'Authorization': 'Bearer ' + token }
@@ -1082,7 +1087,7 @@
 
       document.addEventListener('DOMContentLoaded', async function() {
         await checkSessionOrRedirect();
-        const token = localStorage.getItem('token');
+        const token = getUserToken();
         if (token) {
           const res = await fetch(`${BACKEND_URL}/api/user`, {
             headers: { 'Authorization': 'Bearer ' + token }

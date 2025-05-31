@@ -814,7 +814,7 @@
           }
 
           if (res.ok && data.token) {
-            localStorage.setItem('token', data.token);
+            localStorage.setItem('user', JSON.stringify({token: data.token}));
             window.location.href = 'homepage.html';
           } else {
             loginError.textContent = data.error || "Login failed. Please check your credentials.";
@@ -868,7 +868,7 @@
 
             const data = await response.json();
             if (response.ok) {
-              localStorage.setItem('token', data.token);
+              localStorage.setItem('user', JSON.stringify({token: data.token}));
               window.location.href = 'homepage.html';
             } else {
               showError(nameError, nameError, data.error || 'Signup failed');
