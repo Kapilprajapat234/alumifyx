@@ -5,28 +5,10 @@ const path = require('path');
 // Get user profile
 const getProfile = async (req, res) => {
   try {
-    // Temporarily bypass user fetch in development environment
-    if (process.env.NODE_ENV !== 'production') {
-      console.log('Returning dummy user in development environment.');
-      return res.json({
-        _id: 'dummyUserId123',
-        name: 'Development User',
-        email: 'devuser@example.com',
-        // Add other necessary dummy fields here
-        mentorships: [], // Assuming mentorships is an array
-        // ... add other fields expected by the frontend
-      });
-    }
-
-    console.log('Fetching user profile for:', req.session.userId);
-    const user = await User.findById(req.session.userId)
-      .select('-password -resetPasswordToken -resetPasswordExpires')
-      .populate('mentorships');
-
+    const user = req.user;
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
-
     res.json(user);
   } catch (error) {
     console.error('Error fetching user:', error.message);
@@ -37,8 +19,7 @@ const getProfile = async (req, res) => {
 // Update user profile
 const updateProfile = async (req, res) => {
   try {
-    console.log('Update profile request for:', req.session.userId);
-    const user = await User.findById(req.session.userId);
+    const user = req.user;
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
@@ -109,8 +90,7 @@ const updateProfile = async (req, res) => {
 // Delete user account
 const deleteAccount = async (req, res) => {
   try {
-    console.log('Delete user request for:', req.session.userId);
-    const user = await User.findById(req.session.userId);
+    const user = req.user;
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
@@ -127,11 +107,9 @@ const deleteAccount = async (req, res) => {
     }
 
     // Delete user and related data
-    await User.findByIdAndDelete(req.session.userId);
-    await Mentorship.deleteMany({ userId: req.session.userId });
+    await User.findByIdAndDelete(user._id);
+    await Mentorship.deleteMany({ userId: user._id });
 
-    // Destroy session
-    req.session.destroy();
     res.json({ message: 'Account deleted successfully' });
   } catch (error) {
     console.error('Error deleting user:', error.message);

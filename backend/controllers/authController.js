@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const transporter = require('../config/email');
 const crypto = require('crypto');
+const jwt = require('jsonwebtoken');
 
 // Register new user
 const register = async (req, res) => {
@@ -28,10 +29,6 @@ const register = async (req, res) => {
     // Create new user
     const newUser = new User({ name, email, password });
     await newUser.save();
-
-    // Set session
-    req.session.userId = newUser._id;
-    console.log('User registered successfully:', newUser._id);
 
     res.status(201).json({ 
       message: 'Account created successfully', 
@@ -68,25 +65,12 @@ const login = async (req, res) => {
       return res.status(400).json({ error: 'Invalid email or password' });
     }
 
-    // Set session
-    req.session.userId = user._id;
-    console.log('Login successful for user:', user._id);
-    
-    // Generate a simple token (you might want to use JWT in production)
-    const token = crypto.randomBytes(32).toString('hex');
-    
-    // Save session explicitly
-    req.session.save((err) => {
-      if (err) {
-        console.error('Session save error:', err);
-        return res.status(500).json({ error: 'Failed to save session' });
-      }
-      console.log('Session saved successfully');
-      res.json({
-        message: 'Login successful',
-        user: { name: user.name, email: user.email },
-        token: token
-      });
+    // Generate JWT
+    const token = jwt.sign({ userId: user._id }, process.env.SESSION_SECRET, { expiresIn: '7d' });
+    res.json({
+      message: 'Login successful',
+      user: { name: user.name, email: user.email },
+      token
     });
   } catch (error) {
     console.error('Login error:', error.message);
@@ -171,14 +155,7 @@ const resetPassword = async (req, res) => {
 
 // Logout
 const logout = (req, res) => {
-  console.log('Logout request for session:', req.session.userId);
-  req.session.destroy((err) => {
-    if (err) {
-      console.error('Logout error:', err.message);
-      return res.status(500).json({ error: 'Failed to log out' });
-    }
-    res.json({ message: 'Logout successful' });
-  });
+  res.json({ message: 'Logout successful' });
 };
 
 module.exports = {

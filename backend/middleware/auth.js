@@ -1,42 +1,29 @@
+const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
-// Authentication middleware
+// Authentication middleware (JWT only)
 const isAuthenticated = async (req, res, next) => {
   try {
-    console.log('Checking authentication...');
-    console.log('Session:', req.session);
-    console.log('Session ID:', req.sessionID);
-    console.log('User ID from session:', req.session.userId);
-
-    if (!req.session || !req.session.userId) {
-      console.log('No session or userId found');
-      if (req.originalUrl.startsWith('/api')) {
-        return res.status(401).json({ message: 'Unauthorized - Please login' });
-      }
-      return res.redirect('/login');
+    const authHeader = req.headers['authorization'];
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ message: 'Unauthorized - No token provided' });
     }
-
-    // Verify user still exists in database
-    const user = await User.findById(req.session.userId);
+    const token = authHeader.split(' ')[1];
+    let decoded;
+    try {
+      decoded = jwt.verify(token, process.env.SESSION_SECRET);
+    } catch (err) {
+      return res.status(401).json({ message: 'Invalid or expired token' });
+    }
+    const user = await User.findById(decoded.userId);
     if (!user) {
-      console.log('User not found in database');
-      req.session.destroy();
-      if (req.originalUrl.startsWith('/api')) {
-        return res.status(401).json({ message: 'User not found - Please login again' });
-      }
-      return res.redirect('/login');
+      return res.status(401).json({ message: 'User not found' });
     }
-
-    // Add user to request object
     req.user = user;
-    console.log('User authenticated successfully');
     next();
   } catch (error) {
     console.error('Authentication error:', error);
-    if (req.originalUrl.startsWith('/api')) {
-      return res.status(500).json({ message: 'Server error during authentication' });
-    }
-    return res.redirect('/login');
+    return res.status(500).json({ message: 'Server error during authentication' });
   }
 };
 
