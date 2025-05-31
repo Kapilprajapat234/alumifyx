@@ -452,10 +452,14 @@
     const BASE_URL = "https://alumifyx.onrender.com";
     async function checkSessionOrRedirect() {
       try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (!user || !user.token) throw new Error('No user token');
         const response = await fetch(`${BASE_URL}/api/user`, {
           method: "GET",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include"
+          headers: { 
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${user.token}`
+          }
         });
         if (!response.ok) throw new Error("Not logged in");
         return await response.json();
@@ -550,50 +554,3 @@
             <h4>${chapter}</h4>
             <div class="resources-container">
               ${resources.map(resource => `
-                <div class="resource-item">
-                  <h5>${resource.title}</h5>
-                  <p>${resource.type.toUpperCase()} Resource</p>
-                  ${resource.type === 'video' 
-                    ? `<iframe src="${resource.url}" frameborder="0" allowfullscreen></iframe>`
-                    : `<a href="${resource.url}" class="cta-button" target="_blank">Download ${resource.type.toUpperCase()}</a>`
-                  }
-                </div>
-              `).join('')}
-            </div>
-          `;
-          resourceList.appendChild(chapterCard);
-        });
-      }
-
-      // Search functionality
-      searchInput.addEventListener('input', () => {
-        const searchTerm = searchInput.value.toLowerCase();
-        const cards = resourceList.getElementsByClassName('intro-card');
-
-        Array.from(cards).forEach(card => {
-          const title = card.querySelector('h4').textContent.toLowerCase();
-          const resources = card.querySelectorAll('.resource-item');
-          let shouldShow = false;
-
-          resources.forEach(resource => {
-            const resourceTitle = resource.querySelector('h5').textContent.toLowerCase();
-            if (resourceTitle.includes(searchTerm)) {
-              shouldShow = true;
-            }
-          });
-
-          if (title.includes(searchTerm) || shouldShow) {
-            card.style.display = 'block';
-          } else {
-            card.style.display = 'none';
-          }
-        });
-      });
-    });
-
-    function toggleMenu() {
-      document.querySelector('.nav-links').classList.toggle('active');
-    }
-  </script>
-</body>
-</html>

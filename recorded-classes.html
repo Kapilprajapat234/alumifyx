@@ -261,10 +261,14 @@
     const BASE_URL = "https://alumifyx.onrender.com";
     async function checkSessionOrRedirect() {
       try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (!user || !user.token) throw new Error('No user token');
         const response = await fetch(`${BASE_URL}/api/user`, {
           method: "GET",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include"
+          headers: { 
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${user.token}`
+          }
         });
         if (!response.ok) throw new Error("Not logged in");
         return await response.json();
@@ -283,8 +287,10 @@
     function logout() {
       fetch(`${BASE_URL}/api/auth/logout`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include'
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${JSON.parse(localStorage.getItem('user')).token}`
+        }
       }).then(() => {
         window.location.href = 'index.html';
       });
@@ -318,7 +324,9 @@
 
     function loadRecordedClasses() {
       // Fetch recorded classes from backend
-      fetch('https://alumifyx.onrender.com/api/growth/recorded-classes')
+      fetch('https://alumifyx.onrender.com/api/growth/recorded-classes', {
+        headers: { 'Authorization': `Bearer ${JSON.parse(localStorage.getItem('user')).token}` }
+      })
         .then(response => {
           if (!response.ok) {
             throw new Error('Failed to fetch recorded classes');

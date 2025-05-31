@@ -722,10 +722,14 @@
     const BASE_URL = "https://alumifyx.onrender.com";
     async function checkSessionOrRedirect() {
       try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (!user || !user.token) throw new Error('No user token');
         const response = await fetch(`${BASE_URL}/api/user`, {
           method: "GET",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include"
+          headers: { 
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${user.token}`
+          }
         });
         if (!response.ok) throw new Error("Not logged in");
         return await response.json();
@@ -816,8 +820,10 @@
       try {
         const response = await fetch(`${BASE_URL}/api/user`, {
           method: 'GET',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include'
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${JSON.parse(localStorage.getItem('user')).token}`
+          }
         });
 
         if (!response.ok) {
@@ -905,7 +911,7 @@
           const response = await fetch(`${BASE_URL}/api/user`, {
             method: 'PUT',
             body: formData,
-            credentials: 'include'
+            headers: { 'Authorization': `Bearer ${JSON.parse(localStorage.getItem('user')).token}` }
           });
 
           if (!response.ok) {
@@ -981,8 +987,10 @@
       try {
         const response = await fetch(`${BASE_URL}/api/auth/logout`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include'
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${JSON.parse(localStorage.getItem('user')).token}`
+          }
         });
 
         if (!response.ok) {
@@ -1004,8 +1012,10 @@
       try {
         const response = await fetch(`${BASE_URL}/api/courses`, {
           method: 'GET',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include'
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${JSON.parse(localStorage.getItem('user')).token}`
+          }
         });
 
         if (!response.ok) {
@@ -1042,8 +1052,10 @@
       try {
         const response = await fetch(`${BASE_URL}/api/user`, {
           method: 'GET',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include'
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${JSON.parse(localStorage.getItem('user')).token}`
+          }
         });
 
         if (!response.ok) {
