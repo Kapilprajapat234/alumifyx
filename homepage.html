@@ -813,6 +813,9 @@
         <a href="jobs.html">Jobs</a>
         <a href="mentorship.html">Mentorship</a>
       </div>
+      <div class="user-info" style="display:none">
+        <span id="userName"></span> | <span id="userEmail"></span>
+      </div>
       <div class="profile" role="menu">
         <div
           class="profile-icon"
@@ -1098,10 +1101,11 @@
           localStorage.removeItem('token');
           window.location.href = 'index.html';
         } else {
-          if (document.getElementById('userName'))
+          if (document.getElementById('userName')) {
             document.getElementById('userName').textContent = data.user.name;
-          if (document.getElementById('userEmail'))
             document.getElementById('userEmail').textContent = data.user.email;
+            document.querySelector('.user-info').style.display = 'inline-block';
+          }
         }
       }
 
