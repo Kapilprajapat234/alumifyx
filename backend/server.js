@@ -11,7 +11,8 @@ app.use(express.json());
 const allowedOrigins = [
   'https://alumifyx.vercel.app',
   'https://alumifyx.onrender.com',
-  'http://localhost:5500'
+  'http://localhost:5500',
+  'http://localhost:3000'
 ];
 
 app.use(cors({
