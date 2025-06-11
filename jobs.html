@@ -1122,6 +1122,33 @@
         }
       });
 
+      // Search container toggle
+      const searchContainer = document.querySelector('.search-container');
+      const searchBtn = document.querySelector('.search-btn');
+
+      function toggleSearchDropdown() {
+        searchContainer.classList.toggle('active');
+        const isExpanded = searchContainer.classList.contains('active');
+        searchBtn.setAttribute('aria-expanded', isExpanded);
+      }
+
+      if (searchBtn) {
+        searchBtn.addEventListener('click', toggleSearchDropdown);
+        searchBtn.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            toggleSearchDropdown();
+          }
+        });
+      }
+
+      document.addEventListener('click', (e) => {
+        if (!searchContainer.contains(e.target)) {
+          searchContainer.classList.remove('active');
+          searchBtn.setAttribute('aria-expanded', false);
+        }
+      });
+
       // Profile modal
       const profileModal = document.getElementById('profileModal');
       const profileForm = document.getElementById('profileForm');
@@ -1308,11 +1335,16 @@
       // Logout
       window.logout = async function () {
         try {
+          const user = JSON.parse(localStorage.getItem('user'));
+          if (!user || !user.token) {
+            throw new Error('No user token found');
+          }
+
           const response = await fetch(`${BASE_URL}/api/auth/logout`, {
             method: 'POST',
             headers: { 
               'Content-Type': 'application/json',
-              'Authorization': `Bearer ${JSON.parse(localStorage.getItem('user')).token}`
+              'Authorization': `Bearer ${user.token}`
             }
           });
 
@@ -1320,25 +1352,62 @@
             throw new Error('Logout failed');
           }
 
+          // Clear all relevant localStorage items
+          localStorage.removeItem('user');
           localStorage.removeItem('profileData');
           localStorage.removeItem('adminData');
+          localStorage.removeItem('settings');
+
           alert('Logged out successfully.');
-          window.location.href = 'index.html';
+          setTimeout(() => {
+            window.location.href = 'index.html';
+          }, 500);
         } catch (error) {
           console.error('Error during logout:', error);
           alert('Error logging out. Please try again.');
         }
       };
 
-      // Load jobs from backend
-      async function loadJobs() {
+      // Search skills
+      window.searchSkills = function (query) {
+        const skillOptions = document.querySelectorAll('.skill-option');
+        query = query.toLowerCase();
+
+        skillOptions.forEach(option => {
+          const skillText = option.querySelector('span').textContent.toLowerCase();
+          if (skillText.includes(query)) {
+            option.classList.remove('hidden');
+          } else {
+            option.classList.add('hidden');
+          }
+        });
+      };
+
+      // Show jobs based on selected skills
+      window.showJobs = async function () {
+        const showJobsBtn = document.querySelector('.show-jobs-btn');
+        const jobList = document.getElementById('jobList');
+        jobList.innerHTML = '';
+
+        const selectedSkills = Array.from(document.querySelectorAll('.skill-option input:checked'))
+          .map(input => input.value);
+
+        if (selectedSkills.length === 0) {
+          jobList.innerHTML = '<p class="no-jobs">Please select at least one skill to find jobs.</p>';
+          return;
+        }
+
+        showJobsBtn.classList.add('loading');
+        showJobsBtn.textContent = 'Loading...';
+
         try {
           const response = await fetch(`${BASE_URL}/api/jobs`, {
-            method: 'GET',
-            headers: { 
+            method: 'POST',
+            headers: {
               'Content-Type': 'application/json',
               'Authorization': `Bearer ${JSON.parse(localStorage.getItem('user')).token}`
-            }
+            },
+            body: JSON.stringify({ skills: selectedSkills })
           });
 
           if (!response.ok) {
@@ -1346,164 +1415,48 @@
           }
 
           const jobs = await response.json();
-          const jobList = document.getElementById('job-list');
-          
+
           if (jobs.length > 0) {
-            // Clear existing jobs
-            jobList.innerHTML = '';
-            
             jobs.forEach(job => {
-              const card = document.createElement('div');
-              card.className = 'job-card';
-              card.innerHTML = `
-                <div class="job-header">
-                  <h3>${job.title}</h3>
-                  <span class="company">${job.company}</span>
-                </div>
-                <div class="job-details">
-                  <p><i class="fas fa-map-marker-alt"></i> ${job.location}</p>
-                  <p><i class="fas fa-money-bill-wave"></i> ${job.salary}</p>
-                  <p><i class="fas fa-clock"></i> ${job.type}</p>
-                </div>
-                <div class="job-description">
-                  <p>${job.description}</p>
-                </div>
-                <div class="job-requirements">
-                  <h4>Requirements:</h4>
-                  <ul>
-                    ${job.requirements.map(req => `<li>${req}</li>`).join('')}
-                  </ul>
-                </div>
-                <div class="job-actions">
-                  <button onclick="applyForJob('${job._id}')" class="apply-button">Apply Now</button>
-                  <button onclick="saveJob('${job._id}')" class="save-button">Save Job</button>
-                </div>
+              const jobElement = document.createElement('div');
+              jobElement.className = 'job';
+              jobElement.innerHTML = `
+                <h3>${job.title}</h3>
+                <p>Company: ${job.company}</p>
+                <p>Location: ${job.location}</p>
+                <p>Salary: ${job.salary || 'Not specified'}</p>
+                <p>Type: ${job.type || 'Full-time'}</p>
+                <p>Description: ${job.description}</p>
+                <a href="${job.applicationLink || '#'}" class="apply-btn ${!job.applicationLink ? 'disabled' : ''}">
+                  Apply Now
+                </a>
               `;
-              jobList.appendChild(card);
+              jobList.appendChild(jobElement);
             });
           } else {
-            jobList.innerHTML = '<p>No jobs found.</p>';
+            jobList.innerHTML = '<p class="no-jobs">No jobs found for the selected skills.</p>';
           }
         } catch (error) {
           console.error('Error loading jobs:', error);
-          jobList.innerHTML = '<p>Error loading jobs. Please try again later.</p>';
-        }
-      }
-
-      // Search jobs
-      window.searchJobs = async function () {
-        const query = document.getElementById('search-input').value.toLowerCase();
-        const location = document.getElementById('location-filter').value.toLowerCase();
-        const type = document.getElementById('type-filter').value.toLowerCase();
-
-        try {
-          const response = await fetch(`${BASE_URL}/api/jobs/search?q=${encodeURIComponent(query)}&location=${encodeURIComponent(location)}&type=${encodeURIComponent(type)}`, {
-            method: 'GET',
-            headers: { 
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${JSON.parse(localStorage.getItem('user')).token}`
-            }
-          });
-
-          if (!response.ok) {
-            throw new Error('Search failed');
-          }
-
-          const jobs = await response.json();
-          const jobList = document.getElementById('job-list');
-          
-          if (jobs.length > 0) {
-            jobList.innerHTML = '';
-            jobs.forEach(job => {
-              const card = document.createElement('div');
-              card.className = 'job-card';
-              card.innerHTML = `
-                <div class="job-header">
-                  <h3>${job.title}</h3>
-                  <span class="company">${job.company}</span>
-                </div>
-                <div class="job-details">
-                  <p><i class="fas fa-map-marker-alt"></i> ${job.location}</p>
-                  <p><i class="fas fa-money-bill-wave"></i> ${job.salary}</p>
-                  <p><i class="fas fa-clock"></i> ${job.type}</p>
-                </div>
-                <div class="job-description">
-                  <p>${job.description}</p>
-                </div>
-                <div class="job-requirements">
-                  <h4>Requirements:</h4>
-                  <ul>
-                    ${job.requirements.map(req => `<li>${req}</li>`).join('')}
-                  </ul>
-                </div>
-                <div class="job-actions">
-                  <button onclick="applyForJob('${job._id}')" class="apply-button">Apply Now</button>
-                  <button onclick="saveJob('${job._id}')" class="save-button">Save Job</button>
-                </div>
-              `;
-              jobList.appendChild(card);
-            });
-          } else {
-            jobList.innerHTML = '<p>No jobs found matching your criteria.</p>';
-          }
-        } catch (error) {
-          console.error('Error searching jobs:', error);
-          alert('Error searching jobs. Please try again.');
+          jobList.innerHTML = '<p class="no-jobs">Error loading jobs. Please try again later.</p>';
+        } finally {
+          showJobsBtn.classList.remove('loading');
+          showJobsBtn.textContent = 'Show Jobs';
         }
       };
-
-      // Apply for job
-      window.applyForJob = async function (jobId) {
-        try {
-          const response = await fetch(`${BASE_URL}/api/jobs/${jobId}/apply`, {
-            method: 'POST',
-            headers: { 
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${JSON.parse(localStorage.getItem('user')).token}`
-            }
-          });
-
-          if (!response.ok) {
-            throw new Error('Failed to apply for job');
-          }
-
-          const data = await response.json();
-          alert(data.message || 'Application submitted successfully!');
-        } catch (error) {
-          console.error('Error applying for job:', error);
-          alert('Error applying for job. Please try again.');
-        }
-      };
-
-      // Save job
-      window.saveJob = async function (jobId) {
-        try {
-          const response = await fetch(`${BASE_URL}/api/jobs/${jobId}/save`, {
-            method: 'POST',
-            headers: { 
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${JSON.parse(localStorage.getItem('user')).token}`
-            }
-          });
-
-          if (!response.ok) {
-            throw new Error('Failed to save job');
-          }
-
-          const data = await response.json();
-          alert(data.message || 'Job saved successfully!');
-        } catch (error) {
-          console.error('Error saving job:', error);
-          alert('Error saving job. Please try again.');
-        }
-      };
-
-      // Initial load
-      loadJobs();
     });
 
     function toggleMenu() {
       document.querySelector('.nav-links').classList.toggle('active');
+    }
+
+    // Utility function to safely parse JSON
+    function safeParse(jsonString, defaultValue) {
+      try {
+        return JSON.parse(jsonString) || defaultValue;
+      } catch (e) {
+        return defaultValue;
+      }
     }
   </script>
 </body>
