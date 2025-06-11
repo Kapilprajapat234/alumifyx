@@ -1055,22 +1055,83 @@
   <script>
     const BASE_URL = "https://alumifyx.onrender.com";
 
+    // Mock job data
+    const mockJobs = [
+      {
+        title: "Front-End Developer",
+        company: "TechCorp",
+        location: "Remote",
+        salary: "$80,000 - $100,000",
+        type: "Full-time",
+        description: "Develop and maintain web applications using React and JavaScript. Skills required: Front-End Development, JavaScript, Web Development.",
+        applicationLink: "https://example.com/apply"
+      },
+      {
+        title: "Software Engineer",
+        company: "Innovate Solutions",
+        location: "New York, NY",
+        salary: "$90,000 - $120,000",
+        type: "Full-time",
+        description: "Work on backend systems using Node.js and MongoDB. Skills required: Back-End Development, JavaScript, Database Management.",
+        applicationLink: "https://example.com/apply"
+      },
+      {
+        title: "Data Analyst",
+        company: "Data Insights",
+        location: "San Francisco, CA",
+        salary: "$70,000 - $90,000",
+        type: "Full-time",
+        description: "Analyze data to provide actionable insights using Python and SQL. Skills required: Data Analysis, Python, Business Analytics.",
+        applicationLink: "https://example.com/apply"
+      },
+      {
+        title: "UI/UX Designer",
+        company: "Creative Designs",
+        location: "London, UK",
+        salary: "$60,000 - $80,000",
+        type: "Full-time",
+        description: "Design user interfaces and experiences for web and mobile apps. Skills required: UI/UX Design, Graphic Design.",
+        applicationLink: "https://example.com/apply"
+      },
+      {
+        title: "Machine Learning Engineer",
+        company: "AI Innovators",
+        location: "Toronto, Canada",
+        salary: "$100,000 - $130,000",
+        type: "Full-time",
+        description: "Build and deploy machine learning models using Python and TensorFlow. Skills required: Machine Learning, Python, AI Development.",
+        applicationLink: "https://example.com/apply"
+      }
+    ];
+
     async function checkSessionOrRedirect() {
       try {
-        const user = JSON.parse(localStorage.getItem('user'));
-        if (!user || !user.token) throw new Error('No user token');
-        const response = await fetch(`${BASE_URL}/api/user`, {
-          method: "GET",
-          headers: { 
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${user.token}`
-          }
-        });
-        if (!response.ok) throw new Error("Not logged in");
-        return await response.json();
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        if (!user || !user.token) {
+          // Create a mock user session if no valid token exists
+          const mockUser = {
+            token: 'mock-token-' + Math.random().toString(36).substr(2),
+            id: 'mock-user-id',
+            email: 'mock.user@example.com'
+          };
+          localStorage.setItem('user', JSON.stringify(mockUser));
+          console.log('Mock user session created');
+          return { status: 'mock', user: mockUser };
+        }
+        // If token exists, assume valid session (mock mode since backend is down)
+        return { status: 'mock', user };
       } catch (e) {
-        window.location.href = "index.html";
-        throw e;
+        // Log error for debugging but don't redirect
+        console.error('Session check error:', e.message);
+        // Create a mock user session as fallback
+        const mockUser = {
+          token: 'mock-token-' + Math.random().toString(36).substr(2),
+          id: 'mock-user-id',
+          email: 'mock.user@example.com'
+        };
+        localStorage.setItem('user', JSON.stringify(mockUser));
+        console.log('Mock user session created due to error');
+        return { status: 'mock', user: mockUser };
       }
     }
 
@@ -1168,19 +1229,21 @@
 
       async function loadProfileData() {
         try {
-          const response = await fetch(`${BASE_URL}/api/user`, {
-            method: 'GET',
-            headers: { 
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${JSON.parse(localStorage.getItem('user')).token}`
-            }
-          });
+          // Since backend is down, use mock profile data
+          const user = {
+            name: "John Doe",
+            email: "john.doe@example.com",
+            phone: "+1234567890",
+            education: "B.Tech, Computer Science",
+            skills: "JavaScript, Python",
+            certifications: "AWS Certified Developer",
+            address: "123 Main St, City",
+            gender: "male",
+            dob: "1995-05-15",
+            bio: "Passionate developer with 5 years of experience.",
+            profilePic: ""
+          };
 
-          if (!response.ok) {
-            throw new Error('Failed to load profile data');
-          }
-
-          const user = await response.json();
           document.getElementById('name').value = user.name || '';
           document.getElementById('email').value = user.email || '';
           document.getElementById('phone').value = user.phone || '';
@@ -1199,8 +1262,8 @@
             profilePicPreview.style.display = 'none';
           }
         } catch (error) {
-          console.error('Error loading profile:', error);
-          alert('Error loading profile data. Please try again.');
+          console.error('Error loading profile:', error.message);
+          alert('Error loading profile data. Using mock data.');
         }
       }
 
@@ -1241,38 +1304,27 @@
             return;
           }
 
-          const formData = new FormData();
-          formData.append('name', document.getElementById('name').value);
-          formData.append('email', document.getElementById('email').value);
-          formData.append('phone', document.getElementById('phone').value);
-          formData.append('education', document.getElementById('education').value);
-          formData.append('skills', document.getElementById('skills').value);
-          formData.append('certifications', document.getElementById('certifications').value);
-          formData.append('address', document.getElementById('address').value);
-          formData.append('gender', document.getElementById('gender').value);
-          formData.append('dob', document.getElementById('dob').value);
-          formData.append('bio', document.getElementById('bio').value);
-          
-          if (profilePicInput.files[0]) {
-            formData.append('profilePic', profilePicInput.files[0]);
-          }
+          // Mock save functionality since backend is down
+          const profileData = {
+            name: document.getElementById('name').value,
+            email: document.getElementById('email').value,
+            phone: document.getElementById('phone').value,
+            education: document.getElementById('education').value,
+            skills: document.getElementById('skills').value,
+            certifications: document.getElementById('certifications').value,
+            address: document.getElementById('address').value,
+            gender: document.getElementById('gender').value,
+            dob: document.getElementById('dob').value,
+            bio: document.getElementById('bio').value,
+            profilePic: profilePicPreview.src || ''
+          };
 
           try {
-            const response = await fetch(`${BASE_URL}/api/user`, {
-              method: 'PUT',
-              body: formData,
-              headers: { 'Authorization': `Bearer ${JSON.parse(localStorage.getItem('user')).token}` }
-            });
-
-            if (!response.ok) {
-              throw new Error('Failed to update profile');
-            }
-
-            const data = await response.json();
-            alert(data.message || 'Profile updated successfully!');
+            localStorage.setItem('profileData', JSON.stringify(profileData));
+            alert('Profile updated successfully (saved locally)!');
             closeProfileModal();
           } catch (error) {
-            console.error('Error updating profile:', error);
+            console.error('Error updating profile:', error.message);
             alert('Error updating profile. Please try again.');
           }
         });
@@ -1333,26 +1385,9 @@
       }
 
       // Logout
-      window.logout = async function () {
+      window.logout = function () {
         try {
-          const user = JSON.parse(localStorage.getItem('user'));
-          if (!user || !user.token) {
-            throw new Error('No user token found');
-          }
-
-          const response = await fetch(`${BASE_URL}/api/auth/logout`, {
-            method: 'POST',
-            headers: { 
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${user.token}`
-            }
-          });
-
-          if (!response.ok) {
-            throw new Error('Logout failed');
-          }
-
-          // Clear all relevant localStorage items
+          // Clear localStorage and redirect
           localStorage.removeItem('user');
           localStorage.removeItem('profileData');
           localStorage.removeItem('adminData');
@@ -1363,7 +1398,7 @@
             window.location.href = 'index.html';
           }, 500);
         } catch (error) {
-          console.error('Error during logout:', error);
+          console.error('Error during logout:', error.message);
           alert('Error logging out. Please try again.');
         }
       };
@@ -1384,7 +1419,7 @@
       };
 
       // Show jobs based on selected skills
-      window.showJobs = async function () {
+      window.showJobs = function () {
         const showJobsBtn = document.querySelector('.show-jobs-btn');
         const jobList = document.getElementById('jobList');
         jobList.innerHTML = '';
@@ -1400,49 +1435,30 @@
         showJobsBtn.classList.add('loading');
         showJobsBtn.textContent = 'Loading...';
 
-        try {
-          const response = await fetch(`${BASE_URL}/api/jobs`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${JSON.parse(localStorage.getItem('user')).token}`
-            },
-            body: JSON.stringify({ skills: selectedSkills })
-          });
-
-          if (!response.ok) {
-            throw new Error('Failed to load jobs');
+        // Use mock data
+        mockJobs.forEach(job => {
+          if (selectedSkills.some(skill => job.description.includes(skill))) {
+            const jobElement = document.createElement('div');
+            jobElement.className = 'job';
+            jobElement.innerHTML = `
+              <h3>${job.title}</h3>
+              <p>Company: ${job.company}</p>
+              <p>Location: ${job.location}</p>
+              <p>Salary: ${job.salary}</p>
+              <p>Type: ${job.type}</p>
+              <p>Description: ${job.description}</p>
+              <a href="${job.applicationLink}" class="apply-btn">Apply Now</a>
+            `;
+            jobList.appendChild(jobElement);
           }
+        });
 
-          const jobs = await response.json();
-
-          if (jobs.length > 0) {
-            jobs.forEach(job => {
-              const jobElement = document.createElement('div');
-              jobElement.className = 'job';
-              jobElement.innerHTML = `
-                <h3>${job.title}</h3>
-                <p>Company: ${job.company}</p>
-                <p>Location: ${job.location}</p>
-                <p>Salary: ${job.salary || 'Not specified'}</p>
-                <p>Type: ${job.type || 'Full-time'}</p>
-                <p>Description: ${job.description}</p>
-                <a href="${job.applicationLink || '#'}" class="apply-btn ${!job.applicationLink ? 'disabled' : ''}">
-                  Apply Now
-                </a>
-              `;
-              jobList.appendChild(jobElement);
-            });
-          } else {
-            jobList.innerHTML = '<p class="no-jobs">No jobs found for the selected skills.</p>';
-          }
-        } catch (error) {
-          console.error('Error loading jobs:', error);
-          jobList.innerHTML = '<p class="no-jobs">Error loading jobs. Please try again later.</p>';
-        } finally {
-          showJobsBtn.classList.remove('loading');
-          showJobsBtn.textContent = 'Show Jobs';
+        if (!jobList.querySelector('.job')) {
+          jobList.innerHTML = '<p class="no-jobs">No jobs found for the selected skills.</p>';
         }
+
+        showJobsBtn.classList.remove('loading');
+        showJobsBtn.textContent = 'Show Jobs';
       };
     });
 
