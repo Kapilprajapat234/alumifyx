@@ -676,12 +676,12 @@
         <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
       </div>
       <div class="profile-dropdown" role="menu">
-        <button role="menuitem" onclick="openProfileModal()">My Profile</button>
-        <button role="menuitem" onclick="openSettingsModal()">Settings</button>
-        <a href="#" role="menuitem" onclick="logout()">Logout</a>
+        <button role="menuitem" id="openProfileBtn">My Profile</button>
+        <button role="menuitem" id="openSettingsBtn">Settings</button>
+        <a href="#" role="menuitem" id="logoutBtn">Logout</a>
       </div>
     </div>
-    <div class="hamburger" onclick="toggleMenu()">
+    <div class="hamburger" id="hamburgerMenu">
       <span></span>
       <span></span>
       <span></span>
@@ -722,7 +722,7 @@
         <textarea id="bio" placeholder="Tell us about yourself"></textarea>
         <div class="form-buttons">
           <button type="submit">Save</button>
-          <button type="button" onclick="closeProfileModal()">Cancel</button>
+          <button type="button" id="closeProfileBtn">Cancel</button>
         </div>
       </form>
     </div>
@@ -780,13 +780,13 @@
         </label>
       </div>
       <div class="setting-group">
-        <button onclick="requestDataExport()">Request Data Export</button>
+        <button id="dataExportBtn">Request Data Export</button>
       </div>
       <div class="setting-group">
-        <button class="delete-account" onclick="deleteAccount()">Delete Account</button>
+        <button class="delete-account" id="deleteAccountBtn">Delete Account</button>
       </div>
-      <button onclick="saveSettings()">Save</button>
-      <button onclick="closeSettingsModal()">Close</button>
+      <button id="saveSettingsBtn">Save</button>
+      <button id="closeSettingsBtn">Close</button>
     </div>
   </div>
 
@@ -798,7 +798,7 @@
       <p id="mentorPopupSkill"></p>
       <p id="mentorPopupExperience"></p>
       <p class="price" id="mentorPopupPrice"></p>
-      <button onclick="buyMentorship()">Buy Mentorship Now</button>
+      <button id="buyMentorshipBtn">Buy Mentorship Now</button>
       <div class="terms">
         <strong>Terms and Conditions:</strong><br>
         1. Mentorship sessions are non-refundable after the first session.<br>
@@ -807,7 +807,7 @@
         4. Alumifyx reserves the right to reassign mentors if needed.<br>
         5. All sessions are conducted online via secure platforms.
       </div>
-      <button class="close-button" onclick="closeMentorPopup()">Close</button>
+      <button class="close-button" id="closeMentorPopupBtn">Close</button>
     </div>
   </div>
 
@@ -818,10 +818,102 @@
 
   <script>
     const BASE_URL = "https://alumifyx.onrender.com";
+    const mentors = [
+      {
+        name: "Amit Sharma",
+        skill: "Personal Finance",
+        photo: "https://via.placeholder.com/100?text=Amit",
+        bio: "Amit is a certified financial planner with over 10 years of experience helping individuals achieve financial independence.",
+        experience: "10+ years in financial planning, CFP certified.",
+        price: "₹5000/month"
+      },
+      {
+        name: "Priya Singh",
+        skill: "Stock Market",
+        photo: "https://via.placeholder.com/100?text=Priya",
+        bio: "Priya is a stock market expert with a track record of successful trading and portfolio management.",
+        experience: "8 years in stock trading, NSE certified.",
+        price: "₹6000/month"
+      },
+      {
+        name: "Rahul Verma",
+        skill: "Python",
+        photo: "https://via.placeholder.com/100?text=Rahul",
+        bio: "Rahul is a Python developer with expertise in data science and automation projects.",
+        experience: "7 years in software development, Python certified.",
+        price: "₹4500/month"
+      },
+      {
+        name: "Sneha Gupta",
+        skill: "Web Development",
+        photo: "https://via.placeholder.com/100?text=Sneha",
+        bio: "Sneha specializes in building responsive websites using modern frameworks like React and Node.js.",
+        experience: "6 years in web development, AWS certified.",
+        price: "₹5500/month"
+      },
+      {
+        name: "Vikram Patel",
+        skill: "Marketing",
+        photo: "https://via.placeholder.com/100?text=Vikram",
+        bio: "Vikram is a digital marketing guru with expertise in SEO, PPC, and social media strategies.",
+        experience: "9 years in digital marketing, Google Ads certified.",
+        price: "₹5200/month"
+      },
+      {
+        name: "Anjali Rao",
+        skill: "UI/UX Design",
+        photo: "https://via.placeholder.com/100?text=Anjali",
+        bio: "Anjali creates user-friendly interfaces with a focus on aesthetics and functionality.",
+        experience: "5 years in UI/UX design, Adobe certified.",
+        price: "₹4800/month"
+      },
+      {
+        name: "Karan Mehta",
+        skill: "Sales",
+        photo: "https://via.placeholder.com/100?text=Karan",
+        bio: "Karan is a sales coach who helps professionals close deals and build client relationships.",
+        experience: "12 years in sales, SPIN Selling certified.",
+        price: "₹5300/month"
+      },
+      {
+        name: "Neha Joshi",
+        skill: "Graphic Design",
+        photo: "https://via.placeholder.com/100?text=Neha",
+        bio: "Neha is a creative graphic designer skilled in branding and visual storytelling.",
+        experience: "6 years in graphic design, Adobe certified.",
+        price: "₹4700/month"
+      },
+      {
+        name: "Siddharth Nair",
+        skill: "Personal Development",
+        photo: "https://via.placeholder.com/100?text=Siddharth",
+        bio: "Siddharth is a life coach who empowers individuals to achieve their personal and professional goals.",
+        experience: "8 years in coaching, ICF certified.",
+        price: "₹4900/month"
+      },
+      {
+        name: "Riya Kapoor",
+        skill: "Video Editing",
+        photo: "https://via.placeholder.com/100?text=Riya",
+        bio: "Riya is a video editing expert who creates compelling content for brands and creators.",
+        experience: "5 years in video editing, Premiere Pro certified.",
+        price: "₹4600/month"
+      }
+    ];
+
     async function checkSessionOrRedirect() {
       try {
-        const user = JSON.parse(localStorage.getItem('user'));
-        if (!user || !user.token) throw new Error('No user token');
+        const userData = localStorage.getItem('user');
+        if (!userData) {
+          console.warn('No user data in localStorage');
+          return false;
+        }
+        const user = JSON.parse(userData);
+        if (!user || !user.token) {
+          console.warn('No valid user token found');
+          return false;
+        }
+        console.log('User token found:', user.token);
         const response = await fetch(`${BASE_URL}/api/user`, {
           method: "GET",
           headers: { 
@@ -829,98 +921,158 @@
             "Authorization": `Bearer ${user.token}`
           }
         });
-        if (!response.ok) throw new Error("Not logged in");
+        if (!response.ok) {
+          throw new Error(`API error: ${response.status}`);
+        }
         return await response.json();
       } catch (e) {
-        window.location.href = "index.html";
-        throw e;
+        console.error('Session check failed:', e.message);
+        return false;
       }
     }
-    document.addEventListener('DOMContentLoaded', async () => {
-      await checkSessionOrRedirect();
-      const mentors = [
-        {
-          name: "Amit Sharma",
-          skill: "Personal Finance",
-          photo: "https://via.placeholder.com/100?text=Amit",
-          bio: "Amit is a certified financial planner with over 10 years of experience helping individuals achieve financial independence.",
-          experience: "10+ years in financial planning, CFP certified.",
-          price: "₹5000/month"
-        },
-        {
-          name: "Priya Singh",
-          skill: "Stock Market",
-          photo: "https://via.placeholder.com/100?text=Priya",
-          bio: "Priya is a stock market expert with a track record of successful trading and portfolio management.",
-          experience: "8 years in stock trading, NSE certified.",
-          price: "₹6000/month"
-        },
-        {
-          name: "Rahul Verma",
-          skill: "Python",
-          photo: "https://via.placeholder.com/100?text=Rahul",
-          bio: "Rahul is a Python developer with expertise in data science and automation projects.",
-          experience: "7 years in software development, Python certified.",
-          price: "₹4500/month"
-        },
-        {
-          name: "Sneha Gupta",
-          skill: "Web Development",
-          photo: "https://via.placeholder.com/100?text=Sneha",
-          bio: "Sneha specializes in building responsive websites using modern frameworks like React and Node.js.",
-          experience: "6 years in web development, AWS certified.",
-          price: "₹5500/month"
-        },
-        {
-          name: "Vikram Patel",
-          skill: "Marketing",
-          photo: "https://via.placeholder.com/100?text=Vikram",
-          bio: "Vikram is a digital marketing guru with expertise in SEO, PPC, and social media strategies.",
-          experience: "9 years in digital marketing, Google Ads certified.",
-          price: "₹5200/month"
-        },
-        {
-          name: "Anjali Rao",
-          skill: "UI/UX Design",
-          photo: "https://via.placeholder.com/100?text=Anjali",
-          bio: "Anjali creates user-friendly interfaces with a focus on aesthetics and functionality.",
-          experience: "5 years in UI/UX design, Adobe certified.",
-          price: "₹4800/month"
-        },
-        {
-          name: "Karan Mehta",
-          skill: "Sales",
-          photo: "https://via.placeholder.com/100?text=Karan",
-          bio: "Karan is a sales coach who helps professionals close deals and build client relationships.",
-          experience: "12 years in sales, SPIN Selling certified.",
-          price: "₹5300/month"
-        },
-        {
-          name: "Neha Joshi",
-          skill: "Graphic Design",
-          photo: "https://via.placeholder.com/100?text=Neha",
-          bio: "Neha is a creative graphic designer skilled in branding and visual storytelling.",
-          experience: "6 years in graphic design, Adobe certified.",
-          price: "₹4700/month"
-        },
-        {
-          name: "Siddharth Nair",
-          skill: "Personal Development",
-          photo: "https://via.placeholder.com/100?text=Siddharth",
-          bio: "Siddharth is a life coach who empowers individuals to achieve their personal and professional goals.",
-          experience: "8 years in coaching, ICF certified.",
-          price: "₹4900/month"
-        },
-        {
-          name: "Riya Kapoor",
-          skill: "Video Editing",
-          photo: "https://via.placeholder.com/100?text=Riya",
-          bio: "Riya is a video editing expert who creates compelling content for brands and creators.",
-          experience: "5 years in video editing, Premiere Pro certified.",
-          price: "₹4600/month"
-        }
-      ];
 
+    function openMentorPopup(index) {
+      const mentor = mentors[index];
+      const mentorPopup = document.getElementById('mentorPopup');
+      const mentorPopupPhoto = document.getElementById('mentorPopupPhoto');
+      const mentorPopupName = document.getElementById('mentorPopupName');
+      const mentorPopupBio = document.getElementById('mentorPopupBio');
+      const mentorPopupSkill = document.getElementById('mentorPopupSkill');
+      const mentorPopupExperience = document.getElementById('mentorPopupExperience');
+      const mentorPopupPrice = document.getElementById('mentorPopupPrice');
+      mentorPopupPhoto.src = mentor.photo;
+      mentorPopupName.textContent = mentor.name;
+      mentorPopupBio.textContent = mentor.bio;
+      mentorPopupSkill.textContent = `Specialization: ${mentor.skill}`;
+      mentorPopupExperience.textContent = `Experience: ${mentor.experience}`;
+      mentorPopupPrice.textContent = `Price: ${mentor.price}`;
+      mentorPopup.classList.add('active');
+    }
+
+    function closeMentorPopup() {
+      document.getElementById('mentorPopup').classList.remove('active');
+    }
+
+    function buyMentorship() {
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      if (!user || !user.token) {
+        alert('Please log in to purchase mentorship.');
+        window.location.href = 'index.html';
+        return;
+      }
+      alert('Redirecting to payment gateway for mentorship purchase...');
+      // Add actual payment gateway integration here
+    }
+
+    function toggleMenu() {
+      document.querySelector('.nav-links').classList.toggle('active');
+    }
+
+    function openProfileModal() {
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      if (!user || !user.token) {
+        alert('Please log in to view your profile.');
+        window.location.href = 'index.html';
+        return;
+      }
+      document.getElementById('profileModal').classList.add('active');
+      document.querySelector('.profile').classList.remove('active');
+      document.querySelector('.profile-icon').setAttribute('aria-expanded', false);
+      loadProfileData();
+    }
+
+    function closeProfileModal() {
+      document.getElementById('profileModal').classList.remove('active');
+    }
+
+    function openSettingsModal() {
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      if (!user || !user.token) {
+        alert('Please log in to access settings.');
+        window.location.href = 'index.html';
+        return;
+      }
+      document.getElementById('settingsModal').classList.add('active');
+      document.querySelector('.profile').classList.remove('active');
+      document.querySelector('.profile-icon').setAttribute('aria-expanded', false);
+      loadSettings();
+    }
+
+    function closeSettingsModal() {
+      document.getElementById('settingsModal').classList.remove('active');
+    }
+
+    function logout() {
+      localStorage.removeItem('user');
+      localStorage.removeItem('profileData');
+      localStorage.removeItem('settings');
+      localStorage.removeItem('theme');
+      alert('Logged out successfully.');
+      window.location.href = 'index.html';
+    }
+
+    function loadProfileData() {
+      const profileData = JSON.parse(localStorage.getItem('profileData')) || {};
+      document.getElementById('name').value = profileData.name || '';
+      document.getElementById('email').value = profileData.email || '';
+      document.getElementById('phone').value = profileData.phone || '';
+      document.getElementById('education').value = profileData.education || '';
+      document.getElementById('skills').value = profileData.skills || '';
+      document.getElementById('certifications').value = profileData.certifications || '';
+      document.getElementById('address').value = profileData.address || '';
+      document.getElementById('gender').value = profileData.gender || '';
+      document.getElementById('dob').value = profileData.dob || '';
+      document.getElementById('bio').value = profileData.bio || '';
+      if (profileData.profilePic) {
+        document.getElementById('profilePicPreview').src = profileData.profilePic;
+        document.getElementById('profilePicPreview').style.display = 'block';
+      }
+    }
+
+    function loadSettings() {
+      const settings = JSON.parse(localStorage.getItem('settings')) || {};
+      document.getElementById('themeToggle').checked = localStorage.getItem('theme') === 'light';
+      document.getElementById('language').value = settings.language || 'en';
+      document.getElementById('emailNotifications').checked = settings.emailNotifications || false;
+      document.getElementById('pushNotifications').checked = settings.pushNotifications || false;
+      document.getElementById('profileVisibility').value = settings.profileVisibility || 'public';
+      document.getElementById('fontSize').value = settings.fontSize || 'medium';
+      document.getElementById('twoFactorAuth').checked = settings.twoFactorAuth || false;
+    }
+
+    function saveSettings() {
+      const settings = {
+        language: document.getElementById('language').value,
+        emailNotifications: document.getElementById('emailNotifications').checked,
+        pushNotifications: document.getElementById('pushNotifications').checked,
+        profileVisibility: document.getElementById('profileVisibility').value,
+        fontSize: document.getElementById('fontSize').value,
+        twoFactorAuth: document.getElementById('twoFactorAuth').checked
+      };
+      localStorage.setItem('settings', JSON.stringify(settings));
+      document.body.classList.remove('font-small', 'font-medium', 'font-large');
+      document.body.classList.add(`font-${settings.fontSize}`);
+      alert('Settings saved successfully!');
+      closeSettingsModal();
+    }
+
+    function requestDataExport() {
+      alert('Data export request submitted. You will receive an email with your data soon.');
+    }
+
+    function deleteAccount() {
+      if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+        localStorage.removeItem('user');
+        localStorage.removeItem('profileData');
+        localStorage.removeItem('settings');
+        localStorage.removeItem('theme');
+        alert('Account deleted successfully.');
+        window.location.href = 'index.html';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Initialize mentors grid
       const mentorsGrid = document.getElementById('mentorsGrid');
       mentors.forEach((mentor, index) => {
         const card = document.createElement('div');
@@ -929,48 +1081,34 @@
           <img src="${mentor.photo}" alt="${mentor.name}" class="mentor-photo">
           <h3>${mentor.name}</h3>
           <p>Mentor for ${mentor.skill}</p>
-          <button onclick="openMentorPopup(${index})">Choose as Your Mentor</button>
+          <button data-mentor-index="${index}">Choose as Your Mentor</button>
         `;
         mentorsGrid.appendChild(card);
       });
 
-      const mentorPopup = document.getElementById('mentorPopup');
-      const mentorPopupPhoto = document.getElementById('mentorPopupPhoto');
-      const mentorPopupName = document.getElementById('mentorPopupName');
-      const mentorPopupBio = document.getElementById('mentorPopupBio');
-      const mentorPopupSkill = document.getElementById('mentorPopupSkill');
-      const mentorPopupExperience = document.getElementById('mentorPopupExperience');
-      const mentorPopupPrice = document.getElementById('mentorPopupPrice');
+      // Attach event listeners to mentor buttons
+      document.querySelectorAll('.mentor-card button').forEach(button => {
+        button.addEventListener('click', () => {
+          const index = parseInt(button.getAttribute('data-mentor-index'));
+          openMentorPopup(index);
+        });
+      });
 
-      function openMentorPopup(index) {
-        const mentor = mentors[index];
-        mentorPopupPhoto.src = mentor.photo;
-        mentorPopupName.textContent = mentor.name;
-        mentorPopupBio.textContent = mentor.bio;
-        mentorPopupSkill.textContent = `Specialization: ${mentor.skill}`;
-        mentorPopupExperience.textContent = `Experience: ${mentor.experience}`;
-        mentorPopupPrice.textContent = `Price: ${mentor.price}`;
-        mentorPopup.classList.add('active');
+      // Check session
+      const sessionValid = await checkSessionOrRedirect();
+      console.log('Session valid:', sessionValid);
+      if (!sessionValid) {
+        console.warn('Running in limited mode due to invalid session.');
       }
 
-      function closeMentorPopup() {
-        mentorPopup.classList.remove('active');
-      }
-
-      function buyMentorship() {
-        alert('Redirecting to payment gateway for mentorship purchase...');
-        // Add actual payment gateway integration here
-      }
-
+      // Profile dropdown
       const profile = document.querySelector('.profile');
       const profileIcon = document.querySelector('.profile-icon');
-
       function toggleProfileDropdown() {
         profile.classList.toggle('active');
         const isExpanded = profile.classList.contains('active');
         profileIcon.setAttribute('aria-expanded', isExpanded);
       }
-
       profileIcon.addEventListener('click', toggleProfileDropdown);
       profileIcon.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' || e.key === ' ') {
@@ -978,7 +1116,6 @@
           toggleProfileDropdown();
         }
       });
-
       document.addEventListener('click', (e) => {
         if (!profile.contains(e.target)) {
           profile.classList.remove('active');
@@ -986,40 +1123,10 @@
         }
       });
 
-      const profileModal = document.getElementById('profileModal');
+      // Profile modal
       const profileForm = document.getElementById('profileForm');
       const profilePicInput = document.getElementById('profilePic');
       const profilePicPreview = document.getElementById('profilePicPreview');
-
-      function openProfileModal() {
-        profileModal.classList.add('active');
-        profile.classList.remove('active');
-        profileIcon.setAttribute('aria-expanded', false);
-        loadProfileData();
-      }
-
-      function closeProfileModal() {
-        profileModal.classList.remove('active');
-      }
-
-      function loadProfileData() {
-        const profileData = JSON.parse(localStorage.getItem('profileData')) || {};
-        document.getElementById('name').value = profileData.name || '';
-        document.getElementById('email').value = profileData.email || '';
-        document.getElementById('phone').value = profileData.phone || '';
-        document.getElementById('education').value = profileData.education || '';
-        document.getElementById('skills').value = profileData.skills || '';
-        document.getElementById('certifications').value = profileData.certifications || '';
-        document.getElementById('address').value = profileData.address || '';
-        document.getElementById('gender').value = profileData.gender || '';
-        document.getElementById('dob').value = profileData.dob || '';
-        document.getElementById('bio').value = profileData.bio || '';
-        if (profileData.profilePic) {
-          profilePicPreview.src = profileData.profilePic;
-          profilePicPreview.style.display = 'block';
-        }
-      }
-
       profilePicInput.addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -1035,9 +1142,14 @@
           reader.readAsDataURL(file);
         }
       });
-
       profileForm.addEventListener('submit', (e) => {
         e.preventDefault();
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        if (!user || !user.token) {
+          alert('Please log in to save your profile.');
+          window.location.href = 'index.html';
+          return;
+        }
         const phone = document.getElementById('phone').value;
         if (phone && !/^\+?\d{10,15}$/.test(phone)) {
           alert('Please enter a valid phone number (10-15 digits).');
@@ -1061,94 +1173,35 @@
         closeProfileModal();
       });
 
-      const settingsModal = document.getElementById('settingsModal');
-      const themeToggle = document.getElementById('themeToggle');
-      const languageSelect = document.getElementById('language');
-      const emailNotifications = document.getElementById('emailNotifications');
-      const pushNotifications = document.getElementById('pushNotifications');
-      const profileVisibility = document.getElementById('profileVisibility');
-      const fontSizeSelect = document.getElementById('fontSize');
-      const twoFactorAuth = document.getElementById('twoFactorAuth');
-
-      function openSettingsModal() {
-        settingsModal.classList.add('active');
-        profile.classList.remove('active');
-        profileIcon.setAttribute('aria-expanded', false);
-        loadSettings();
-      }
-
-      function closeSettingsModal() {
-        settingsModal.classList.remove('active');
-      }
-
-      function loadSettings() {
-        const settings = JSON.parse(localStorage.getItem('settings')) || {};
-        themeToggle.checked = localStorage.getItem('theme') === 'light';
-        languageSelect.value = settings.language || 'en';
-        emailNotifications.checked = settings.emailNotifications || false;
-        pushNotifications.checked = settings.pushNotifications || false;
-        profileVisibility.value = settings.profileVisibility || 'public';
-        fontSizeSelect.value = settings.fontSize || 'medium';
-        twoFactorAuth.checked = settings.twoFactorAuth || false;
-      }
-
-      function saveSettings() {
-        const settings = {
-          language: languageSelect.value,
-          emailNotifications: emailNotifications.checked,
-          pushNotifications: pushNotifications.checked,
-          profileVisibility: profileVisibility.value,
-          fontSize: fontSizeSelect.value,
-          twoFactorAuth: twoFactorAuth.checked
-        };
-        localStorage.setItem('settings', JSON.stringify(settings));
-        document.body.classList.remove('font-small', 'font-medium', 'font-large');
-        document.body.classList.add(`font-${fontSizeSelect.value}`);
-        alert('Settings saved successfully!');
-        closeSettingsModal();
-      }
-
-      themeToggle.addEventListener('change', () => {
+      // Theme toggle
+      document.getElementById('themeToggle').addEventListener('change', () => {
         document.body.classList.toggle('light-mode');
         localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
       });
 
-      function requestDataExport() {
-        alert('Data export request submitted. You will receive an email with your data soon.');
-      }
-
-      function deleteAccount() {
-        if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
-          localStorage.removeItem('profileData');
-          localStorage.removeItem('settings');
-          localStorage.removeItem('theme');
-          alert('Account deleted successfully.');
-          closeSettingsModal();
-        }
-      }
-
-      function logout() {
-        localStorage.removeItem('profileData');
-        localStorage.removeItem('settings');
-        localStorage.removeItem('theme');
-        alert('Logged out successfully.');
-        window.location.reload();
-      }
-
+      // Load theme and settings
       if (localStorage.getItem('theme') === 'light') {
         document.body.classList.add('light-mode');
-        themeToggle.checked = true;
+        document.getElementById('themeToggle').checked = true;
       }
-
-      const settings = JSON.parse(localStorage.getItem('settings')) || {};
+      const settings = JSON.parse(localStorage.getItem('settings') || '{}');
       if (settings.fontSize) {
         document.body.classList.add(`font-${settings.fontSize}`);
-        fontSizeSelect.value = settings.fontSize;
+        document.getElementById('fontSize').value = settings.fontSize;
       }
 
-      function toggleMenu() {
-        document.querySelector('.nav-links').classList.toggle('active');
-      }
+      // Attach remaining event listeners
+      document.getElementById('openProfileBtn').addEventListener('click', openProfileModal);
+      document.getElementById('openSettingsBtn').addEventListener('click', openSettingsModal);
+      document.getElementById('logoutBtn').addEventListener('click', logout);
+      document.getElementById('closeProfileBtn').addEventListener('click', closeProfileModal);
+      document.getElementById('buyMentorshipBtn').addEventListener('click', buyMentorship);
+      document.getElementById('closeMentorPopupBtn').addEventListener('click', closeMentorPopup);
+      document.getElementById('saveSettingsBtn').addEventListener('click', saveSettings);
+      document.getElementById('closeSettingsBtn').addEventListener('click', closeSettingsModal);
+      document.getElementById('dataExportBtn').addEventListener('click', requestDataExport);
+      document.getElementById('deleteAccountBtn').addEventListener('click', deleteAccount);
+      document.getElementById('hamburgerMenu').addEventListener('click', toggleMenu);
     });
   </script>
 </body>
